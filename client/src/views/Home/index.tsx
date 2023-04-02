@@ -8,11 +8,19 @@ import walletLogo from 'assets/img/wallet_logo.png'
 import metamaskLogo from 'assets/img/metamask.png'
 import skeleton from 'assets/img/skeleton.png'
 import { logout } from 'store/actions/auth';
+import wallet from '../../utils/wallet'
+import {
+  getUserAddress
+} from '../../utils/useWeb3'
 
 function Home({logout}:any) {
   const [isOpen, setIsOpen] = React.useState(false)
   const toggleDrawer = () => {
       setIsOpen((prevState) => !prevState)
+  }
+  const connectWallet = async() => {
+    await wallet.setProvider('metamask');
+    await wallet.login('metamask');
   }
   return (
     <>
@@ -73,7 +81,7 @@ function Home({logout}:any) {
           <button className='bg-[#333399] mt-[36px] w-full flex justify-center items-center py-2 px-2 rounded-full'>
             <span className='ml-3 text-white'>Load More</span>
           </button>
-          <button className='bg-[#FF3366] mt-[36px] w-full flex justify-center items-center py-2 px-2 rounded-full'>
+          <button className='bg-[#FF3366] mt-[36px] w-full flex justify-center items-center py-2 px-2 rounded-full' onClick={connectWallet}>
             <span className='ml-3 text-white'>Select Wallet</span>
           </button>
           <button className='mt-[36px] flex justify-end w-full items-center py-2 px-2' onClick={logout}>
