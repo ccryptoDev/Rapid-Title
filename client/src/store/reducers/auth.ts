@@ -6,13 +6,15 @@ import {
     LOGIN_SUCCESS,
     //LOGIN_FAIL,
     LOGOUT,
-    ACCOUNT_DELETED
+    ACCOUNT_DELETED,
+    WALLET_SELECTED
   } from '../types';
   
   const initialState = {
     token: localStorage.getItem('rapid_token'),
     isAuthenticated: null,
     loading: true,
+    wallet: '',
     user: null
   };
   
@@ -25,16 +27,18 @@ import {
           ...state,
           isAuthenticated: true,
           loading: false,
-          user: payload
+          user: payload,
+          wallet: payload.wallet
         };
-        case REGISTER_SUCCESS:
-        case LOGIN_SUCCESS:
-          return {
-            ...state,
-            ...payload,
-            isAuthenticated: true,
-            loading: false
-          };
+      case REGISTER_SUCCESS:
+      case LOGIN_SUCCESS:
+        return {
+          ...state,
+          ...payload,
+          isAuthenticated: true,
+          loading: false,
+          wallet: payload.wallet
+        };
       case ACCOUNT_DELETED:
       case AUTH_ERROR:
       case LOGOUT:
@@ -43,7 +47,8 @@ import {
           token: null,
           isAuthenticated: false,
           loading: false,
-          user: null
+          user: null,
+          wallet: null
         };
       default:
         return state;

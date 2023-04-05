@@ -6,6 +6,7 @@ import {
   USER_LOADED,
   AUTH_ERROR,
   LOGIN_SUCCESS,
+  WALLET_SELECTED,
   LOGIN_FAIL,
   LOGOUT
 } from '../types';
@@ -72,6 +73,30 @@ export const login = (data: any) => async (dispatch: any) => {
     dispatch({
       type: LOGIN_FAIL
     });
+    return false;
+  }
+};
+
+// Login User
+export const setWallet = (data: any) => async (dispatch: any) => {
+  try {
+    const res = await api.post('/v2/auth/wallet', data);
+    const {success, user} =  res.data;
+    if(success){
+      dispatch(setAlert("Selected Address: "+ data.wallet));      
+      dispatch({
+        type: WALLET_SELECTED,
+        payload: data.wallet
+      });
+      return true
+    }
+  } catch (err: any) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error: any) => dispatch(setAlert(error.msg, 'danger')));
+    }
+
     return false;
   }
 };

@@ -76,4 +76,21 @@ router.post(
 // 
 
 
+
+// @route    GET api/auth/wallet
+// @desc     Update wallet address for user
+// @access   Private
+router.post('/wallet', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    user.wallet = req.body.wallet;
+    await user.save();
+    res.json({ user, success: true});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+
 module.exports = router;
