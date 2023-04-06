@@ -7,17 +7,17 @@ import facebook from 'assets/img/facebook.png';
 import okta from 'assets/img/okta.png';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
 import { login } from 'store/actions/auth';
 
-function LoginCard({login}: any) {
+function LoginCard() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('')
   const onSubmit = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
     let formData = {email,password};
-    let result = await login(formData)
+    let result = await login(formData);
+    console.log(result);
     if(result === true){
       navigate('/home');
     }
@@ -94,11 +94,4 @@ function LoginCard({login}: any) {
     </>
   );
 }
-
-const mapStateToProps = (state: any) => ({
-  auth: state.auth,
-});
-
-export default connect(mapStateToProps, {
-  login
-})(LoginCard);
+export default LoginCard;

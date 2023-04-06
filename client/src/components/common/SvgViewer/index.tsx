@@ -1,6 +1,5 @@
 import React from 'react';
-import source from 'assets/svg/coding.svg';
 
-export default function SvgViewer() {
+export default function SvgViewer({source}: any) {
   return <img src={source} alt="coding" />;
 }

@@ -8,9 +8,8 @@ import okta from 'assets/img/okta.png';
 import { Link } from 'react-router-dom';
 import { register } from 'store/actions/auth';
 import { useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
 
-function SignupCard({register}:any) {
+function SignupCard() {
   const navigate = useNavigate();
   const [username,setUserName] = useState('');
   const [email, setEmail] = useState('');
@@ -19,7 +18,6 @@ function SignupCard({register}:any) {
     e.preventDefault();
     let formData = {username,email,password};
     let result = await register(formData)
-    console.log(result);
     if(result === true){
       navigate('/auth/login');
     }
@@ -99,10 +97,4 @@ function SignupCard({register}:any) {
   );
 }
 
-const mapStateToProps = (state: any) => ({
-  auth: state.auth,
-});
-
-export default connect(mapStateToProps, {
-  register
-})(SignupCard);
+export default SignupCard;

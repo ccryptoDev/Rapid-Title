@@ -10,39 +10,40 @@ import {
   LOGIN_FAIL,
   LOGOUT
 } from '../types';
+import store from '../store';
 // Load User
-export const loadUser = () => async (dispatch: any) => {
+export const loadUser = async () => {
   try {
     const res = await api.get('/v2/auth');
     
-    dispatch({
+    store.dispatch({
       type: USER_LOADED,
       payload: res.data
     });
   } catch (err) {
-    dispatch({
+    store.dispatch({
       type: AUTH_ERROR
     });
   }
 };
 
 // Register User
-export const register = (formData: any) => async (dispatch: any) => {
+export const register = async (formData: any) => {
   try {
     const res = await api.post('/v2/users/', formData);
-      dispatch({
+      store.dispatch({
         type: REGISTER_SUCCESS,
         payload: res.data
       });
-      dispatch(setAlert("Registered Successfully"));
+      setAlert("Registered Successfully");
       return true;
   } catch (err:any) {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach((error: any) => dispatch(setAlert(error.msg,'warning')));
+      errors.forEach((error: any) => setAlert(error.msg,'warning'));
     }
-    dispatch({
+    store.dispatch({
       type: REGISTER_FAIL
     });
     return false;
@@ -50,27 +51,28 @@ export const register = (formData: any) => async (dispatch: any) => {
 };
 
 // Login User
-export const login = (data: any) => async (dispatch: any) => {
+export const login = async (data: any) =>  {
   try {
     const res = await api.post('/v2/auth', data);
-    const {success, username} =  res.data;
+    const {success} =  res.data;
     if(success){
-      dispatch(setAlert("Logged In"));      
-      dispatch({
+      setAlert("Logged In");
+      store.dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data
       });
-      dispatch(loadUser());
+      await loadUser();
       return true
     }
   } catch (err: any) {
+    console.log(err)
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach((error: any) => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach((error: any) => setAlert(error.msg, 'danger'));
     }
 
-    dispatch({
+    store.dispatch({
       type: LOGIN_FAIL
     });
     return false;
@@ -78,13 +80,13 @@ export const login = (data: any) => async (dispatch: any) => {
 };
 
 // Login User
-export const setWallet = (data: any) => async (dispatch: any) => {
+export const setWallet = async (data: any) => {
   try {
     const res = await api.post('/v2/auth/wallet', data);
-    const {success, user} =  res.data;
+    const {success} =  res.data;
     if(success){
-      dispatch(setAlert("Selected Address: "+ data.wallet));      
-      dispatch({
+      setAlert("Selected Address: "+ data.wallet);
+      store.dispatch({
         type: WALLET_SELECTED,
         payload: data.wallet
       });
@@ -94,7 +96,7 @@ export const setWallet = (data: any) => async (dispatch: any) => {
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach((error: any) => dispatch(setAlert(error.msg, 'danger')));
+      errors.forEach((error: any) => setAlert(error.msg, 'danger'));
     }
 
     return false;
@@ -102,4 +104,4 @@ export const setWallet = (data: any) => async (dispatch: any) => {
 };
 
 // Logout
-export const logout = () => ({ type: LOGOUT });
+export const logout = () => store.dispatch({ type: LOGOUT });

@@ -17,20 +17,23 @@ import Signup from 'views/Auth/Signup';
 import EmailVerify from 'views/Auth/EmailVerify';
 
 function App() {
-  useEffect(() => {
-    // check for token in LS when app first runs
-    if (localStorage.rapid_token) {
-      // if there is a token set axios headers for all requests
-      setAuthToken(localStorage.rapid_token);
-    }
-    // try to fetch a user, if no token or invalid token we
-    // will get a 401 response from our API
-    store.dispatch(loadUser());
+  useEffect( () => {
+    const startFunc = async () => {
+        // check for token in LS when app first runs
+        if (localStorage.rapid_token) {
+          // if there is a token set axios headers for all requests
+          setAuthToken(localStorage.rapid_token);
+        }
+        // try to fetch a user, if no token or invalid token we
+        // will get a 401 response from our API
+        await loadUser();
 
-    // log user out from all tabs if they log out in one tab
-    window.addEventListener('storage', () => {
-      if (!localStorage.rapid_token) store.dispatch({ type: LOGOUT });
-    });
+        // log user out from all tabs if they log out in one tab
+        window.addEventListener('storage', () => {
+          if (!localStorage.rapid_token) store.dispatch({ type: LOGOUT });
+        });
+    }
+    startFunc();
   }, []);
 
   return (

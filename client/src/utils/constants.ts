@@ -47,3 +47,30 @@ export const Config = {
 export const getConfig = () => {
   return Config[configNetwork];
 };
+
+export const walletList = [
+  {
+    id:'metamask',
+    name:'Metamask',
+  },
+  {
+    id:'walletconnect',
+    name:'WalletConnect',
+  },
+  {
+    id:'coinbase',
+    name:'CoinBase wallet',
+  },
+  {
+    id:'phantom',
+    name:'Phantom',
+  },
+  {
+    id:'core',
+    name:'Core',
+  },
+  {
+    id:'glow',
+    name:'Glow Wallet',
+  },
+]

@@ -2,11 +2,10 @@ import React, { BaseSyntheticEvent } from 'react';
 import './index.view.css';
 import loginLogo from 'assets/img/verify_logo.png'
 import ImageViewer from 'components/common/ImageViewer';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import VerifyBox from '../VerifyBox';
 
-function LoginCard() {
+function EmailVerifyCard() {
   const navigate = useNavigate();
   const handleConfirm = (e: BaseSyntheticEvent) => {
     e.preventDefault();
@@ -41,4 +40,4 @@ function LoginCard() {
   );
 }
 
-export default LoginCard;
+export default EmailVerifyCard;
