@@ -1,0 +1,9 @@
+.ps-menu-button:hover{
+    /* background-color: #4848a4 !important; */
+    background-color: white !important;
+    /* color: white !important; */
+}
+.ps-menu-icon{
+    width: 50px !important;
+    min-width: 47px !important;
+}

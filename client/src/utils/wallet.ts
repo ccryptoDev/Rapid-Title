@@ -2,8 +2,6 @@ import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { getConfig } from "./constants";
-// import store from "../logic/reducers";
-// import { login, logout } from "../logic/actions";
 
 class Wallet {
   web3;

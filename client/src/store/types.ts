@@ -21,3 +21,4 @@ export const ADD_LINK_ERROR = 'ADD_LINK_ERROR'
 export const DELETE_LINK = "DELETE_LINK"
 export const GET_PROFILE_BY_PARAMS = "GET_PROFILE_BY_PARAMS";
 export const DARK_MODE = "DARK_MODE";
+export const SET_TITLES = "SET_TITLES";

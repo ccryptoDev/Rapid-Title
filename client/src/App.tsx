@@ -15,6 +15,7 @@ import Home from 'views/Home';
 import Login from 'views/Auth/Login';
 import Signup from 'views/Auth/Signup';
 import EmailVerify from 'views/Auth/EmailVerify';
+import { ProSidebarProvider } from 'react-pro-sidebar';
 
 function App() {
   useEffect( () => {
@@ -40,13 +41,15 @@ function App() {
     <>
       <Router>
         <ToastContainer />
-        <Routes>
-          <Route path='/' element={<Login />}/>
-          <Route path='/auth/login' element={<Login />}/>
-          <Route path='/auth/signup' element={<Signup />} />
-          <Route path="/verify" element={<EmailVerify />} />          
-          <Route path="/home" element={<PrivateRoute component={Home} />} />        
-        </Routes>
+        <ProSidebarProvider>
+          <Routes>
+            <Route path='/' element={<Login />}/>
+            <Route path='/auth/login' element={<Login />}/>
+            <Route path='/auth/signup' element={<Signup />} />
+            <Route path="/verify" element={<EmailVerify />} />          
+            <Route path="/home" element={<PrivateRoute component={Home} />} />        
+          </Routes>
+        </ProSidebarProvider>
       </Router>
     </>
   );
