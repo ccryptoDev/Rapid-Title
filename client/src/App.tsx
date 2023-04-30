@@ -16,6 +16,8 @@ import Login from 'views/Auth/Login';
 import Signup from 'views/Auth/Signup';
 import EmailVerify from 'views/Auth/EmailVerify';
 import { ProSidebarProvider } from 'react-pro-sidebar';
+import NewTitle from './views/NewTitle/index';
+import OtherInfo from 'views/OtherInfo';
 
 function App() {
   useEffect( () => {
@@ -28,7 +30,6 @@ function App() {
         // try to fetch a user, if no token or invalid token we
         // will get a 401 response from our API
         await loadUser();
-
         // log user out from all tabs if they log out in one tab
         window.addEventListener('storage', () => {
           if (!localStorage.rapid_token) store.dispatch({ type: LOGOUT });
@@ -47,7 +48,9 @@ function App() {
             <Route path='/auth/login' element={<Login />}/>
             <Route path='/auth/signup' element={<Signup />} />
             <Route path="/verify" element={<EmailVerify />} />          
-            <Route path="/home" element={<PrivateRoute component={Home} />} />        
+            <Route path="/home" element={<PrivateRoute component={Home} />} />
+            <Route path='/createtitle' element={<PrivateRoute component={NewTitle} />} />
+            <Route path='/createtitle/otherinfo' element={<PrivateRoute component={OtherInfo} />} />
           </Routes>
         </ProSidebarProvider>
       </Router>

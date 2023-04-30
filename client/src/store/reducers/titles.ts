@@ -6,7 +6,7 @@ import {
     titles: null,
   };
   
-  function darkModeReducer(state = initialState, action: any) {
+  function titlesReducer(state = initialState, action: any) {
     const { type, payload } = action;
   
     switch (type) {
@@ -20,5 +20,5 @@ import {
     }
   }
   
-  export default darkModeReducer;
+  export default titlesReducer;
   

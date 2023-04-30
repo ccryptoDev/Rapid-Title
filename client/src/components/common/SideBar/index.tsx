@@ -135,9 +135,9 @@ function SideBar() {
         )}
         rootStyles={{
           color: themes[theme].sidebar.color,
-          borderRight:'1px solid grey',
-          height:'85vh',
-          position:'relative',
+          borderRight: '1px solid grey',
+          height: '85vh',
+          position: 'relative',
         }}
       >
         <div
@@ -146,12 +146,14 @@ function SideBar() {
           <SidebarHeader collapsed={collapsed} style={{ marginBottom: '24px', marginTop: '16px' }} />
           <div style={{ flex: 1, marginBottom: '32px' }}>
             <Menu menuItemStyles={menuItemStyles}>
-              <MenuItem
-                icon={<Plus />}
-                onClick={() => collapseSidebar()}
-              >
-                Create New Title
-              </MenuItem>
+              <Link to="/createtitle">
+                <MenuItem
+                  icon={<Plus />}
+                  onClick={() => collapseSidebar()}
+                >
+                  Create New Title
+                </MenuItem>
+              </Link>
               <MenuItem
                 icon={<KeyIcon />}
                 onClick={() => collapseSidebar()}
@@ -180,7 +182,7 @@ function SideBar() {
               <MenuItem
                 onClick={() => collapseSidebar()}
               >
-                <img src={dayIcon} alt=""  style={{marginTop:500,marginLeft:10}}/>
+                <img src={dayIcon} alt="" style={{ marginTop: 500, marginLeft: 10 }} />
               </MenuItem>
             </Menu>
           </div>
