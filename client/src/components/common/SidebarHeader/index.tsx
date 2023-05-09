@@ -4,7 +4,7 @@ import { useProSidebar } from 'react-pro-sidebar';
 import { Typography } from '../Typography';
 import logo_expanded from '../../../assets/img/wallet_logo.png'
 import logo_collapsed from '../../../assets/img/logo_collapsed.png'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useNavigation } from 'react-router-dom';
 
 
 interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -26,14 +26,13 @@ const StyledSidebarHeader = styled.div`
 
 export const SidebarHeader = ({ children, collapsed, ...rest }: any) => {
   const { rtl, collapseSidebar } = useProSidebar();
+  const navigate = useNavigate()
   return (
     <StyledSidebarHeader {...rest}>
-      <Link to="/home">
-        <div style={{ display: 'flex', alignItems: 'center' }} className='cursor-pointer' onClick={() => collapseSidebar()}>
+        <div style={{ display: 'flex', alignItems: 'center' }} className='cursor-pointer' onClick={() => navigate('/home') }>
           <img src={logo_expanded} className={collapsed ? 'hidden' : ''} alt="" />
           <img src={logo_collapsed} className={collapsed ? '' : 'hidden'} alt="" />
         </div>
-      </Link>
     </StyledSidebarHeader>
   );
 };

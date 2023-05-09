@@ -51,7 +51,7 @@ function TitleList({viewMode,data, changeView}: any) {
           data.map((title:any,index:any) => {
             return <div className='card min-h-[297px] col-span-1 m-2' key={index}>
             <div className='w-full relative'>
-              <img src={title.image} width={"100%"}/>
+              <img src={title.image} width={"100%"} className='cursor-pointer' onClick={() => navigate(`/titleDetail/${title._id}`)}/>
               <img src={multiIcon} className='absolute top-4 left-5 cursor-pointer'/>
               <img src={flagIcon} className='absolute bottom-3 left-3 cursor-pointer'/>
               <div className='absolute top-4 right-3'>

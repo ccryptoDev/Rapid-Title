@@ -27,6 +27,7 @@ function Home() {
   const [walletType, setWalletType ] = React.useState('');
   const [tempWalletType, setTempWalletType ] = React.useState('');
   const [titleData, setTitleData] = React.useState([]);
+  const [isDetail, setIsDetail] = React.useState(false);
   useEffect(() => {
     const fetchTitles = async () => {
       const data = await loadTitles();
@@ -104,12 +105,12 @@ function Home() {
               {
                 isCard === 'card' ? (
                   <>
-                    <TitleList data={titleData} viewMode={isCard} changeView={changeViewMode}/>
+                    <TitleList data={titleData} viewMode={isCard} changeView={changeViewMode} setDetail={setIsDetail}/>
                     <FilterCards />
                   </>
                 ) : 
                 (
-                  <TitleTables data={titleData} viewMode={isCard} changeView={changeViewMode}/>
+                  <TitleTables data={titleData} viewMode={isCard} changeView={changeViewMode} setDetail={setIsDetail}/>
                 )
               }
             </div>

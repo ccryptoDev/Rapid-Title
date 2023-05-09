@@ -53,6 +53,12 @@ function AdditionalInfo() {
         navigate('/home');
     }
     const completeHandler = async () => {
+            let requestBody = carData;
+            requestBody.images = [
+                `https://gateway.pinata.cloud/ipfs/${vehicle1_url}`,
+                `https://gateway.pinata.cloud/ipfs/${vehicle2_url}`,
+                `https://gateway.pinata.cloud/ipfs/${vehicle3_url}`,
+            ]
             var data = JSON.stringify({
             "pinataOptions": {
                 "cidVersion": 1
@@ -63,12 +69,7 @@ function AdditionalInfo() {
                     
                 }
             },
-            "pinataContent": {
-                carData,
-                vehicle1_url: `https://gateway.pinata.cloud/ipfs/${vehicle1_url}`,
-                vehicle2_url: `https://gateway.pinata.cloud/ipfs/${vehicle2_url}`,
-                vehicle3_url: `https://gateway.pinata.cloud/ipfs/${vehicle3_url}`,
-            }
+            "pinataContent": requestBody
         });
         
         var config = {

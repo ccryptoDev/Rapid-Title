@@ -18,6 +18,7 @@ import EmailVerify from 'views/Auth/EmailVerify';
 import { ProSidebarProvider } from 'react-pro-sidebar';
 import NewTitle from './views/NewTitle/index';
 import OtherInfo from 'views/OtherInfo';
+import TitleDetail from 'components/common/TitleDetail';
 
 function App() {
   useEffect( () => {
@@ -51,6 +52,7 @@ function App() {
             <Route path="/home" element={<PrivateRoute component={Home} />} />
             <Route path='/createtitle' element={<PrivateRoute component={NewTitle} />} />
             <Route path='/createtitle/otherinfo' element={<PrivateRoute component={OtherInfo} />} />
+            <Route path="/titleDetail/:id" element={<PrivateRoute component={TitleDetail} />} />
           </Routes>
         </ProSidebarProvider>
       </Router>

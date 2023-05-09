@@ -83,6 +83,10 @@ function SideBar() {
     setTheme(e.target.checked ? 'dark' : 'light');
   };
 
+  const createTitle = () => {
+    navigate('/createtitle');
+  }
+
   // handle on image change event
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHasImage(e.target.checked);
@@ -135,7 +139,7 @@ function SideBar() {
         )}
         rootStyles={{
           color: themes[theme].sidebar.color,
-          borderRight: '1px solid grey',
+          // borderRight: '1px solid grey',
           height: '85vh',
           position: 'relative',
         }}
@@ -146,41 +150,39 @@ function SideBar() {
           <SidebarHeader collapsed={collapsed} style={{ marginBottom: '24px', marginTop: '16px' }} />
           <div style={{ flex: 1, marginBottom: '32px' }}>
             <Menu menuItemStyles={menuItemStyles}>
-              <Link to="/createtitle">
-                <MenuItem
-                  icon={<Plus />}
-                  onClick={() => collapseSidebar()}
-                >
-                  Create New Title
-                </MenuItem>
-              </Link>
+              <MenuItem
+                icon={<Plus />}
+                onClick={() => createTitle()}
+              >
+                Create New Title
+              </MenuItem>
               <MenuItem
                 icon={<KeyIcon />}
-                onClick={() => collapseSidebar()}
+                onClick={() => {}}
               >
                 TitleVault
               </MenuItem>
               <MenuItem
                 icon={<Message />}
                 suffix={<Badge variant="success">New</Badge>}
-                onClick={() => collapseSidebar()}
+                onClick={() => {}}
               >
                 Community
               </MenuItem>
               <MenuItem
                 icon={<Book />}
-                onClick={() => collapseSidebar()}
+                onClick={() => {}}
               >
                 Reports
               </MenuItem>
               <MenuItem
                 icon={<Setting />}
-                onClick={() => collapseSidebar()}
+                onClick={() => {}}
               >
                 Integrations
               </MenuItem>
               <MenuItem
-                onClick={() => collapseSidebar()}
+                onClick={() => {}}
               >
                 <img src={dayIcon} alt="" style={{ marginTop: 500, marginLeft: 10 }} />
               </MenuItem>
