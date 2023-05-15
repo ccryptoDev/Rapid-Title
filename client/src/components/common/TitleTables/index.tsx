@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { KeyIcon } from 'components/Key';
 import multiIcon from 'assets/img/multi_select.svg';
-import flagIcon from 'assets/img/red_flag.svg';
 import CO from 'assets/img/capital_one.png';
 import LA from 'assets/img/LA.png';
 

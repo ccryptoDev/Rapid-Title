@@ -5,12 +5,15 @@ import SideBar from '../SideBar';
 import HeaderBar from '../HeaderBar';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
-
+import TitleStatus from './TitleStatus';
+import TitleHolds from './TitleHolds';
+import TitleHistory from './TitleHistory';
+import TitlePeople from './TitlePeople';
 
 
 function TitleDetail({ data, id }: any) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [tab, setActiveTab] = React.useState('holds');
+  const [tab, setActiveTab] = React.useState('status');
   const navigate = useNavigate();
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
@@ -24,7 +27,7 @@ function TitleDetail({ data, id }: any) {
           <HeaderBar toggleDrawer={toggleDrawer} />
           <div className="flex w-full items-center p-2">
             <div className="flex-1 header-bar ml-2">
-              <span className='text-[#333399] text-3xl'> &larr;</span> 
+              <span className='text-[#333399] text-3xl cursor-pointer' onClick={() => navigate(-1)}> &larr;</span> 
               <span className='text-[#FF3366] text-3xl'> Hyundai Tucson K9015A</span>
             </div>
             <div className='cursor-pointer'>
@@ -87,7 +90,8 @@ function TitleDetail({ data, id }: any) {
             </div>
           </div>
           <div className='grid grid-cols-8 px-5'>
-              <div className='col-span-2 !w-full card bg-[#D6D6EB]' style={{border: 0,padding:30}}>
+              <div className='col-span-2 !w-full card bg-[#D6D6EB] relative' style={{border: 0,padding:30}}>
+                  <img src='/detail_close.png' className='absolute right-5 cursor-pointer'/>
                   <p className='title-text mb-2'>Certificate of Title</p>
                   <p className='label'>Vehicle Number</p>
                   <p className='main-text mb-2'>JUI2F80JUI2F80JUI</p>
@@ -189,8 +193,8 @@ function TitleDetail({ data, id }: any) {
                       </div>
                   </div>
               </div>
-              <div className='col-span-6 ml-5 rounded-xl' style={{boxShadow: "rgba(0, 0, 0, 0.25) 1px 7px 6px 2px"}}>
-                  <div className='grid grid-cols-5'>
+              <div className='col-span-6 ml-5 rounded-xl flex flex-col items-center' style={{boxShadow: "rgba(0, 0, 0, 0.25) 1px 7px 6px 2px"}}>
+                  <div className='grid grid-cols-5 w-full'>
                       <div className={`  flex items-center justify-center p-3 rounded-l-xl cursor-pointer ${tab === 'status' ? 'bg-[#FF3366] text-white' : 'bg-[#D6D6EB] text-[#5C5CAD]'}`} onClick={() => setActiveTab('status')} style={{borderRight:"1px solid",fontWeight:500,fontSize:18}}>
                         Title's Status
                       </div>
@@ -210,9 +214,32 @@ function TitleDetail({ data, id }: any) {
                         <img src='/flow_icon.png' width={35} height={35} className='!h-[35px]'/>
                       </div>
                   </div>
-                  <div className='w-[80%] bg-[#D6D6EB] h-[43px] mt-[22px]'>
-
+                  <div className='w-[98%] bg-[#D6D6EB] h-[43px] mt-[22px] rounded-lg flex items-center py-[7px] px-[10px]'>
+                    <div className='flex flex-1'>
+                      <div className='pending-badge w-[71px] h-[28px] rounded-md bg-[#FF3366] text-center text-white'>Pending</div>
+                      <div className='pending-badge w-[71px] h-[28px] rounded-md bg-[#FF0000] text-center text-white ml-2'>3 Days</div>
+                    </div>
+                    <div className='flex'>
+                      <img src='/share_icon.png' width={28} height={28}/>
+                      <span>Actions</span>
+                      <img src='/collapse_icon.png' width={28} height={28}/>
+                    </div>
                   </div>
+                  {
+                    tab === 'status' && <TitleStatus />
+                  }
+                  {
+                    tab === 'holds' && <TitleHolds />
+                  }
+                  {
+                    tab === 'people' && <TitlePeople />
+                  }
+                  {
+                    tab === 'history' && <TitleHistory />
+                  }
+                  {
+                    tab === 'flow' && <TitleHolds />
+                  }
               </div>
           </div>
         </div>
