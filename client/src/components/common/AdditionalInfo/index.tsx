@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import { PINATA_JWT } from "utils/constants";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
+import { mintTitle } from 'utils/useWeb3';
 
 function AdditionalInfo() {
     const [isOpen1,setIsOpen1] = React.useState(false);
@@ -83,8 +84,8 @@ function AdditionalInfo() {
         };
         //@ts-ignore
         const res = await axios(config);
-        
-        console.log(res.data.IpfsHash);
+        const vehicleCID = res.data.IpfsHash;
+        mintTitle(vehicleCID,2,3,4);
         handleOpen();
     }
 

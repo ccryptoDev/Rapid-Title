@@ -35,7 +35,8 @@ function SelectList() {
                             <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>Bob Smith</h3>
                             <img className="ps-8" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
                         </div>
-                        {!isOpen &&
+                        {
+                            !isOpen &&
                             <button className="bg-[#333399] text-white font-bold py-2 px-4 ml-2 rounded inline-flex items-center" style={{ borderRadius: 4 }}>
                                 <span className='mr-2'>Invite a Seller</span>
                                 <img src={require('../../../assets/img/User/Vector.png')} alt="" />

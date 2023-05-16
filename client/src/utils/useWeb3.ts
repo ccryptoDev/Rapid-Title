@@ -1,9 +1,11 @@
 // import { ethers, BigNumber } from 'ethers';
 import Web3Modal from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-import { INFURA_KEY } from './constants'
+import { INFURA_KEY,TITLE_CONTRACT } from './constants'
+import titleContractABI from './titleContractABI.json';
+import Web3 from 'web3';
 
-let coin_contract: any;
+let title_contract: any;
 let nft_contract: any;
 
 const providerOptions = {
@@ -63,11 +65,39 @@ async function getUserAddress() {
   }
 }
 
+async function getAllTitles() {
+  // @ts-ignore
+  window.web3 = new Web3(window.ethereum);
+  const contract = await new window.web3.eth.Contract(titleContractABI, TITLE_CONTRACT);
+  const walletAddr = await getUserAddress();
+  try {
+    return await contract.methods.getAllTitlesList(walletAddr)
+  } catch (err) {
+    console.log(err)
+    return false
+  }
+}
 
+async function mintTitle(vehicleCID: string, dealerID: number ,lenderID: number,sellerID: number) {
+   // @ts-ignore
+   window.web3 = new Web3(window.ethereum);
+   const contract = await new window.web3.eth.Contract(titleContractABI, TITLE_CONTRACT);
+   const walletAddr = await getUserAddress();
+   try {
+     return await contract.methods.mintTitle(walletAddr,vehicleCID,dealerID,lenderID,sellerID).send({
+      from: walletAddr
+     })
+   } catch (err) {
+     console.log(err)
+     return false
+   }
+}
 
 export { 
   connectWeb3, 
   getUserAddress, 
   getMetaMaskInstalled, 
-  connectMetamask, 
+  connectMetamask,
+  mintTitle,
+  getAllTitles,
 };

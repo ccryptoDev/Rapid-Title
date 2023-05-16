@@ -26,6 +26,7 @@ function getRandomInt(min, max) {
 router.post(
   '/',
   check('username', 'Username is required').notEmpty(),
+  check('userType', 'Please select user type').notEmpty(),
   check('email', 'Please include a valid email').isEmail(),
   check(
     'password',
@@ -36,7 +37,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { username , email, password } = req.body;
+    const { username , email, password, userType } = req.body;
     try {
       let user_email = await User.findOne({ email });
       if (user_email) {
@@ -66,7 +67,8 @@ router.post(
         user = new User({
           username : username_created,
           email,
-          password
+          password,
+          userType,
         });
 
         const salt = await bcrypt.genSalt(10);
