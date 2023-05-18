@@ -46,7 +46,7 @@ function SelectTablesArray() {
             <div className="grid grid-cols-7 gap-4">
                 <div className="col-span-2">
                     <InputTextField
-                        label='Your Model'
+                        label='Year Model'
                         defaultValue=''
                         onChange={(e) => dispatch({ type: 'SET_VEHICLE_YEAR_MODEL', payload:e.target.value })}
                         value={useSelector((state:any) => state.carData.year_model)}

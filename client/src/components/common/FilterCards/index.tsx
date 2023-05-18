@@ -28,63 +28,62 @@ function FilterCards() {
     LinearScale,
     PointElement,
     LineElement,
-    Title,
+    Title
   );
 
-
-const options = {
-  responsive: true,
-  interaction: {
-    mode: 'index' as const,
-    intersect: false,
-  },
-  stacked: false,
-  plugins: {
-    title: {
-      display: false,
-      text: 'Value Over Time',
+  const options = {
+    responsive: true,
+    interaction: {
+      mode: 'index' as const,
+      intersect: false
     },
-  },
-  scales: {
-    y: {
-      type: 'linear' as const,
-      display: true,
-      position: 'left' as const,
+    stacked: false,
+    plugins: {
+      title: {
+        display: false,
+        text: 'Value Over Time'
+      }
     },
-    y1: {
-      type: 'linear' as const,
-      display: true,
-      position: 'right' as const,
-      grid: {
-        drawOnChartArea: false,
+    scales: {
+      y: {
+        type: 'linear' as const,
+        display: true,
+        position: 'left' as const
       },
-    },
-  },
-};
+      y1: {
+        type: 'linear' as const,
+        display: true,
+        position: 'right' as const,
+        grid: {
+          drawOnChartArea: false
+        }
+      }
+    }
+  };
 
-const labels = ['11/25', '12/10', '12/15', '12/20', '12/30'];
+  const labels = ['11/25', '12/10', '12/15', '12/20', '12/30'];
 
-const LineData = {
-  labels,
-  datasets: [
-    {
-      label: 'blue',
-      data: [70, 83, 79, 87, 76],
-      borderColor: '#FF3366',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      lineTension: 0.4,
-      yAxisID: 'y',
-    },
-    {
-      label: 'gray1',
-      data: [30, 53, 69, 47, 76],
-      borderColor: 'gray',
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-      yAxisID: 'y1',
-      lineTension: 0.4,
-    },
-  ],
-};
+  const LineData = {
+    labels,
+    datasets: [
+      {
+        label: 'blue',
+        data: [70, 83, 79, 87, 76],
+        borderColor: '#FF3366',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        lineTension: 0.4,
+        yAxisID: 'y'
+      },
+      {
+        label: 'gray1',
+        data: [30, 53, 69, 47, 76],
+        borderColor: 'gray',
+        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        yAxisID: 'y1',
+        lineTension: 0.4
+      }
+    ]
+  };
 
   const data = {
     labels: [],
@@ -174,7 +173,7 @@ const LineData = {
             81,693,224 <span className="text-gray-500"> USD</span>
           </h1>
         </div>
-        <div className='flex items-center mt-5'>
+        <div className="flex items-center mt-5">
           {/* <Doughnut
             data={data}
             width={10}
@@ -183,24 +182,40 @@ const LineData = {
           <div>
             <img src={simpleChart} />
           </div>
-          <div className='ml-3'>
-            <h1 className='text-2xl'>30% of Titles</h1>
-            <h2 className='text-xl'>Are pending</h2>
+          <div className="ml-3">
+            <h1 className="text-2xl">30% of Titles</h1>
+            <h2 className="text-xl">Are pending</h2>
           </div>
-          <div className='float-right ml-5'>
+          <div className="float-right ml-5">
             <img src={warning} />
           </div>
         </div>
       </div>
 
       <div className="store-card px-8 py-4">
-        <div className='flex items-center'>
-          <span className='flex-1 text-2xl'>Value Over Time</span>
-          <button className="bg-[#333399] text-white font-bold py-1 px-4 rounded inline-flex items-center" style={{borderRadius:4}}>
-              <span className='mr-2'>30 Days</span>
+        <div className="flex items-center">
+          <span className="flex-1 text-2xl">Value Over Time</span>
+          <button
+            className="bg-[#333399] text-white font-bold py-1 px-4 rounded inline-flex items-center"
+            style={{ borderRadius: 4 }}
+          >
+            <span className="mr-2">30 Days</span>
           </button>
-          <svg width="16" className='ml-2 cursor-pointer' height="9" viewBox="0 0 16 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15 1L8 8L1 1" stroke="#333399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg
+            width="16"
+            className="ml-2 cursor-pointer"
+            height="9"
+            viewBox="0 0 16 9"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M15 1L8 8L1 1"
+              stroke="#333399"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </div>
         <div>

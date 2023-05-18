@@ -1,15 +1,15 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
 function Layout() {
   const navigator = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if(!token){
+    if (!token) {
       navigator('/auth/login');
     }
-  },[])
-  if(location.pathname.search('auth') === -1){
+  }, []);
+  if (location.pathname.search('auth') === -1) {
     return (
       <>
         <Header />
@@ -17,8 +17,7 @@ function Layout() {
         <Footer />
       </>
     );
-  }
-  else {
+  } else {
     return (
       <>
         <Outlet />
@@ -57,7 +56,10 @@ function Header() {
           </div>
           <div className="hidden md:flex space-x-4 items-center">
             <Link to="/">Login</Link>
-            <Link className="bg-green-400 p-2 rounded text-center text-white" to="/">
+            <Link
+              className="bg-green-400 p-2 rounded text-center text-white"
+              to="/"
+            >
               Signup
             </Link>
           </div>
@@ -77,7 +79,11 @@ function Header() {
                 stroke="currentColor"
                 className="w-6 h-6"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             ) : (
               <svg
@@ -107,7 +113,10 @@ function Header() {
           <Link className="block" to="/">
             Login
           </Link>
-          <Link className="block bg-green-400 p-2 rounded text-center text-white" to="/">
+          <Link
+            className="block bg-green-400 p-2 rounded text-center text-white"
+            to="/"
+          >
             Signup
           </Link>
         </div>

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import spinner from './spinner.gif';
 
 const Spinner = () => (
-  <div className='mt-[120px]'>
+  <div className='flex items-center fixed bg-white z-20 w-full h-full'>
     <Fragment>
       <img 
         src={spinner}

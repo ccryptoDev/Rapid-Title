@@ -4,6 +4,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import { INFURA_KEY,TITLE_CONTRACT } from './constants'
 import titleContractABI from './titleContractABI.json';
 import Web3 from 'web3';
+import axios from 'axios';
 
 let title_contract: any;
 let nft_contract: any;
@@ -69,9 +70,18 @@ async function getAllTitles() {
   // @ts-ignore
   window.web3 = new Web3(window.ethereum);
   const contract = await new window.web3.eth.Contract(titleContractABI, TITLE_CONTRACT);
-  const walletAddr = await getUserAddress();
   try {
-    return await contract.methods.getAllTitlesList(walletAddr)
+    const titleIds = await contract.methods.getAllTitlesList().call();
+    if(titleIds){
+      let titles = [];
+      for(let i=0; i <= titleIds.length-1; i++){
+        let titleId = Number(titleIds[i])-1;
+        let vehicleId = await contract.methods.getTitle(titleId).call();
+        let title = await contract.methods.getVehicleURI(vehicleId[1]).call();
+        titles.push(title);
+      }
+      return titles;
+    }
   } catch (err) {
     console.log(err)
     return false
@@ -93,6 +103,20 @@ async function mintTitle(vehicleCID: string, dealerID: number ,lenderID: number,
    }
 }
 
+async function getTitleDetail(titleId: number) {
+   // @ts-ignore
+   window.web3 = new Web3(window.ethereum);
+   const contract = await new window.web3.eth.Contract(titleContractABI, TITLE_CONTRACT);
+   const walletAddr = await getUserAddress();
+   try {
+    let vehicleId = await contract.methods.getTitle(titleId).call();
+    return await contract.methods.getVehicleURI(vehicleId[1]).call();
+   } catch (err) {
+     console.log(err)
+     return false
+   }
+}
+
 export { 
   connectWeb3, 
   getUserAddress, 
@@ -100,4 +124,5 @@ export {
   connectMetamask,
   mintTitle,
   getAllTitles,
+  getTitleDetail,
 };

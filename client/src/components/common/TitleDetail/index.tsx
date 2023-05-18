@@ -1,6 +1,6 @@
-import React, { BaseSyntheticEvent, useState } from 'react';
+import React, { BaseSyntheticEvent, useEffect, useState } from 'react';
 import './index.view.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SideBar from '../SideBar';
 import HeaderBar from '../HeaderBar';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -9,15 +9,29 @@ import TitleStatus from './TitleStatus';
 import TitleHolds from './TitleHolds';
 import TitleHistory from './TitleHistory';
 import TitlePeople from './TitlePeople';
+import { getTitleDetail } from 'utils/useWeb3';
+import axios from 'axios';
 
-
-function TitleDetail({ data, id }: any) {
+function TitleDetail() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [tab, setActiveTab] = React.useState('status');
+  const [vehicleData, setVehicleData] = React.useState({})
+  const {id} = useParams();
+  
   const navigate = useNavigate();
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
   };
+
+  useEffect(() => {
+    const cb = async () => {
+      let vehicleURI = await getTitleDetail(Number(id));
+      let res = await axios.get(vehicleURI);
+      let vehicleJson = res.data;
+      setVehicleData(vehicleJson)
+    }
+    cb();
+  },[])
 
   return (
     <div className="px-[24px]">
@@ -27,8 +41,10 @@ function TitleDetail({ data, id }: any) {
           <HeaderBar toggleDrawer={toggleDrawer} />
           <div className="flex w-full items-center p-2">
             <div className="flex-1 header-bar ml-2">
-              <span className='text-[#333399] text-3xl cursor-pointer' onClick={() => navigate(-1)}> &larr;</span> 
-              <span className='text-[#FF3366] text-3xl'> Hyundai Tucson K9015A</span>
+              <span className='text-[#333399] text-3xl cursor-pointer' onClick={() => navigate(-1)}> &larr;</span>
+              {/* 
+              //@ts-ignore */}
+              <span className='text-[#FF3366] text-3xl'> {vehicleData.model} {vehicleData.plate_model}</span>
             </div>
             <div className='cursor-pointer'>
               <svg
@@ -94,29 +110,41 @@ function TitleDetail({ data, id }: any) {
                   <img src='/detail_close.png' className='absolute right-5 cursor-pointer'/>
                   <p className='title-text mb-2'>Certificate of Title</p>
                   <p className='label'>Vehicle Number</p>
-                  <p className='main-text mb-2'>JUI2F80JUI2F80JUI</p>
+                  {/* 
+                  //@ts-ignore */}
+                  <p className='main-text mb-2'>{vehicleData.number}</p>
                   <div className='flex justify-between mb-2'>
                     <div>
                       <div className='label'>Year Model</div>
-                      <div className='main-text'>2019</div>
+                      {/* 
+                  //@ts-ignore */}
+                      <div className='main-text'>{vehicleData.year_model}</div>
                     </div>
                     <div>
                       <div className='label'>Make</div>
-                      <div className='main-text'>Hyundai</div>
+                      {/* 
+                  //@ts-ignore */}
+                      <div className='main-text'>{vehicleData.make}</div>
                     </div>
                     <div>
                       <div className='label'>Plate Number</div>
-                      <div className='main-text'>JUI2F80</div>
+                      {/* 
+                  //@ts-ignore */}
+                      <div className='main-text'>{vehicleData.plate_number}</div>
                     </div>
                   </div>
                   <div className='flex justify-between mb-2'>
                     <div>
                       <div className='label'>Issue Date</div>
-                      <div className='main-text'>11/09/2019</div>
+                      {/* 
+                  //@ts-ignore */}
+                      <div className='main-text'>{vehicleData.issue_date}</div>
                     </div>
                     <div>
                       <div className='label'>Expiration Date</div>
-                      <div className='main-text'>11/09/2022</div>
+                      {/* 
+                  //@ts-ignore */}
+                      <div className='main-text'>{vehicleData.expiration_date}</div>
                     </div>
                     <div>
                       <div className='label'>Fees Paid</div>
