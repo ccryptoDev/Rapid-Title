@@ -14,7 +14,7 @@ function EmailVerifyCard() {
   };
   return (
     <>
-      <div className="w-[calc(100vw-500px)] h-[80vh] bg-white z-10 absolute verify-card">
+      <div className="max-w-[1216px] w-[calc(100vw-500px)] h-[80vh] bg-white z-10 absolute verify-card">
         <ImageViewer
           source={loginLogo}
           width={100}

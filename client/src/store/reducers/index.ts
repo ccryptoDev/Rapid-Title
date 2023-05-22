@@ -5,6 +5,7 @@ import darkMode from './darkMode';
 import wallet from './wallet';
 import titles from './titles';
 import carData from './carData';
+import loading from './loading';
 
 export default combineReducers({
   auth,
@@ -13,4 +14,5 @@ export default combineReducers({
   wallet,
   titles,
   carData,
+  loading,
 });

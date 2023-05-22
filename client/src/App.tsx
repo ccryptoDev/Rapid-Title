@@ -20,6 +20,7 @@ import NewTitle from './views/NewTitle/index';
 import OtherInfo from 'views/OtherInfo';
 import TitleDetail from 'components/common/TitleDetail';
 import Spinner from 'components/spinner/Spinner';
+import Integrations from 'components/common/Integrations';
 
 function App() {
   useEffect( () => {
@@ -46,7 +47,7 @@ function App() {
     <>
       <Router>
         <ToastContainer />
-        {/* <Spinner /> */}
+        <Spinner />
         <ProSidebarProvider>
           <Routes>
             <Route path='/' element={<PrivateRoute component={Home} />}/>
@@ -57,6 +58,7 @@ function App() {
             <Route path='/createtitle' element={<PrivateRoute component={NewTitle} />} />
             <Route path='/createtitle/otherinfo' element={<PrivateRoute component={OtherInfo} />} />
             <Route path="/titleDetail/:id" element={<PrivateRoute component={TitleDetail} />} />
+            <Route path="/integrations" element={<PrivateRoute component={Integrations} />} />
           </Routes>
         </ProSidebarProvider>
       </Router>

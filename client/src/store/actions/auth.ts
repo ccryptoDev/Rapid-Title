@@ -65,7 +65,6 @@ export const login = async (data: any) =>  {
       return true
     }
   } catch (err: any) {
-    console.log(err)
     const errors = err.response.data.errors;
 
     if (errors) {

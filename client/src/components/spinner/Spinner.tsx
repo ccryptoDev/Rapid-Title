@@ -1,8 +1,11 @@
 import React, { Fragment } from 'react';
 import spinner from './spinner.gif';
+import { useSelector } from 'react-redux';
 
-const Spinner = () => (
-  <div className='flex items-center fixed bg-white z-20 w-full h-full'>
+
+const Spinner = () => {
+  const loadingStatus = useSelector((state:any) => state.loading.loading);
+  return <div className={`flex items-center fixed bg-white z-20 w-full h-full ${loadingStatus ? '' : 'hidden'}`}>
     <Fragment>
       <img 
         src={spinner}
@@ -11,6 +14,6 @@ const Spinner = () => (
       />
     </Fragment>
   </div>
-);
+};
 
 export default Spinner;

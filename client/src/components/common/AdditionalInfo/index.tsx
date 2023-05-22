@@ -13,7 +13,9 @@ import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { mintTitle } from 'utils/useWeb3';
 
+
 function AdditionalInfo() {
+  const dispatch = useDispatch();
   const [isOpen1, setIsOpen1] = React.useState(false);
   const [isOpen2, setIsOpen2] = React.useState(false);
   const [modalOpend, setModalOpened] = React.useState(false);
@@ -92,6 +94,7 @@ function AdditionalInfo() {
     }
   };
   const completeHandler = async () => {
+    dispatch({ type: 'SET_LOADING', payload:true });
     const vehicleCID1 = await uploadIPFS(image1);
     const vehicleCID2 = await uploadIPFS(image2);
     const vehicleCID3 = await uploadIPFS(image3);
@@ -131,6 +134,7 @@ function AdditionalInfo() {
     console.log('token_id ---', _tokenId);
     setTitleId(_tokenId);
     if (tx !== false && tx !== undefined) {
+      dispatch({ type: 'SET_LOADING', payload:false });
       handleOpen();
     }
   };

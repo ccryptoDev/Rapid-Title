@@ -182,7 +182,7 @@ function SideBar() {
                 Integrations
               </MenuItem>
               <MenuItem
-                onClick={() => {}}
+                onClick={() => {navigate('/integrations')}}
               >
                 <img src={dayIcon} alt="" style={{ marginTop: 500, marginLeft: 10 }} />
               </MenuItem>
