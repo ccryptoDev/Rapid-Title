@@ -21,6 +21,7 @@ import OtherInfo from 'views/OtherInfo';
 import TitleDetail from 'components/common/TitleDetail';
 import Spinner from 'components/spinner/Spinner';
 import Integrations from 'components/common/Integrations';
+import Community from 'components/common/Community';
 
 function App() {
   useEffect( () => {
@@ -59,6 +60,7 @@ function App() {
             <Route path='/createtitle/otherinfo' element={<PrivateRoute component={OtherInfo} />} />
             <Route path="/titleDetail/:id" element={<PrivateRoute component={TitleDetail} />} />
             <Route path="/integrations" element={<PrivateRoute component={Integrations} />} />
+            <Route path="/community" element={<PrivateRoute component={Community} />} />
           </Routes>
         </ProSidebarProvider>
       </Router>

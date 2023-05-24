@@ -146,7 +146,7 @@ function Integrations() {
       <div className="flex">
         <SideBar />
         <div className="w-full p-5">
-          <HeaderBar toggleDrawer={toggleDrawer} />
+          <HeaderBar />
           <div className="flex w-full items-center p-4">
             <div className='flex-1 flex items-center'>
               <span className='text-2xl'> Integrations</span>

@@ -38,7 +38,7 @@ function TitleDetail() {
       <div className="flex">
         <SideBar />
         <div className="w-full py-5">
-          <HeaderBar toggleDrawer={toggleDrawer} />
+          <HeaderBar />
           <div className="flex w-full items-center p-2">
             <div className="flex-1 header-bar ml-2">
               <span className='text-[#333399] text-3xl cursor-pointer' onClick={() => navigate(-1)}> &larr;</span>

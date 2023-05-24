@@ -165,7 +165,7 @@ function SideBar() {
               <MenuItem
                 icon={<Message />}
                 suffix={<Badge variant="success">New</Badge>}
-                onClick={() => {}}
+                onClick={() => {navigate('/community')}}
               >
                 Community
               </MenuItem>
@@ -177,15 +177,15 @@ function SideBar() {
               </MenuItem>
               <MenuItem
                 icon={<Setting />}
-                onClick={() => {}}
+                onClick={() => {navigate('/integrations')}}
               >
                 Integrations
               </MenuItem>
-              <MenuItem
-                onClick={() => {navigate('/integrations')}}
+              {/* <MenuItem
+                onClick={() => {}}
               >
                 <img src={dayIcon} alt="" style={{ marginTop: 500, marginLeft: 10 }} />
-              </MenuItem>
+              </MenuItem> */}
             </Menu>
           </div>
         </div>

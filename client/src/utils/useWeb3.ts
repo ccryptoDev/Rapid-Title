@@ -109,7 +109,7 @@ async function getTitleDetail(titleId: number) {
    const contract = await new window.web3.eth.Contract(titleContractABI, TITLE_CONTRACT);
    const walletAddr = await getUserAddress();
    try {
-    let vehicleId = await contract.methods.getTitle(titleId).call();
+    let vehicleId = await contract.methods.getTitle(titleId-1).call();
     return await contract.methods.getVehicleURI(vehicleId[1]).call();
    } catch (err) {
      console.log(err)
