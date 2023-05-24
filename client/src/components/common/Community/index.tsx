@@ -1,22 +1,37 @@
-import React, { BaseSyntheticEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.view.css';
-import { useNavigate, useParams } from 'react-router-dom';
 import SideBar from '../SideBar';
 import HeaderBar from '../HeaderBar';
 import Switcher from '../Switcher';
-import Footer from '../Footer';
 import DmvDropdown from '../DmvDropdown';
 import InputTextField from '../SelectTables/InputTextField';
 
 export default function Community() {
   const [isOpen1, setIsOpen1] = useState(false);
   const [dmv, setDMV] = useState({name:'Los Angeles DMV',image:'Avatar2'});
+  const [isSelected, setSelected] = useState(false);
+  const [chat, setChat] = useState('');
+  const [chatContent, setChatContent] = useState([]);
   const handleChange1 = () => {
       setIsOpen1(current => !current)
   }
   const handleClose = (index : number, param: any) => {
     setDMV(param);
     setIsOpen1(false);
+    setSelected(true);
+  }
+
+  const _onKeypress = (e: any) => {
+    if(e.key === 'Enter'){
+      if(!isSelected){
+        setChat('');
+        return;
+      }
+      let temp = chatContent;
+      //@ts-ignore
+      temp.push(<div className='grid mb-5'><div className='bg-[#FF7095] justify-self-end text-[#010101] w-fit p-[23px] float-right' style={{borderRadius:'20px 20px 0px'}}>{chat}</div> <div className='text-gray-600 justify-self-end'> Now</div></div>)
+      setChat('');
+    }
   }
 
   useEffect(() => {
@@ -29,7 +44,7 @@ export default function Community() {
         <SideBar />
         <div className="w-full p-5">
           <HeaderBar />
-          <div className='grid grid-cols-4 gap-1 p-[20px] overflow-x-auto overflow-y-hidden rounded-lg h-[760px] !mb-0 !pb-0 m-[40px]' style={{maxWidth: 'calc(100vw - 133px)',boxShadow:"rgba(0, 0, 0, 0.25) 1px 7px 8px 12px"}}>
+          <div className='grid grid-cols-4 gap-1 p-[20px] overflow-x-auto overflow-y-hidden rounded-lg h-[760px] !mb-0 !py-0 m-[40px]' style={{maxWidth: 'calc(100vw - 133px)',boxShadow:"rgba(0, 0, 0, 0.25) 1px 7px 8px 12px"}}>
             <div className='col-span-1 flex flex-col justify-center'>
               <div className='flex'>
                 <div className='flex rounded-l-2xl w-[120px] p-[10px] text-white bg-[#5C5CAD] justify-center' style={{fontSize:16,fontWeight:700}}>
@@ -113,82 +128,98 @@ export default function Community() {
                   </div>
               </div>
             </div>
-            <div className='col-span-3 p-[50px] !pb-0 relative'>
-                <div className="store-card px-8 py-4">
-                    <div className="flex items-end py-3 text-[#FF3366]">
-                        <h1 className="text-2xl flex-1 ml-[20px]">New Chat With...</h1>
-                    </div>
-                    <div className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]" onClick={handleChange1}>
-                        <img src={require('../../../assets/img/Avatar/'+dmv.image+'.png')} alt="" />
-                        <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{dmv.name}</h3>
-                        <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
-                        <img className="ps-3" src={require('../../../assets/img/Filter.png')} alt="" />
-                    </div>
-                    {isOpen1 && (
-                        <DmvDropdown handleClose={handleClose}/>
-                    )}
-                </div>
-                <div className='grid grid-cols-4 items-center'>
-                  <div className='col-span-2 p-[50px] text-gray-700'>
-                      You can either start a conversation with an User that's already on your contacts or send an Invite!
-                  </div>
-                  <div className="store-card col-span-2 px-8 py-4 h-[238px]">
-                      <div className="flex items-end py-3 text-[#FF3366]">
-                          <h1 className="text-2xl flex-1 ml-[20px]">Invite a new Associate</h1>
+            <div className='col-span-3 p-[50px] !py-0 relative'>
+              {
+                !isSelected ? <>
+                      <div className="store-card px-8 py-4">
+                        <div className="flex items-end py-3 text-[#FF3366]">
+                            <h1 className="text-2xl flex-1 ml-[20px]">New Chat With...</h1>
+                        </div>
+                        <div className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]" onClick={handleChange1}>
+                            <img src={require('../../../assets/img/Avatar/'+dmv.image+'.png')} alt="" />
+                            <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{dmv.name}</h3>
+                            <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
+                            <img className="ps-3" src={require('../../../assets/img/Filter.png')} alt="" />
+                        </div>
+                        {isOpen1 && (
+                            <DmvDropdown handleClose={handleClose}/>
+                        )}
                       </div>
-                      <div className='grid grid-cols-5'>
-                        <div className='col-span-3'>
-                          <InputTextField
-                              label='Name and last name'
-                              defaultValue=''
-                              name="name"
-                              placeholder='John Doe'
-                              onChange={(e) => console.log(e.target.value)}
-                              value={""}
-                              variant="filled"
-                              style={{ marginTop: 11, width: '100%' }}
-                          />
+                      <div className='grid grid-cols-4 items-center'>
+                        <div className='col-span-2 p-[50px] text-gray-700'>
+                            You can either start a conversation with an User that's already on your contacts or send an Invite!
                         </div>
-                        <div className='col-span-2 ml-4'>
-                          <InputTextField
-                              label='Sales Person'
-                              defaultValue=''
-                              name="sales_person"
-                              placeholder='Sales Person'
-                              onChange={(e) => console.log(e.target.value)}
-                              value={""}
-                              variant="filled"
-                              style={{ marginTop: 11, width: '100%' }}
-                          />
-                        </div>
-                        <div className='col-span-3'>
-                          <InputTextField
-                              label='Email'
-                              defaultValue=''
-                              name="email"
-                              placeholder='JohnDoe@gmail.com'
-                              onChange={(e) => console.log(e.target.value)}
-                              value={""}
-                              variant="filled"
-                              style={{ marginTop: 11, width: '100%' }}
-                          />
-                        </div>
-                        <div className='col-span-2 ml-4 mt-3'>
-                          <div className='bg-[#333399] text-white p-2 rounded-lg flex h-full items-center justify-center'>
-                            <span className='text-lg'> Create Link</span>
-                            <img src='/link.png' width={17} className='ml-2' style={{height:17}}></img>
-                          </div>
+                        <div className="store-card col-span-2 px-8 py-4 h-[238px]">
+                            <div className="flex items-end py-3 text-[#FF3366]">
+                                <h1 className="text-2xl flex-1 ml-[20px]">Invite a new Associate</h1>
+                            </div>
+                            <div className='grid grid-cols-5'>
+                              <div className='col-span-3'>
+                                <InputTextField
+                                    label='Name and last name'
+                                    defaultValue=''
+                                    name="name"
+                                    placeholder='John Doe'
+                                    onChange={(e) => console.log(e.target.value)}
+                                    value={""}
+                                    variant="filled"
+                                    style={{ marginTop: 11, width: '100%' }}
+                                />
+                              </div>
+                              <div className='col-span-2 ml-4'>
+                                <InputTextField
+                                    label='Sales Person'
+                                    defaultValue=''
+                                    name="sales_person"
+                                    placeholder='Sales Person'
+                                    onChange={(e) => console.log(e.target.value)}
+                                    value={""}
+                                    variant="filled"
+                                    style={{ marginTop: 11, width: '100%' }}
+                                />
+                              </div>
+                              <div className='col-span-3'>
+                                <InputTextField
+                                    label='Email'
+                                    defaultValue=''
+                                    name="email"
+                                    placeholder='JohnDoe@gmail.com'
+                                    onChange={(e) => console.log(e.target.value)}
+                                    value={""}
+                                    variant="filled"
+                                    style={{ marginTop: 11, width: '100%' }}
+                                />
+                              </div>
+                              <div className='col-span-2 ml-4 mt-3'>
+                                <div className='bg-[#333399] text-white p-2 rounded-lg flex h-full items-center justify-center'>
+                                  <span className='text-lg'> Create Link</span>
+                                  <img src='/link.png' width={17} className='ml-2' style={{height:17}}></img>
+                                </div>
+                              </div>
+                            </div>
                         </div>
                       </div>
-                  </div>
-                </div>
-                <div className='text-md text-gray-700 mt-10'>
-                  Remember, aside from the Salespeople, you may have to wait for the DMV or Lender to accept the request to join this space. 
-                </div>
+                      <div className='text-md text-gray-700 mt-10'>
+                        Remember, aside from the Salespeople, you may have to wait for the DMV or Lender to accept the request to join this space. 
+                      </div>
+                  </>
+                  : <>
+                    <div className='bg-[#D6D6EB] flex absolute top-0 py-[16px] items-center px-[40px] h-[85px]' style={{width: 'calc(100% - 30px)'}}>
+                      <img src='/avatar10.png' width={48} className='h-[48px]' alt='imoticon_img'></img>
+                      <div className='flex flex-col justify-center ml-3'>
+                        <span className='text-xl'> Melina Baht</span>
+                        <span className='flex items-center'> <img src='/badge_green.svg'></img> <span className='text-gray-600 ml-1'>online</span></span>
+                      </div>
+                    </div>
+                    <div className='grid flex-col absolute bottom-[85px] py-[16px] px-[40px] max-h-[598px] overflow-y-auto' style={{width: 'calc(100% - 30px)'}}>
+                      {chatContent}
+                    </div>
+                  </>
+              }
                 <div className='bg-[#8F8F8F] flex absolute bottom-0 py-[16px] items-center px-[40px] h-[85px]' style={{width: 'calc(100% - 30px)'}}>
                       <img src='/imoticon.png' width={24} className='h-[24px]' alt='imoticon_img'></img>
                       <img src='/file_chat.png' width={24} className='h-[24px] ml-[20px]' alt='file_attach'></img>
-                      <input type='text' style={{flex:1}} className='rounded-3xl ml-[20px] px-10 h-[48px]' placeholder='Say something...'></input>
+                      <input type='text' style={{flex:1}} className='rounded-3xl ml-[20px] px-10 h-[48px]' placeholder='Say something...' value={chat} onChange={e=> setChat(e.target.value)} onKeyDown={_onKeypress}></input>
                       <div className='bg-white rounded-3xl ml-10 h-[48px] w-[48px]'><img src='/paper_plane.png' alt='paper_plane'></img></div>
                 </div>
             </div>
