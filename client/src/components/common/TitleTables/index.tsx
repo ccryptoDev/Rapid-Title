@@ -87,21 +87,21 @@ function TitleTables({viewMode,data, changeView}: any) {
                       return <tr className={index%2 === 0 ? `bg-[#D6D6EB]`:''}>
                                 <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap flex items-center">
                                     <div>
-                                      <img src={title.image} style={{borderRadius:50,width:42,height:40}}/>
+                                      <img src={title.data.images[0]} style={{borderRadius:50,width:42,height:40}}/>
                                     </div>
                                     <div className='ml-5'>
-                                      <p className='text-[#333399] text-sm'>Automobile</p>
-                                      <p className='text-lg'> {title.title}</p>
+                                      <p className='text-[#333399] text-sm'>{title.data.type}</p>
+                                      <p className='text-lg'> {title.data.make}</p>
                                     </div>
                                 </th>
                                 <td className="px-6 py-4 text-lg">
-                                    {title.price}
+                                    $ {title.data.cost}
                                 </td>
                                 <td className="px-6 py-4 text-lg">
-                                    {title.floorPlan}
+                                    $ {title.data.floor_plan}
                                 </td>
                                 <td className="px-6 py-4 text-lg">
-                                    {title.number}
+                                    {title.data.plate_number}
                                 </td>
                                 <td className="pl-1 py-1 px-0 text-lg">
                                     <div className='bg-[#333399]  h-full px-3 py-4 status-bg'>
@@ -110,13 +110,13 @@ function TitleTables({viewMode,data, changeView}: any) {
                                 </td>
                                 <td className="py-4 px-0 text-lg">
                                   <div className='bg-[#333399]  h-full px-3 py-4'>
-                                      <div className='bg-[#FF3366] text-white rounded-md text-center'> {title.duration}</div>
+                                      <div className='bg-[#FF3366] text-white rounded-md text-center'> {30}</div>
                                     </div>
                                 </td>
                                 <td className="py-4 px-0 text-lg">
                                     <div className='bg-[#333399] flex h-full px-3 py-2 items-center'>
-                                      <img src={title.observer} className='observer-avatar' alt="observer_avatar"/>
-                                      <span className='text-white ml-2'>{title.observer_name}</span>
+                                      <img src={'user1.png'} className='observer-avatar' alt="observer_avatar"/>
+                                      <span className='text-white ml-2'>{'Jane'}</span>
                                     </div>
                                 </td>
                                 <td className="py-4 px-0 text-lg">

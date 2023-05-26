@@ -28,7 +28,7 @@ function TitleList({ viewMode, data, changeView }: any) {
   }, []);
 
   return (
-    <div className="p-2 max-h-[680px] overflow-y-scroll" style={{ flex: 3 }}>
+    <div className="p-2 max-h-[680px] overflow-y-scroll" style={{ flex:4 }}>
       <div className="title-header flex">
         <div className="flex-1 flex">
           <span style={{ fontSize: 30 }}>TitleVault</span>
@@ -101,7 +101,7 @@ function TitleList({ viewMode, data, changeView }: any) {
             <div className="card min-h-[297px] col-span-1 m-2" key={index}>
               <div className="w-full relative">
                 <img
-                  src={title.image}
+                  src={title.data.images[0]}
                   width={'100%'}
                   className="cursor-pointer"
                   onClick={() => navigate(`/titleDetail/${17}`)}
@@ -122,25 +122,25 @@ function TitleList({ viewMode, data, changeView }: any) {
                   />
                 </div>
                 <img
-                  src={title.observer}
+                  src={'user1.png'}
                   width={44}
                   height={43}
                   className="absolute right-2 bottom-[-20px]"
                 />
               </div>
-              <p className="text-gray-600 text-base mt-1">{title.sn}</p>
-              <p className="text-[#4848A4] text-xl">{title.title}</p>
+              <p className="text-gray-600 text-base mt-1">{title.data.number}</p>
+              <p className="text-[#4848A4] text-xl">{title.data.make}</p>
               <div className="flex p-2 items-center">
                 <div className="flex-1">
                   <p className="text-[#FF4876] text-xl mt-1">
                     {' '}
-                    $ {title.price}
+                    $ {title.data.cost}
                   </p>
                   <p className="text-black text-base mt-1">
                     {' '}
-                    {title.duration} Days
+                    {30} Days
                   </p>
-                  <p className="text-black text-base mt-1"> {title.number}</p>
+                  <p className="text-black text-base mt-1"> {title.plate_number}</p>
                 </div>
                 <div>
                   <div>
@@ -148,7 +148,7 @@ function TitleList({ viewMode, data, changeView }: any) {
                       className="bg-[#FF3366] w-full text-white font-bold py-1 px-2 rounded inline-flex items-center"
                       style={{ borderRadius: 4 }}
                     >
-                      <span className="mr-2 text-xl"> {title.holds} Holds</span>
+                      <span className="mr-2 text-xl"> {20} Holds</span>
                     </button>
                   </div>
                   <div className="mt-2">
@@ -156,7 +156,7 @@ function TitleList({ viewMode, data, changeView }: any) {
                       className="bg-[#FF5C85] justify-center w-full text-white font-bold py-2 px-3 rounded inline-flex items-center"
                       style={{ borderRadius: 4 }}
                     >
-                      <span className="mr-2 text-xl"> {title.status}</span>
+                      <span className="mr-2 text-xl"> {'pending'}</span>
                     </button>
                   </div>
                 </div>
