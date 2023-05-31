@@ -14,17 +14,17 @@ function TitleList({ viewMode, data, changeView }: any) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const cb = async () => {
-      const result: any = await getAllTitles();
-      console.log(result);
-      result.map((titleLink: any) => {
-        setTimeout(async () => {
-          let res = await axios.get(titleLink);
-          let vehicleJson = res.data;
-        }, 500);
-      });
-    };
-    cb();
+    // const cb = async () => {
+    //   const result: any = await getAllTitles();
+    //   console.log(result);
+    //   result.map((titleLink: any) => {
+    //     setTimeout(async () => {
+    //       let res = await axios.get(titleLink);
+    //       let vehicleJson = res.data;
+    //     }, 500);
+    //   });
+    // };
+    // cb();
   }, []);
 
   return (
@@ -104,7 +104,7 @@ function TitleList({ viewMode, data, changeView }: any) {
                   src={title.image}
                   width={'100%'}
                   className="cursor-pointer"
-                  onClick={() => navigate(`/titleDetail/${title._id}`)}
+                  onClick={() => navigate(`/titleDetail/${17}`)}
                 />
                 <img
                   src={multiIcon}
