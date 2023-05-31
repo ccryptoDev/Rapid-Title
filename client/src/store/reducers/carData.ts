@@ -19,6 +19,8 @@ import {
     SET_VEHICLE1_URL,
     SET_VEHICLE2_URL,
     SET_VEHICLE3_URL,
+    SET_VEHICLE_WORTH,
+    SET_FLOOR_PLAN,
   } from '../types';
   
   const initialState = {
@@ -39,6 +41,8 @@ import {
     address: null,
     city: null,
     state: null,
+    cost: 0,
+    floor_plan: 0,
   };
   
   function carMetadataReducer(state = initialState, action: any) {
@@ -144,6 +148,16 @@ import {
         return{
           ...state,
           vehicle3_image : payload
+        }
+      case SET_VEHICLE_WORTH:
+        return{
+          ...state,
+          cost : payload
+        }
+      case SET_FLOOR_PLAN:
+        return{
+          ...state,
+          floor_plan : payload
         }
       default:
         return state;

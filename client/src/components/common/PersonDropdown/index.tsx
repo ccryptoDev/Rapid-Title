@@ -1,13 +1,13 @@
 import React from 'react';
 
-function PersonDropdown() {
+function PersonDropdown({handleClose} : any) {
   return (
     <div className="bg-[#FAFBFD] p-[15px] absolute">
       <p className="text-[12px] font-sans" style={{ color: '#97A3B7' }}>
         YOUR SELLERS IN THIS GROUP
       </p>
       {PersonData.map((item, index) => (
-        <div key={index} className="flex items-center cursor-pointer my-4">
+        <div key={index} className="flex items-center cursor-pointer my-4" onClick={() => handleClose(4,item)}>
           <img
             className="pe-4"
             src={require('../../../assets/img/Avatar/' + item.image + '.png')}

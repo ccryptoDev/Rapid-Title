@@ -8,9 +8,6 @@ const { check, validationResult } = require('express-validator');
 const auth = require('../../middleware/auth')
 const User = require('../../models/User');
 const Titles = require('../../models/Titles')
-var formidable = require('formidable');
-var fs = require('fs');
-var path = require('path');
 
 
 router.get('/',auth, async (req, res) => {
@@ -19,6 +16,21 @@ router.get('/',auth, async (req, res) => {
       // user: req.user.id
     })
     res.json(titles);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+  
+});
+
+router.post('/mint',auth, async (req, res) => {
+  try {
+    const titles = new Titles({
+      data: req.body,
+      created_at: new Date()
+    });
+    await titles.save();
+    return res.json('success');
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

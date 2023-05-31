@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { PINATA_JWT } from 'utils/constants';
 import axios from 'axios';
+import api from 'utils/api';
 import { useSelector, useDispatch } from 'react-redux';
 import { mintTitle } from 'utils/useWeb3';
 
@@ -54,7 +55,8 @@ function AdditionalInfo() {
     textAlign: 'center'
   };
   const detailHandler = () => {
-    navigate(`/titleDetail/${mintedTitleId}`);
+    // navigate(`/titleDetail/${mintedTitleId}`);
+    navigate('/home')
   };
 
   const uploadIPFS = async (imageFile: any) => {
@@ -105,6 +107,21 @@ function AdditionalInfo() {
       `https://gateway.pinata.cloud/ipfs/${vehicleCID2}`,
       `https://gateway.pinata.cloud/ipfs/${vehicleCID3}`
     ];
+    const res = await api.post('/v2/titles/mint', requestBody);
+    if(res.data === 'success'){
+      //success handler
+    }
+    dispatch({ type: 'SET_LOADING', payload:false });
+    handleOpen();
+    // if(success){
+    //   setAlert("Selected Address: "+ data.wallet);
+    //   store.dispatch({
+    //     type: WALLET_SELECTED,
+    //     payload: data.wallet
+    //   });
+    //   return true
+    // }
+    /*
     var data = JSON.stringify({
       pinataOptions: {
         cidVersion: 1
@@ -137,6 +154,7 @@ function AdditionalInfo() {
       dispatch({ type: 'SET_LOADING', payload:false });
       handleOpen();
     }
+    */
   };
 
   const handleSubmission = async (imageFile: any, index: number) => {
@@ -252,17 +270,21 @@ function AdditionalInfo() {
           <div className="grid grid-cols-4 gap-4">
             <div className="col-span-3">
               <InputTextField
-                label="Estimated Vehicle Worth"
-                defaultValue=""
-                // id="reddit-input"
-                variant="filled"
-                style={{ marginTop: 11, width: '100%' }}
+                  label='Estimated Vehicle Worth'
+                  defaultValue=''
+                  onChange={(e) => dispatch({ type: 'SET_VEHICLE_WORTH', payload:e.target.value })}
+                  value={useSelector((state:any) => state.carData.cost)}
+                  // id="reddit-input"
+                  variant="filled"
+                  style={{ marginTop: 11, width: '100%' }}
               />
             </div>
             <div className="">
               <InputTextField
                 label="Floor Plan"
                 defaultValue=""
+                onChange={(e) => dispatch({ type: 'SET_FLOOR_PLAN', payload:e.target.value })}
+                value={useSelector((state:any) => state.carData.floor_plan)}
                 // id="reddit-input"
                 variant="filled"
                 style={{ marginTop: 11, width: '100%' }}
