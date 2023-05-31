@@ -19,6 +19,8 @@ function AdditionalInfo() {
   const dispatch = useDispatch();
   const [isOpen1, setIsOpen1] = React.useState(false);
   const [isOpen2, setIsOpen2] = React.useState(false);
+  const [titleType, setTitleType] = React.useState('Clear');
+  const [titleStatus, setTitleStatus] = React.useState('Completed');
   const [modalOpend, setModalOpened] = React.useState(false);
   const [image1, setImage1] = React.useState();
   const [image2, setImage2] = React.useState();
@@ -55,8 +57,8 @@ function AdditionalInfo() {
     textAlign: 'center'
   };
   const detailHandler = () => {
-    // navigate(`/titleDetail/${mintedTitleId}`);
-    navigate('/home')
+    navigate(`/titleDetail/${mintedTitleId}`);
+    // navigate('/home')
   };
 
   const uploadIPFS = async (imageFile: any) => {
@@ -107,21 +109,6 @@ function AdditionalInfo() {
       `https://gateway.pinata.cloud/ipfs/${vehicleCID2}`,
       `https://gateway.pinata.cloud/ipfs/${vehicleCID3}`
     ];
-    const res = await api.post('/v2/titles/mint', requestBody);
-    if(res.data === 'success'){
-      //success handler
-    }
-    dispatch({ type: 'SET_LOADING', payload:false });
-    handleOpen();
-    // if(success){
-    //   setAlert("Selected Address: "+ data.wallet);
-    //   store.dispatch({
-    //     type: WALLET_SELECTED,
-    //     payload: data.wallet
-    //   });
-    //   return true
-    // }
-    /*
     var data = JSON.stringify({
       pinataOptions: {
         cidVersion: 1
@@ -146,15 +133,14 @@ function AdditionalInfo() {
     const res = await axios(config);
     const vehicleCID = res.data.IpfsHash;
     const tx = await mintTitle(vehicleCID, 2, 3, 4);
+    dispatch({ type: 'SET_LOADING', payload:false });
     console.log('tx----------', tx);
     let _tokenId = tx.events.TitleCreated.returnValues._tokenId;
     console.log('token_id ---', _tokenId);
     setTitleId(_tokenId);
     if (tx !== false && tx !== undefined) {
-      dispatch({ type: 'SET_LOADING', payload:false });
       handleOpen();
     }
-    */
   };
 
   const handleSubmission = async (imageFile: any, index: number) => {
@@ -178,6 +164,19 @@ function AdditionalInfo() {
   const handleChange2 = () => {
     setIsOpen2((current) => !current);
   };
+  const dropdownHandler = (index: any, data: any) => {
+    //title type
+    if(index === 1){
+      setTitleType(data);
+      setIsOpen1(false);
+      setIsOpen2(false);
+    }
+    else if(index === 2){
+      setTitleStatus(data);
+      setIsOpen1(false);
+      setIsOpen2(false);
+    }
+  }
   return (
     <div className=" store-card col-span-2 p-2 w-full">
       <Modal
@@ -309,7 +308,7 @@ function AdditionalInfo() {
                     className="px-2 flex-1 text-black"
                     style={{ fontSize: '16px', fontWeight: 600 }}
                   >
-                    Clear
+                    {titleType}
                   </h3>
                   <img
                     className="ps-3 pr-2"
@@ -322,7 +321,7 @@ function AdditionalInfo() {
                     alt=""
                   />
                 </div>
-                {isOpen1 && <TitleTypeDropdown />}
+                {isOpen1 && <TitleTypeDropdown handler={dropdownHandler}/>}
               </div>
             </div>
             <div className="col-span-2">
@@ -342,7 +341,7 @@ function AdditionalInfo() {
                     className="px-2 flex-1 text-black"
                     style={{ fontSize: '16px', fontWeight: 600 }}
                   >
-                    Completed
+                    {titleStatus}
                   </h3>
                   <img
                     className="pe-4"
@@ -350,7 +349,7 @@ function AdditionalInfo() {
                     alt=""
                   />
                 </div>
-                {isOpen2 && <TitleStatusDropdown />}
+                {isOpen2 && <TitleStatusDropdown handler={dropdownHandler}/>}
               </div>
             </div>
           </div>

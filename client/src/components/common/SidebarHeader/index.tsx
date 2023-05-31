@@ -29,7 +29,7 @@ export const SidebarHeader = ({ children, collapsed, ...rest }: any) => {
   const navigate = useNavigate()
   return (
     <StyledSidebarHeader {...rest}>
-        <div style={{ display: 'flex', alignItems: 'center' }} className='cursor-pointer' onClick={() => navigate('/home') }>
+        <div style={{ display: 'flex', alignItems: 'center' }} className='cursor-pointer' onClick={() => collapseSidebar() }>
           <img src={logo_expanded} className={collapsed ? 'hidden' : ''} alt="" />
           <img src={logo_collapsed} className={collapsed ? '' : 'hidden'} alt="" />
         </div>

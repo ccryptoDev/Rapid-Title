@@ -39,7 +39,7 @@ export default function Community() {
   },[])
 
   return (
-    <div className="">
+    <div className="px-[24px]">
       <div className="flex">
         <SideBar />
         <div className="w-full p-5">

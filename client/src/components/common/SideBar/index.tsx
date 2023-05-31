@@ -19,7 +19,8 @@ import { Message } from 'components/Message';
 import { Book } from 'components/Book';
 import { Setting } from 'components/Setting';
 import { Badge } from '../Badge';
-import dayIcon from '../../../assets/img/day.svg'
+import dayIcon from '../../../assets/img/day.svg';
+import { useDispatch } from 'react-redux';
 
 type Theme = 'light' | 'dark';
 
@@ -73,10 +74,12 @@ const hexToRgba = (hex: string, alpha: number) => {
 function SideBar() {
   const navigate = useNavigate();
   const { toggleSidebar, collapseSidebar, broken, collapsed } = useProSidebar();
-
   const [isRTL, setIsRTL] = React.useState<boolean>(false);
   const [hasImage, setHasImage] = React.useState<boolean>(false);
   const [theme, setTheme] = React.useState<Theme>('light');
+  const [activeMenu, setActiveMenu] = React.useState('title_vault');
+
+  const dispatch = useDispatch()
 
   // handle on theme change event
   const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,32 +155,36 @@ function SideBar() {
             <Menu menuItemStyles={menuItemStyles}>
               <MenuItem
                 icon={<Plus />}
-                onClick={() => createTitle()}
+                onClick={() => {createTitle();dispatch({ type: 'SET_ACTIVE_MENU', payload:'create_title' })}}
               >
                 Create New Title
               </MenuItem>
               <MenuItem
-                icon={<KeyIcon />}
-                onClick={() => {}}
+                icon={<KeyIcon/>}
+                onClick={() => {navigate('/home');dispatch({ type: 'SET_ACTIVE_MENU', payload:'title_vault' })}}
               >
                 TitleVault
               </MenuItem>
-              <MenuItem
-                icon={<Message />}
+              {/* <MenuItem
+                icon={<Message/>}
                 suffix={<Badge variant="success">New</Badge>}
-                onClick={() => {navigate('/community')}}
+                onClick={() => {navigate('/community');dispatch({ type: 'SET_ACTIVE_MENU', payload:'message' })}}
               >
                 Community
-              </MenuItem>
+              </MenuItem> */}
+              <SubMenu label="Community" icon={<Message/>}>
+                <MenuItem onClick={() => {navigate('/community');dispatch({ type: 'SET_ACTIVE_MENU', payload:'message' })}}> Chat </MenuItem>
+                <MenuItem onClick={() => {navigate('/community/digital_identity');dispatch({ type: 'SET_ACTIVE_MENU', payload:'message' })}}> Manage Accociates</MenuItem>
+              </SubMenu>
               <MenuItem
-                icon={<Book />}
+                icon={<Book/>}
                 onClick={() => {}}
               >
                 Reports
               </MenuItem>
               <MenuItem
-                icon={<Setting />}
-                onClick={() => {navigate('/integrations')}}
+                icon={<Setting/>}
+                onClick={() => {navigate('/integrations');dispatch({ type: 'SET_ACTIVE_MENU', payload:'integrations' })}}
               >
                 Integrations
               </MenuItem>
