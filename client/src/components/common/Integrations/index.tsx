@@ -142,43 +142,45 @@ function Integrations() {
   },[])
 
   return (
-    <div className="px-[24px]">
-      <div className="flex">
-        <SideBar />
-        <div className="w-full p-5">
-          <HeaderBar />
-          <div className="flex w-full items-center p-4">
-            <div className='flex-1 flex items-center'>
-              <span className='text-2xl'> Integrations</span>
-              <img src='/integrations_icon.png' className='ml-3' width={24} height={24}/>
+    <>
+      <div className="px-[24px]">
+        <div className="flex">
+          <SideBar />
+          <div className="w-full p-5">
+            <HeaderBar />
+            <div className="flex w-full items-center p-4">
+              <div className='flex-1 flex items-center'>
+                <span className='text-2xl'> Integrations</span>
+                <img src='/integrations_icon.png' className='ml-3' width={24} height={24}/>
+              </div>
+              <button className='bg-[#FF3366] text-white py-[5px] px-[8px] rounded-md'>Active</button>
             </div>
-            <button className='bg-[#FF3366] text-white py-[5px] px-[8px] rounded-md'>Active</button>
-          </div>
-          <div className="flex w-full items-center p-2">
-              <span className='text-sm text-gray-700'> Integrations allow your RapidTitle to Connect and service with the selected Department of Motor Vehicles of Preference in the state that it is available.</span>
-          </div>
-          <div className='grid grid-rows-4 grid-flow-col gap-1 p-5 overflow-x-auto overflow-y-hidden' style={{maxWidth: 'calc(100vw - 175px)'}}>
-            {
-              integrationsData.map(data => {
-                  return <div>
-                            <div className='flex items-center justify-center row-span-1 w-[547px] h-[107px] rounded-md mt-3' style={{border: '1px solid #DCDCDC'}}> 
-                                <div className='mr-2'>
-                                  <img src={data.logo} width={70}/>
-                                </div>
-                                <div className='mr-[38px]'>
-                                  <p className='text-[#4848A4] text-xl flex'> {data.name} <img src='/dropdown_closed.png' className='cursor-pointer'/></p>
-                                  <p className='text-[#9B96B6] text-md'> {data.location}</p>
-                                </div>
-                                <Switcher />
+            <div className="flex w-full items-center p-2">
+                <span className='text-sm text-gray-700'> Integrations allow your RapidTitle to Connect and service with the selected Department of Motor Vehicles of Preference in the state that it is available.</span>
+            </div>
+            <div className='grid grid-rows-4 grid-flow-col gap-1 p-5 overflow-x-auto overflow-y-hidden' style={{maxWidth: 'calc(100vw - 175px)'}}>
+              {
+                integrationsData.map(data => {
+                    return <div>
+                              <div className='flex items-center justify-center row-span-1 w-[547px] h-[107px] rounded-md mt-3' style={{border: '1px solid #DCDCDC'}}> 
+                                  <div className='mr-2'>
+                                    <img src={data.logo} width={70}/>
+                                  </div>
+                                  <div className='mr-[38px]'>
+                                    <p className='text-[#4848A4] text-xl flex'> {data.name} <img src='/dropdown_closed.png' className='cursor-pointer'/></p>
+                                    <p className='text-[#9B96B6] text-md'> {data.location}</p>
+                                  </div>
+                                  <Switcher />
+                              </div>
                             </div>
-                          </div>
-              })
-            }
+                })
+              }
+            </div>
           </div>
         </div>
       </div>
       <Footer />
-    </div>
+    </>
   );
 }
 

@@ -22,3 +22,12 @@ li.slide {
 ul.animated {
     transform: translate3d(-100%, 0px, 0px);
 }
+.gmnoprint a, .gmnoprint span {
+    display:none;
+}
+.gmnoprint div {
+    background:none !important;
+}
+#GMapsID div div a div img{
+    display:none;
+}
