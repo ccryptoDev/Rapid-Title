@@ -6,7 +6,8 @@ import {
     GET_PROFILES,
     GET_REPOS,
     NO_REPOS,
-    GET_PROFILE_BY_PARAMS
+    GET_PROFILE_BY_PARAMS,
+    SET_ACTIVE_MENU
   } from '../types';
   
   const initialState = {
@@ -15,7 +16,8 @@ import {
     profiles: [],
     repos: [],
     loading: true,
-    error: {}
+    error: {},
+    activeMenu:'title_vault',
   };
   
   function profileReducer(state = initialState, action: any) {
@@ -63,6 +65,11 @@ import {
           ...state,
           repos: payload,
           loading: false
+        };
+      case SET_ACTIVE_MENU:
+        return {
+          ...state,
+          activeMenu: payload,
         };
       case NO_REPOS:
         return {

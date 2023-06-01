@@ -22,6 +22,10 @@ import TitleDetail from 'components/common/TitleDetail';
 import Spinner from 'components/spinner/Spinner';
 import Integrations from 'components/common/Integrations';
 import Community from 'components/common/Community';
+import DigitalIdentity from 'components/common/DigitalIdentity';
+import DigitalIdentityDetail from 'components/common/DigitalIdentityDetail';
+import DigitalIdentityDmv from 'components/common/DigitalIdentityDmv';
+import DigitalIdentityDmvDetail from 'components/common/DigitalIdentityDmvDetail';
 
 function App() {
   useEffect( () => {
@@ -61,6 +65,10 @@ function App() {
             <Route path="/titleDetail/:id" element={<PrivateRoute component={TitleDetail} />} />
             <Route path="/integrations" element={<PrivateRoute component={Integrations} />} />
             <Route path="/community" element={<PrivateRoute component={Community} />} />
+            <Route path="/community/digital_identity" element={<PrivateRoute component={DigitalIdentity} />} />
+            <Route path="/community/digital_identity/detail/:id" element={<PrivateRoute component={DigitalIdentityDetail} />} />
+            <Route path="/community/digital_identity_dmv" element={<PrivateRoute component={DigitalIdentityDmv} />} />
+            <Route path="/community/digital_identity_dmv/detail/:id" element={<PrivateRoute component={DigitalIdentityDmvDetail} />} />
           </Routes>
         </ProSidebarProvider>
       </Router>

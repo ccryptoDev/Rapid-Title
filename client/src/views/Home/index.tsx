@@ -9,7 +9,6 @@ import TitleList from 'components/common/TitleList';
 import TitleTables from 'components/common/TitleTables';
 import FilterCards from 'components/common/FilterCards';
 import Footer from 'components/common/Footer';
-import { useSelector } from 'react-redux';
 
 function Home() {
   const [titleData, setTitleData] = React.useState([]);

@@ -93,6 +93,10 @@ async function mintTitle(vehicleCID: string, dealerID: number ,lenderID: number,
    window.web3 = new Web3(window.ethereum);
    const contract = await new window.web3.eth.Contract(titleContractABI, TITLE_CONTRACT);
    const walletAddr = await getUserAddress();
+   if(!walletAddr){
+    alert('select wallet address!');
+    return;
+   }
    try {
      return await contract.methods.mintTitle(walletAddr,vehicleCID,dealerID,lenderID,sellerID).send({
       from: walletAddr

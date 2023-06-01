@@ -6,6 +6,7 @@ import { KeyIcon } from 'components/Key';
 import multiIcon from 'assets/img/multi_select.svg';
 import CO from 'assets/img/capital_one.png';
 import LA from 'assets/img/LA.png';
+import Key from 'assets/img/key_icon.png'
 
 
 function TitleTables({viewMode,data, changeView}: any) {
@@ -16,7 +17,7 @@ function TitleTables({viewMode,data, changeView}: any) {
       <div className='title-header flex'>
           <div className='flex-1 flex'>
             <span style={{fontSize:30}}>TitleVault</span>
-            <KeyIcon />
+            <img src={Key}/>
           </div>
           <div>
             {

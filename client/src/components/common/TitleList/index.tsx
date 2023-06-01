@@ -1,14 +1,11 @@
 import React, { BaseSyntheticEvent, useEffect, useState } from 'react';
 import './index.view.css';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { KeyIcon } from 'components/Key';
 import multiIcon from 'assets/img/multi_select.svg';
 import flagIcon from 'assets/img/red_flag.svg';
 import CO from 'assets/img/capital_one.png';
 import LA from 'assets/img/LA.png';
-import { getAllTitles } from 'utils/useWeb3';
-import axios from 'axios';
+import Key from 'assets/img/key_icon.png'
 
 function TitleList({ viewMode, data, changeView }: any) {
   const navigate = useNavigate();
@@ -32,7 +29,7 @@ function TitleList({ viewMode, data, changeView }: any) {
       <div className="title-header flex">
         <div className="flex-1 flex">
           <span style={{ fontSize: 30 }}>TitleVault</span>
-          <KeyIcon />
+          <img src={Key}/>
         </div>
         <div>
           {viewMode === 'card' ? (
@@ -140,7 +137,7 @@ function TitleList({ viewMode, data, changeView }: any) {
                     {' '}
                     {30} Days
                   </p>
-                  <p className="text-black text-base mt-1"> {title.plate_number}</p>
+                  <p className="text-black text-base mt-1"> {title.data.plate_number}</p>
                 </div>
                 <div>
                   <div>
