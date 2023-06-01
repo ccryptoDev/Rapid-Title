@@ -218,6 +218,7 @@ function AdditionalInfo() {
           </div>
         </Box>
       </Modal>
+
       <div className=" px-8 py-4">
         <div className="flex items-center py-5 text-[#4848A4]">
           <p

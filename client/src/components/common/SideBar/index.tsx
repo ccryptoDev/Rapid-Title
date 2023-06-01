@@ -19,7 +19,7 @@ import { Message } from 'components/Message';
 import { Book } from 'components/Book';
 import { Setting } from 'components/Setting';
 import { Badge } from '../Badge';
-import dayIcon from '../../../assets/img/day.svg';
+import dayIcon from '../../../assets/img/day.png';
 import { useDispatch } from 'react-redux';
 
 type Theme = 'light' | 'dark';
@@ -188,11 +188,12 @@ function SideBar() {
               >
                 Integrations
               </MenuItem>
-              {/* <MenuItem
+              <MenuItem
                 onClick={() => {}}
+                style={{marginTop:200}}
               >
-                <img src={dayIcon} alt="" style={{ marginTop: 500, marginLeft: 10 }} />
-              </MenuItem> */}
+                <img src={dayIcon} alt="" width={47} height={47} style={{maxWidth:'unset'}}/>
+              </MenuItem>
             </Menu>
           </div>
         </div>

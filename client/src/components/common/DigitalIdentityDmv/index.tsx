@@ -6,6 +6,7 @@ import HeaderBar from '../HeaderBar';
 import Switcher from '../Switcher';
 import Footer from '../Footer';
 
+
 function DigitalIdentityDmv() {
   const [isOpen, setIsOpen] = React.useState(false);
   
@@ -13,6 +14,7 @@ function DigitalIdentityDmv() {
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
   };
+
 
   const integrationsData = [
     {

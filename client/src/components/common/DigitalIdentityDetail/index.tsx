@@ -3,8 +3,8 @@ import './index.view.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import SideBar from '../SideBar';
 import HeaderBar from '../HeaderBar';
-import Switcher from '../Switcher';
-import Footer from '../Footer';
+//@ts-ignore
+import GoogleMapReact from 'google-map-react';
 
 function DigitalIdentityDetail() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -14,146 +14,14 @@ function DigitalIdentityDetail() {
     setIsOpen((prevState) => !prevState);
   };
 
-  const integrationsData = [
-    {
-      image:'/user1_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
+  const defaultProps = {
+    center: {
+      lat: 10.99835602,
+      lng: 77.01502627
     },
-    {
-      image:'/user2_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user3_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user4_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user5_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user6_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user7_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user8_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user9_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user2_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user4_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user7_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user5_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user6_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user6_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user6_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user6_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user6_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user6_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user6_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user6_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user6_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-    {
-      image:'/user6_full.png',
-      seller_id: '1010RTHQLA',
-      name: 'Lia Smith',
-      position: 'Salesperson'
-    },
-  ]
+    zoom: 1
+  };
+
 
   useEffect(() => {
     
@@ -167,7 +35,19 @@ function DigitalIdentityDetail() {
           <HeaderBar />
           <div className="grid grid-cols-3 w-full items-center px-4">
             <div className="flex col-span-3 w-full px-4 py-1 justify-center items-center">
-              <div className='store-card text-white  justify-center pt-2 rounded-tl-xl rounded-bl-xl !w-[1176px]'>
+              <div className='store-card text-white  justify-center pt-2 rounded-tl-xl rounded-bl-xl !w-[1176px] relative'>
+                <div style={{ height: '275px', width: '330px' }} className='absolute right-0 top-0'>
+                  <GoogleMapReact
+                    bootstrapURLKeys={{ key: "" }}
+                    defaultCenter={defaultProps.center}
+                    defaultZoom={defaultProps.zoom}
+                    options={{
+                      fullscreenControl: false,
+                      disableDefaultUI:true
+                    }}
+                  >
+                  </GoogleMapReact>
+                </div>
                 <div className='px-3 py-2'>
                   <span className='text-3xl text-[#333399]'> <span className='text-[#FF3366]'> &larr;</span> Digital Identity Detail</span>
                 </div>
