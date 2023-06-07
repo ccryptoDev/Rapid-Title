@@ -5,8 +5,19 @@ import HeaderBar from '../HeaderBar';
 import Switcher from '../Switcher';
 import DmvDropdown from '../DmvDropdown';
 import InputTextField from '../SelectTables/InputTextField';
+import { loadTitles } from 'store/actions/title';
+import ChatTitleList from '../ChatTitleList';
 
 export default function Community() {
+  const [titleData, setTitleData] = React.useState([]);
+  useEffect(() => {
+    const fetchTitles = async () => {
+      const data = await loadTitles();
+      setTitleData(data);
+    };
+    fetchTitles();
+  },[]);
+  const [chat_tab, setChatTab] = useState('titles');
   const [isOpen1, setIsOpen1] = useState(false);
   const [dmv, setDMV] = useState({name:'Los Angeles DMV',image:'Avatar2'});
   const [isSelected, setSelected] = useState(false);
@@ -51,62 +62,19 @@ export default function Community() {
                   <Switcher />
                   <span>Chat</span>
                 </div>
-                <div className='flex p-[10px] w-[99px] text-[#FF4876]  justify-center' style={{fontSize:16,fontWeight:700}}>
+                <div className='flex p-[10px] w-[99px] text-[#FF4876]  justify-center cursor-pointer' style={{fontSize:16,fontWeight:700}} onClick={()=>{setChatTab('titles')}}>
                   <span>Titles</span>
                 </div>
-                <div className='flex p-[10px] w-[99px] text-[#5A6A9D]  justify-center' style={{fontSize:16,fontWeight:700}}>
+                <div className='flex p-[10px] w-[99px] text-[#5A6A9D]  justify-center cursor-pointer' style={{fontSize:16,fontWeight:700}} onClick={()=>{setChatTab('groups')}}>
                   <span>Groups</span>
                 </div>
-                <div className='flex rounded-r-2xl w-[99px] p-[10px] text-[#5A6A9D]  justify-center' style={{fontSize:16,fontWeight:700}}>
+                <div className='flex rounded-r-2xl w-[99px] p-[10px] text-[#5A6A9D]  justify-center cursor-pointer' style={{fontSize:16,fontWeight:700}} onClick={()=>{setChatTab('people')}}>
                   <span>People</span>
                 </div>
               </div>
-              <div className='mt-[40px]'>
-                <div className='flex py-[8px] px-[12px]'>
-                  <img src='/chat_avatar.png' alt='chat_avatar'/>
-                  <div className='ml-[8px]'>
-                    <div className='text-xl text-[#4848A4]'> Salespersons SCLA</div>
-                    <div className='text-md text-[#7171B8]'> Sure, i’ll get it done as soon as...</div>
-                  </div>
-                  <div className='ml-[16px]'>
-                    <div className='text-md text-[#7171B8]'>05:14 pm</div>
-                    <div className='float-right'><img src='/pin.png' alt='pin_img' /></div>
-                  </div>
-                </div>
-                <div className='flex py-[8px] px-[12px]'>
-                  <img src='/chat_avatar.png' alt='chat_avatar'/>
-                  <div className='ml-[8px]'>
-                    <div className='text-xl text-[#4848A4]'> Salespersons SCLA</div>
-                    <div className='text-md text-[#7171B8]'> Sure, i’ll get it done as soon as...</div>
-                  </div>
-                  <div className='ml-[16px]'>
-                    <div className='text-md text-[#7171B8]'>05:14 pm</div>
-                    <div className='float-right'><img src='/tick.png' alt='pin_img' /></div>
-                  </div>
-                </div>
-                <div className='flex py-[8px] px-[12px]'>
-                  <img src='/chat_avatar.png' alt='chat_avatar'/>
-                  <div className='ml-[8px]'>
-                    <div className='text-xl text-[#4848A4]'> Salespersons SCLA</div>
-                    <div className='text-md text-[#7171B8]'> Sure, i’ll get it done as soon as...</div>
-                  </div>
-                  <div className='ml-[16px]'>
-                    <div className='text-md text-[#7171B8]'>05:14 pm</div>
-                    <div className='float-right'><img src='/pin.png' alt='pin_img' /></div>
-                  </div>
-                </div>
-                <div className='flex py-[8px] px-[12px]'>
-                  <img src='/chat_avatar.png' alt='chat_avatar'/>
-                  <div className='ml-[8px]'>
-                    <div className='text-xl text-[#4848A4]'> Salespersons SCLA</div>
-                    <div className='text-md text-[#7171B8]'> Sure, i’ll get it done as soon as...</div>
-                  </div>
-                  <div className='ml-[16px]'>
-                    <div className='text-md text-[#7171B8]'>05:14 pm</div>
-                    <div className='float-right'><img src='/file.png' alt='pin_img' /></div>
-                  </div>
-                </div>
-          
+              <div className='mt-[30px] h-[350px] overflow-y-auto'>
+                { chat_tab==='titles' && (<ChatTitleList data={titleData} />)}
+                   
               </div>
               <div className='mt-[25px]' style={{boxShadow:"rgba(51, 51, 153, 0.6) 1px 7px 12px 4px",borderRadius:12}}>
                   <div className='flex py-[8px] px-[12px] items-center'>
@@ -129,7 +97,7 @@ export default function Community() {
               </div>
             </div>
             <div className='col-span-3 p-[50px] !py-0 relative'>
-              {
+              {/* {
                 !isSelected ? <>
                       <div className="store-card px-8 py-4">
                         <div className="flex items-end py-3 text-[#FF3366]">
@@ -215,7 +183,17 @@ export default function Community() {
                       {chatContent}
                     </div>
                   </>
-              }
+              } */}
+                <div className='bg-[#D6D6EB] flex absolute top-0 py-[16px] items-center px-[40px] h-[85px]' style={{width: 'calc(100% - 30px)'}}>
+                  <img src='/avatar10.png' width={48} className='h-[48px]' alt='imoticon_img'></img>
+                  <div className='flex flex-col justify-center ml-3'>
+                    <span className='text-xl'> Melina Baht</span>
+                    <span className='flex items-center'> <img src='/badge_green.svg'></img> <span className='text-gray-600 ml-1'>online</span></span>
+                  </div>
+                </div>
+                <div className='grid flex-col absolute bottom-[85px] py-[16px] px-[40px] max-h-[598px] overflow-y-auto' style={{width: 'calc(100% - 30px)'}}>
+                  {chatContent}
+                </div>
                 <div className='bg-[#8F8F8F] flex absolute bottom-0 py-[16px] items-center px-[40px] h-[85px]' style={{width: 'calc(100% - 30px)'}}>
                       <img src='/imoticon.png' width={24} className='h-[24px]' alt='imoticon_img'></img>
                       <img src='/file_chat.png' width={24} className='h-[24px] ml-[20px]' alt='file_attach'></img>
