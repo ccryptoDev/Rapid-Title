@@ -8,7 +8,7 @@ function Footer() {
   const navigate = useNavigate();
 
   return (
-    <div className="absolute flex bottom-0 z-10 h-[176px] text-[#333399] items-center footer w-full px-[30px] py-[30px] uppercase">
+    <div className="absolute flex bottom-0 z-10 h-[156px] text-[#333399] items-center footer w-full px-[30px] py-[30px] uppercase">
       <div className="flex items-center">
         <span className="w-[46px] h-[46px] footer-icons flex items-center justify-center">
           <svg

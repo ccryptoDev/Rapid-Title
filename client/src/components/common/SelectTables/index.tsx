@@ -5,7 +5,9 @@ import SelectTablesArray from "./SelectTablesArray";
 import { useNavigate, useLocation } from "react-router-dom";
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import { PDFDownloadLink} from '@react-pdf/renderer';
+import {MyDocument} from "../CertificateDownload";
+import { FC } from "react";
 
 function SelectTables() {
     const navigate = useNavigate();
@@ -175,11 +177,11 @@ function SelectTables() {
                                         </button>
                                     </div>
                                     <div className="col-span-6 mx-1">
-                                        <button onClick={handlePtClose}>
-                                            <div className="bg-[#FF3366] rounded-md p-2 px-4 mx-[1px] font-medium">
-                                                <p className="text-white text-md text-left">Download PaperTitle</p>
-                                            </div> 
-                                        </button>
+                                        <div className="bg-[#FF3366] rounded-md p-2 px-4 mx-[1px] font-medium">
+                                            <PDFDownloadLink document={<MyDocument />} fileName="Certificate title.pdf">
+                                                Download PaperTitle
+                                            </PDFDownloadLink>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
