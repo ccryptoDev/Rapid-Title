@@ -24,6 +24,7 @@ router.get('/',auth, async (req, res) => {
 });
 
 router.post('/mint',auth, async (req, res) => {
+
   try {
     const titles = new Titles({
       data: req.body,

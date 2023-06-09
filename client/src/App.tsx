@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {useEffect } from 'react';
 import './App.scss';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 //routing module
@@ -27,7 +27,9 @@ import DigitalIdentityDetail from 'components/common/DigitalIdentityDetail';
 import DigitalIdentityDmv from 'components/common/DigitalIdentityDmv';
 import DigitalIdentityDmvDetail from 'components/common/DigitalIdentityDmvDetail';
 
+
 function App() {
+
   useEffect( () => {
     const startFunc = async () => {
         // check for token in LS when app first runs
