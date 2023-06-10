@@ -165,17 +165,17 @@ function SideBar() {
               >
                 TitleVault
               </MenuItem>
-              {/* <MenuItem
+              <MenuItem
                 icon={<Message/>}
                 suffix={<Badge variant="success">New</Badge>}
                 onClick={() => {navigate('/community');dispatch({ type: 'SET_ACTIVE_MENU', payload:'message' })}}
               >
                 Community
-              </MenuItem> */}
-              <SubMenu label="Community" icon={<Message/>}>
+              </MenuItem>
+              {/* <SubMenu label="Community" icon={<Message/>}>
                 <MenuItem onClick={() => {navigate('/community');dispatch({ type: 'SET_ACTIVE_MENU', payload:'message' })}}> Chat </MenuItem>
                 <MenuItem onClick={() => {navigate('/community/digital_identity');dispatch({ type: 'SET_ACTIVE_MENU', payload:'message' })}}> Manage Accociates</MenuItem>
-              </SubMenu>
+              </SubMenu> */}
               <MenuItem
                 icon={<Book/>}
                 onClick={() => {}}

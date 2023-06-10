@@ -10,6 +10,7 @@ import TitleHolds from './TitleHolds';
 import TitleHistory from './TitleHistory';
 import TitlePeople from './TitlePeople';
 import { getTitleDetail } from 'utils/useWeb3';
+import { useDispatch } from 'react-redux';
 import axios from 'axios';
 
 function TitleDetail() {
@@ -17,6 +18,7 @@ function TitleDetail() {
   const [tab, setActiveTab] = React.useState('status');
   const [vehicleData, setVehicleData] = React.useState({})
   const {id} = useParams();
+  const dispatch = useDispatch();
   
   const navigate = useNavigate();
   const toggleDrawer = () => {
@@ -46,7 +48,7 @@ function TitleDetail() {
               //@ts-ignore */}
               <span className='text-[#FF3366] text-3xl'> {vehicleData.model} {vehicleData.plate_model}</span>
             </div>
-            <div className='cursor-pointer'>
+            <div className='cursor-pointer' onClick={() => {navigate('/community');dispatch({ type: 'SET_ACTIVE_MENU', payload:'message' })}}>
               <svg
                 width="60"
                 height="60"
