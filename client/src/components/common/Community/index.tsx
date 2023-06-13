@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, BaseSyntheticEvent } from 'react';
 import './index.view.css';
 import SideBar from '../SideBar';
 import HeaderBar from '../HeaderBar';
@@ -15,6 +15,7 @@ import api from 'utils/api';
 export const socket = io('http://localhost:5000');
 
 interface IMessage {
+  filePath: string[];
   message: string;
   username: string;
   __createdtime__: number;
@@ -32,7 +33,56 @@ function formatDateFromTimestamp(timestamp: number) {
   );
 }
 
+function uploadedPath_edit(uploaded_path: string){
+  const path_Array = uploaded_path.split('.');
+  const filename = path_Array[0].substring(8, path_Array[0].length - 16);
+  const filetype = path_Array[1];
+  return (
+    <div>
+      <p>{filename}.{filetype}</p>
+    </div>
+  )
+}
+
+
 export default function Community() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+  const formRef = useRef<HTMLFormElement>(null);
+  const handleFormClick = () => {
+    if (formRef.current) {
+      // console.log(formRef)
+      formRef.current.dispatchEvent(
+        new Event("submit", { cancelable: true, bubbles: true })
+      );
+      // alert('okay');
+    }
+  };
+  const [file, setFile] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const onFormSubmit = async  (event:React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    let formData = new FormData();
+    formData.append("myfile", file[0]);
+    const res = await api.post('/v2/fileupload', formData);
+    //@ts-ignore
+    setUploadedFiles([...uploadedFiles, res.data.path]);
+    console.log(res);
+    setFile([]);
+  }
+  const handleFileChange  = (e:React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const newFiles = Array.from(e.target.files);
+      setFile(newFiles);
+      setTimeout(() => {
+        handleFormClick();
+      },1000)
+    }
+  }
   const [messagesReceived, setMessagesReceived] = useState<IMessage[]>([]);
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
@@ -53,6 +103,7 @@ export default function Community() {
       setMessagesReceived((state) => [
           ...state, 
           {
+            filePath: data.uploadedFiles,
             message: data.chat,
             username: data.user_name,
             __createdtime__: data.__createdtime__,
@@ -104,16 +155,18 @@ export default function Community() {
   const [chat, setChat] = useState('');
   const [chatContent, setChatContent] = useState([]);
   const sendMessage =() => {
-    if(chat !== ''){
+    if(chat !== '' || uploadedFiles.length > 0){
       const __createdtime__ = Date.now();
       // Send message to server. We can't specify who we send the message to from the frontend. We can only send to server. Server can then send message to rest of users in room
       const user_id = user._id;
       const user_name = user.username;
-      socket.emit('send_message', { chat_room_id, chat_room_name, user_name, user_id, chat, __createdtime__ });
+      socket.emit('send_message', { chat_room_id, chat_room_name, user_name, user_id, chat, __createdtime__, uploadedFiles });
       setChat('');
+      setFile([]);
+      setUploadedFiles([]);
       setTimeout(() => {
         scrollToBottom();
-      },100)
+      },100);
     }
   }
   
@@ -139,6 +192,18 @@ export default function Community() {
       // setChat('');
     }
   }
+
+  const downloadFile = async (fileName: string) => {
+    const response = await fetch(`/uploads/${fileName}`);
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="px-[24px]">
@@ -289,26 +354,67 @@ export default function Community() {
                         <>
                           {user.username === msg.username ? (
                           <>
-                            <span className='text-[12px] text-right'>
-                              {
-                                formatDateFromTimestamp(msg.__createdtime__)
-                              }
-                            </span>
-                            <div className='grid relative' key={i}>
-                              <div className='bg-[#FF7095] justify-self-end text-[#010101] w-fit p-[15px] float-right' style={{borderRadius:'20px 20px 0px'}}>{msg.message}</div>
-                            </div>
-                          </>) : (
-                            <>
-                              <span className='text-[12px] text-left'>
+                            {msg.message !=='' && (
+                              <>
+                                <span className='text-[12px] text-right'>
+                                  {
+                                    formatDateFromTimestamp(msg.__createdtime__)
+                                  }
+                                </span>
+                                <div className='grid relative' key={i}>
+                                  <div className='bg-[#FF7095] justify-self-end text-[#010101] w-fit p-[15px] float-right' style={{borderRadius:'20px 20px 0px'}}>{msg.message}</div>
+                                </div>
+                              </>)}
+                            {msg.filePath && msg.filePath.length > 0 && (
+                              <>
                                 {
-                                  formatDateFromTimestamp(msg.__createdtime__)
+                                  msg.filePath.map((uploaded_path, j) => (
+                                    <>
+                                      <span className='text-[12px] text-right'>
+                                        {
+                                          formatDateFromTimestamp(msg.__createdtime__)
+                                        }
+                                      </span>
+                                      <div className='grid relative' key={j}>
+                                        <div className='bg-[#FF7095] justify-self-end text-[#010101] w-fit p-[15px] float-right cursor-pointer' style={{borderRadius:'20px 20px 0px'}} onClick={() => downloadFile(uploaded_path.slice(8))}>{uploadedPath_edit(uploaded_path)}</div>
+                                      </div>
+                                    </>
+                                  ))
                                 }
-                              </span>
-                              <div className='grid relative' key={i}>
-                                <div className='bg-[#EBEBF5] text-[#010101] w-fit p-[15px] float-left' style={{borderRadius:'0px 20px 20px'}}>{msg.message}</div>
-                              </div>
-                              <span className='text-[12px] mt-[0px] right-[20px] mb-[5px] text-left'>{msg.username}</span>
-                            </>
+                              </>)}
+                          </>) : (
+                          <>
+                            {msg.message !=='' && (
+                              <>
+                                <span className='text-[12px] text-left'>
+                                  {
+                                    formatDateFromTimestamp(msg.__createdtime__)
+                                  }
+                                </span>
+                                <div className='grid relative' key={i}>
+                                  <div className='bg-[#EBEBF5] text-[#010101] w-fit p-[15px] float-left' style={{borderRadius:'0px 20px 20px'}}>{msg.message}</div>
+                                </div>
+                                <span className='text-[12px] mt-[0px] right-[20px] mb-[5px] text-left'>{msg.username}</span>
+                              </>)}
+                            {msg.filePath && msg.filePath.length > 0 && (
+                              <>
+                                {
+                                  msg.filePath.map((uploaded_path, j) => (
+                                    <>
+                                      <span className='text-[12px] text-left'>
+                                        {
+                                          formatDateFromTimestamp(msg.__createdtime__)
+                                        }
+                                      </span>
+                                      <div className='grid relative' key={j}>
+                                        <div className='bg-[#EBEBF5] text-[#010101] w-fit p-[15px] float-left cursor-pointer' style={{borderRadius:'0px 20px 20px'}}  onClick={() => downloadFile(uploaded_path.slice(8))}>{uploadedPath_edit(uploaded_path)}</div>
+                                      </div>
+                                      <span className='text-[12px] mt-[0px] right-[20px] mb-[5px] text-left'>{msg.username}</span>
+                                    </>
+                                  ))
+                                }
+                              </>)}
+                          </>
                           )}
                         </>
                       ))}
@@ -316,9 +422,12 @@ export default function Community() {
                     </div>
                     <div className='bg-[#8F8F8F] flex absolute bottom-0 py-[16px] items-center px-[40px] h-[85px]' style={{width: 'calc(100% - 30px)'}}>
                           <img src='/imoticon.png' width={24} className='h-[24px]' alt='imoticon_img'></img>
-                          <img src='/file_chat.png' width={24} className='h-[24px] ml-[20px]' alt='file_attach'></img>
+                          <img src='/file_chat.png' width={24} className='h-[24px] ml-[20px] cursor-pointer' alt='file_attach' onClick={handleClick}></img>
+                          <form ref={formRef} onSubmit={onFormSubmit}>
+                            <input type = 'file' ref={inputRef} className='file-input' onChange={handleFileChange} hidden />
+                          </form>
                           <input type='text' style={{flex:1}} className='rounded-3xl ml-[20px] px-10 h-[48px]' placeholder='Say something...' value={chat} onChange={e=> setChat(e.target.value)} onKeyDown={_onKeypress}></input>
-                          <div className='bg-white rounded-3xl ml-10 h-[48px] w-[48px]'><img src='/paper_plane.png' alt='paper_plane'></img></div>
+                          <div className='bg-white rounded-3xl ml-10 h-[48px] w-[48px] cursor-pointer'><img src='/paper_plane.png' alt='paper_plane' onClick={() => {}}></img></div>
                     </div>
                   </> : <>
                     <div className='bg-[#D6D6EB] flex absolute top-0 py-[16px] items-center px-[40px] h-[85px]' style={{width: 'calc(100% - 30px)'}}>
@@ -326,9 +435,12 @@ export default function Community() {
                     </div>
                     <div className='bg-[#8F8F8F] flex absolute bottom-0 py-[16px] items-center px-[40px] h-[85px]' style={{width: 'calc(100% - 30px)'}}>
                           <img src='/imoticon.png' width={24} className='h-[24px]' alt='imoticon_img'></img>
-                          <img src='/file_chat.png' width={24} className='h-[24px] ml-[20px]' alt='file_attach'></img>
+                          <img src='/file_chat.png' width={24} className='h-[24px] ml-[20px] cursor-pointer' alt='file_attach' onClick={handleClick}></img>
+                          {/* <form ref={formRef} onSubmit={onFormSubmit}>
+                            <input type = 'file' ref={inputRef} className='file-input' onChange={handleFileChange} hidden />
+                          </form> */}
                           <input type='text' style={{flex:1}} className='rounded-3xl ml-[20px] px-10 h-[48px]' placeholder='Say something...' value={chat} onChange={e=> setChat(e.target.value)} onKeyDown={_onKeypress}></input>
-                          <div className='bg-white rounded-3xl ml-10 h-[48px] w-[48px]'><img src='/paper_plane.png' alt='paper_plane'></img></div>
+                          <div className='bg-white rounded-3xl ml-10 h-[48px] w-[48px] cursor-pointer'><img src='/paper_plane.png' alt='paper_plane' onClick={() => {}}></img></div>
                     </div>
                   </>
                 }

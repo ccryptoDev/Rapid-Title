@@ -1,8 +1,13 @@
 import React, { useState } from "react";
+import { useOutsideClick } from "../SelectList/useOutsideClick";
 
-function SellerDropdown({handleClose} : any) {
+function SellerDropdown({handleClose, seller} : any) {
+    const ref = useOutsideClick(()=>{
+        handleClose(1, seller);
+        console.log('clicked outside of div');
+    })
     return (
-        <div className="bg-[#FAFBFD] p-[15px] absolute">
+        <div className="bg-[#FAFBFD] p-[15px] absolute" ref={ref}>
             <p className="text-[12px] font-sans" style={{ color: "#97A3B7" }}>YOUR SELLERS IN THIS GROUP</p>
             {
                 SellerData.map((item, index) => (
@@ -17,6 +22,10 @@ function SellerDropdown({handleClose} : any) {
 }
 
 const SellerData = [
+    {
+        image: 'Avatar1',
+        name: 'Bob Smith'
+    },
     {
         image: 'Avatar6',
         name: 'James Henderson'

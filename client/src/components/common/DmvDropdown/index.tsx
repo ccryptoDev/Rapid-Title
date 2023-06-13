@@ -1,8 +1,12 @@
 import React from 'react';
+import { useOutsideClick } from "../SelectList/useOutsideClick";
 
-function DmvDropdown({handleClose} : any) {
+function DmvDropdown({handleClose, dmv} : any) {
+  const ref = useOutsideClick(()=>{
+    handleClose(2, dmv);
+  })
   return (
-    <div className="bg-[#FAFBFD] p-[15px] absolute">
+    <div className="bg-[#FAFBFD] p-[15px] absolute" ref={ref}>
       <p className="text-[12px] font-sans" style={{ color: '#97A3B7' }}>
         OUR MOST POPULAR LENDERS
       </p>

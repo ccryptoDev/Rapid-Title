@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SellerDropdown from "../SellerDropdown";
 import DmvDropdown from "../DmvDropdown";
 import LenderDropdown from "../LenderDropdown";
@@ -66,11 +66,22 @@ function SelectList() {
                         <img src={require('../../../assets/img/Warning/Vector.png')} alt="" />
                     </div>
                     <div className="flex justify-between items-center  cursor-pointer">
-                        <div className="flex items-center p-[15px] bg-[#FAFBFD]"  onClick={handleChange}>
-                            <img src={require(`../../../assets/img/Avatar/${seller.image}.png`)} alt="" />
-                            <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{seller.name}</h3>
-                            <img className="ps-8" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
-                        </div>
+                        {
+                            !isOpen &&
+                            <div className="flex items-center p-[15px] bg-[#FAFBFD]"  onClick={handleChange}>
+                                <img src={require(`../../../assets/img/Avatar/${seller.image}.png`)} alt="" />
+                                <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{seller.name}</h3>
+                                <img className="ps-8" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
+                            </div>
+                        }
+                        {
+                            isOpen &&
+                            <div className="flex items-center p-[15px] bg-[#FAFBFD]"  onClick={handleChange}>
+                                <img src={require(`../../../assets/img/Avatar/${seller.image}.png`)} alt="" />
+                                <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{seller.name}</h3>
+                                <img className="ps-8" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
+                            </div>
+                        }
                         {
                             !isOpen &&
                             <button className="bg-[#333399] text-white font-bold py-2 px-4 ml-2 rounded inline-flex items-center" style={{ borderRadius: 4 }}>
@@ -80,7 +91,7 @@ function SelectList() {
                         }
                     </div>
                     {isOpen &&
-                        <SellerDropdown handleClose={handleClose}/>
+                        <SellerDropdown handleClose={handleClose} seller = {seller}/>
                     }
                 </div>
                 <div className="store-card px-8 py-4">
@@ -88,14 +99,24 @@ function SelectList() {
                         <h1 className="text-2xl flex-1">Select a DMV</h1>
                         <img src={require('../../../assets/img/Warning/Vector.png')} alt="" />
                     </div>
-                    <div className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]" onClick={handleChange1}>
-                        <img src={require(`../../../assets/img/Avatar/${dmv.image}.png`)} alt="" />
-                        <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{dmv.name}</h3>
-                        <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
-                        <img className="ps-3" src={require('../../../assets/img/Filter.png')} alt="" />
-                    </div>
+                    {!isOpen1 &&
+                        <div className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]" onClick={handleChange1}>
+                            <img src={require(`../../../assets/img/Avatar/${dmv.image}.png`)} alt="" />
+                            <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{dmv.name}</h3>
+                            <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
+                            <img className="ps-3" src={require('../../../assets/img/Filter.png')} alt="" />
+                        </div>
+                    }
+                    {isOpen1 &&
+                        <div className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]" onClick={handleChange1}>
+                            <img src={require(`../../../assets/img/Avatar/${dmv.image}.png`)} alt="" />
+                            <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{dmv.name}</h3>
+                            <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
+                            <img className="ps-3" src={require('../../../assets/img/Filter.png')} alt="" />
+                        </div>
+                    }
                     {isOpen1 && (
-                        <DmvDropdown handleClose={handleClose} />
+                        <DmvDropdown handleClose={handleClose} dmv={dmv}/>
                     )}
                 </div>
                 <div className="store-card px-8 py-4">
@@ -103,13 +124,22 @@ function SelectList() {
                         <h1 className="text-2xl flex-1">Select a Lender</h1>
                         <img src={require('../../../assets/img/Warning/Vector.png')} alt="" />
                     </div>
-                    <div className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]" onClick={handleChange2}>
-                        <img src={require(`../../../assets/img/Avatar/${lender.image}.png`)} alt="" />
-                        <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{lender.name}</h3>
-                        <img src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
-                    </div>
+                    {!isOpen2 &&
+                        <div className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]" onClick={handleChange2}>
+                            <img src={require(`../../../assets/img/Avatar/${lender.image}.png`)} alt="" />
+                            <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{lender.name}</h3>
+                            <img src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
+                        </div>
+                    }
                     {isOpen2 &&
-                        <LenderDropdown handleClose={handleClose} />
+                        <div className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]" onClick={handleChange2}>
+                            <img src={require(`../../../assets/img/Avatar/${lender.image}.png`)} alt="" />
+                            <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{lender.name}</h3>
+                            <img src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
+                        </div>
+                    }
+                    {isOpen2 &&
+                        <LenderDropdown handleClose={handleClose} lender = {lender} />
                     }
                 </div>
                 <div className="store-card px-8 py-4">
@@ -117,14 +147,24 @@ function SelectList() {
                         <h1 className="text-2xl flex-1">Select a Salesperson</h1>
                         <img src={require('../../../assets/img/Warning/Vector.png')} alt="" />
                     </div>
-                    <div className="flex items-center p-[15px] cursor-pointer" onClick={handleChange3}>
-                        <img src={require(`../../../assets/img/Avatar/${salesperson.image}.png`)} alt="" />
-                        <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{salesperson.name}</h3>
-                        <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
-                        <img className="ps-3" src={require('../../../assets/img/Filter.png')} alt="" />
-                    </div>
+                    {!isOpen3 &&
+                        <div className="flex items-center p-[15px] cursor-pointer" onClick={handleChange3}>
+                            <img src={require(`../../../assets/img/Avatar/${salesperson.image}.png`)} alt="" />
+                            <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{salesperson.name}</h3>
+                            <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
+                            <img className="ps-3" src={require('../../../assets/img/Filter.png')} alt="" />
+                        </div>
+                    }
                     {isOpen3 &&
-                        <PersonDropdown handleClose={handleClose} />
+                        <div className="flex items-center p-[15px] cursor-pointer" onClick={handleChange3}>
+                            <img src={require(`../../../assets/img/Avatar/${salesperson.image}.png`)} alt="" />
+                            <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{salesperson.name}</h3>
+                            <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
+                            <img className="ps-3" src={require('../../../assets/img/Filter.png')} alt="" />
+                        </div>
+                    }
+                    {isOpen3 &&
+                        <PersonDropdown handleClose={handleClose} salesperson = {salesperson}/>
                     }
                 </div>
             </div>

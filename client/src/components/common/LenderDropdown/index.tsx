@@ -1,8 +1,12 @@
 import React from 'react';
+import { useOutsideClick } from "../SelectList/useOutsideClick";
 
-function LenderDropdown({handleClose} : any) {
+function LenderDropdown({handleClose, lender} : any) {
+  const ref = useOutsideClick(()=>{
+    handleClose(3, lender);
+  })
   return (
-    <div className="bg-[#FAFBFD] p-[15px] absolute">
+    <div className="bg-[#FAFBFD] p-[15px] absolute" ref = {ref}>
       <p className="text-[12px] font-sans" style={{ color: '#97A3B7' }}>
         OUR MOST POPULAR LENDERS
       </p>

@@ -24,6 +24,7 @@ router.get('/',auth, async (req, res) => {
     const data = [];
     messages.map(row =>{
       member = {
+        "filePath": row.filePath,
         "message": row.content,
         "username": row.sender.username,
         "__createdtime__": row.createdAt,
