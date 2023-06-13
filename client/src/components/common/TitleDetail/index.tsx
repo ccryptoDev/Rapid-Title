@@ -183,7 +183,7 @@ function TitleDetail() {
                         </div>
                         <div className='ml-4'>
                           <div className='text-xl'>Floor Plan</div>
-                          <div className='text-2xl'> $ 111.400USD </div>
+                          <div className='text-2xl'> $ 11.400USD </div>
                         </div>
                       </div>
                       <div className='flex'>
@@ -193,7 +193,7 @@ function TitleDetail() {
                         </div>
                         <div className='ml-4'>
                           <div className='text-xl'>Floor Plan</div>
-                          <div className='text-2xl'> $ 111.400USD </div>
+                          <div className='text-2xl'> $ 11.400USD </div>
                         </div>
                       </div>
                   </Carousel>
