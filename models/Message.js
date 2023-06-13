@@ -17,7 +17,11 @@ const MessageSchema = new Schema({
   },
   content: {
     type : String,
-    required: true,
+    required: false,
+  },
+  filePath: {
+    type : Object,
+    required: false,
   },
   createdAt: {
     type: Date,

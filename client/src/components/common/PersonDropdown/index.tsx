@@ -1,8 +1,12 @@
 import React from 'react';
+import { useOutsideClick } from "../SelectList/useOutsideClick";
 
-function PersonDropdown({handleClose} : any) {
+function PersonDropdown({handleClose, salesperson} : any) {
+  const ref = useOutsideClick(()=>{
+    handleClose(4, salesperson);
+  })
   return (
-    <div className="bg-[#FAFBFD] p-[15px] absolute">
+    <div className="bg-[#FAFBFD] p-[15px] absolute" ref={ref}>
       <p className="text-[12px] font-sans" style={{ color: '#97A3B7' }}>
         YOUR SELLERS IN THIS GROUP
       </p>

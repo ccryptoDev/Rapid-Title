@@ -7,6 +7,9 @@ const http = require('http');
 const connectDB = require('./config/db');
 const { Server } = require('socket.io');
 const MessageModel = require('./models/Message');
+const { writeFile } = require('fs');
+const fs = require('fs');
+const router = express.Router();
 
 connectDB();
 // Connect Database
@@ -36,6 +39,9 @@ app.use('/api/v2/auth', require('./routes/api/auth'));
 app.use('/api/v2/profile', require('./routes/api/profile'));
 app.use('/api/v2/titles', require('./routes/api/titles'));
 app.use('/api/v2/messages', require('./routes/api/messages'));
+app.use('/api/v2/fileupload', require('./routes/api/fileupload'));
+
+app.use("/uploads",express.static(path.join(__dirname, "./uploads/")));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
@@ -92,13 +98,14 @@ io.on('connection', (socket) => {
     // socket.emit('chatroom_users', chatRoomUsers);
   });
   socket.on('send_message', (data) => {
-    const { chat_room_id, chat_room_name, user_name, user_id, chat, __createdtime__ } = data;
+    const { chat_room_id, chat_room_name, user_name, user_id, chat, __createdtime__, uploadedFiles } = data;
     console.log(data);
     let message = new MessageModel();
     message.sender = user_id;
     message.roomId = chat_room_id;
     message.roomName = chat_room_name;
     message.content = chat;
+    message.filePath = uploadedFiles;
     message.save();
     // socket.to(chat_room_name).emit('receive_message', data);
     io.in(chat_room_name).emit('receive_message', data); 
@@ -118,6 +125,10 @@ io.on('connection', (socket) => {
     // });
   });
 });
+
+
+
+
 
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
