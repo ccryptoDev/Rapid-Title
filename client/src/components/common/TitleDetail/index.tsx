@@ -12,6 +12,9 @@ import TitlePeople from './TitlePeople';
 import { getTitleDetail } from 'utils/useWeb3';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 function TitleDetail() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -19,6 +22,29 @@ function TitleDetail() {
   const [vehicleData, setVehicleData] = React.useState({})
   const {id} = useParams();
   const dispatch = useDispatch();
+
+  const [modalOpend, setModalOpened] = React.useState(false);
+  const handleMiniChat = () => setModalOpened(!modalOpend);
+  const handleClose = () => {
+    setModalOpened(false);
+  };
+  const style = {
+    position: 'absolute' as 'absolute',
+    top: '52%',
+    left: '88%',
+    transform: 'translate(-50%, -50%)',
+    width: 390,
+    height: 750,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    borderRadius: 5,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center'
+  };
   
   const navigate = useNavigate();
   const toggleDrawer = () => {
@@ -48,7 +74,7 @@ function TitleDetail() {
               //@ts-ignore */}
               <span className='text-[#FF3366] text-3xl'> {vehicleData.model} {vehicleData.plate_model}</span>
             </div>
-            <div className='cursor-pointer' onClick={() => {navigate('/community');dispatch({ type: 'SET_ACTIVE_MENU', payload:'message' })}}>
+            <div className='cursor-pointer' onClick={handleMiniChat}>
               <svg
                 width="60"
                 height="60"
@@ -106,6 +132,29 @@ function TitleDetail() {
                 </defs>
               </svg>
             </div>
+            <Modal
+              open={modalOpend}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+              disableEnforceFocus={false}
+            >
+              <Box sx={style}>
+                <div className='flex'>
+                  <span className='text-[#333399] text-4xl cursor-pointer absolute top-[15px] left-[20px]' onClick={handleClose}> &larr;</span>
+                  <span className='text-[#333399] text-4xl absolute top-[15px] left-[50px] font-bold'>TitleChat</span>
+                </div>
+                <div className='bg-[#8F8F8F] flex absolute bottom-0 py-[16px] items-center px-[10px] h-[85px] rounded-b-2xl' style={{width: 'calc(100% - 0px)'}}>
+                  <img src='/imoticon.png' width={24} className='h-[24px]' alt='imoticon_img'></img>
+                  <img src='/file_chat.png' width={24} className='h-[24px] ml-[10px] cursor-pointer' alt='file_attach' onClick={()=>{}}></img>
+                  {/* <form ref={formRef} onSubmit={onFormSubmit}>
+                    <input type = 'file' ref={inputRef} className='file-input' onChange={handleFileChange} hidden />
+                  </form> */}
+                  <input type='text' style={{flex:1}} className='rounded-3xl ml-[10px] px-[20px] h-[48px]' placeholder='Say something...'></input>
+                  <div className='bg-white rounded-3xl h-[48px] ml-[10px] w-[48px] cursor-pointer'><img src='/paper_plane.png' alt='paper_plane' onClick={() => {}}></img></div>
+                </div>
+              </Box>
+            </Modal>
           </div>
           <div className='grid grid-cols-8 px-5'>
               <div className='col-span-2 !w-full card bg-[#D6D6EB] relative' style={{border: 0,padding:30}}>

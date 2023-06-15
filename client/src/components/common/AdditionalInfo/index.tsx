@@ -297,32 +297,65 @@ function AdditionalInfo() {
                 <div className="flex items-end py-3 text-[#FF3366]">
                   <h1 className="text-2xl flex-1"> Type Of Title</h1>
                 </div>
-                <div
-                  className="flex items-center p-[7px] cursor-pointer bg-[#FAFBFD]"
-                  onClick={handleChange1}
-                >
-                  <img
-                    src={require('../../../assets/img/Avatar/car_ins.png')}
-                    alt=""
-                  />
-                  <h3
-                    className="px-2 flex-1 text-black"
-                    style={{ fontSize: '16px', fontWeight: 600 }}
-                  >
-                    {titleType}
-                  </h3>
-                  <img
-                    className="ps-3 pr-2"
-                    src={require('../../../assets/img/Filter.png')}
-                    alt=""
-                  />
-                  <img
-                    className="pe-4"
-                    src={require('../../../assets/img/Product/Arrow/Vector.png')}
-                    alt=""
-                  />
-                </div>
-                {isOpen1 && <TitleTypeDropdown handler={dropdownHandler}/>}
+                {
+                  !isOpen1 && (
+                    <div
+                      className="flex items-center p-[7px] cursor-pointer bg-[#FAFBFD]"
+                      onClick={handleChange1}
+                    >
+                      <img
+                        src={require('../../../assets/img/Avatar/car_ins.png')}
+                        alt=""
+                      />
+                      <h3
+                        className="px-2 flex-1 text-black"
+                        style={{ fontSize: '16px', fontWeight: 600 }}
+                      >
+                        {titleType}
+                      </h3>
+                      <img
+                        className="ps-3 pr-2"
+                        src={require('../../../assets/img/Filter.png')}
+                        alt=""
+                      />
+                      <img
+                        className="pe-4"
+                        src={require('../../../assets/img/Product/Arrow/Vector.png')}
+                        alt=""
+                      />
+                    </div>
+                  )
+                }
+                {
+                  isOpen1 && (
+                    <div
+                      className="flex items-center p-[7px] cursor-pointer bg-[#FAFBFD]"
+                      onClick={handleChange1}
+                    >
+                      <img
+                        src={require('../../../assets/img/Avatar/car_ins.png')}
+                        alt=""
+                      />
+                      <h3
+                        className="px-2 flex-1 text-black"
+                        style={{ fontSize: '16px', fontWeight: 600 }}
+                      >
+                        {titleType}
+                      </h3>
+                      <img
+                        className="ps-3 pr-2"
+                        src={require('../../../assets/img/Filter.png')}
+                        alt=""
+                      />
+                      <img
+                        className="pe-4"
+                        src={require('../../../assets/img/Product/Arrow/Vector.png')}
+                        alt=""
+                      />
+                    </div>
+                  )
+                }                
+                {isOpen1 && <TitleTypeDropdown handler={dropdownHandler} titleType = {titleType} />}
               </div>
             </div>
             <div className="col-span-2">
@@ -330,27 +363,55 @@ function AdditionalInfo() {
                 <div className="flex items-end py-3 text-[#FF3366]">
                   <h1 className="text-2xl flex-1"> Status</h1>
                 </div>
-                <div
-                  className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]"
-                  onClick={handleChange2}
-                >
-                  <img
-                    src={require('../../../assets/img/Avatar/status.png')}
-                    alt=""
-                  />
-                  <h3
-                    className="px-2 flex-1 text-black"
-                    style={{ fontSize: '16px', fontWeight: 600 }}
-                  >
-                    {titleStatus}
-                  </h3>
-                  <img
-                    className="pe-4"
-                    src={require('../../../assets/img/Product/Arrow/Vector.png')}
-                    alt=""
-                  />
-                </div>
-                {isOpen2 && <TitleStatusDropdown handler={dropdownHandler}/>}
+                {
+                  !isOpen2 && (
+                    <div
+                      className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]"
+                      onClick={handleChange2}
+                    >
+                      <img
+                        src={require('../../../assets/img/Avatar/status.png')}
+                        alt=""
+                      />
+                      <h3
+                        className="px-2 flex-1 text-black"
+                        style={{ fontSize: '16px', fontWeight: 600 }}
+                      >
+                        {titleStatus}
+                      </h3>
+                      <img
+                        className="pe-4"
+                        src={require('../../../assets/img/Product/Arrow/Vector.png')}
+                        alt=""
+                      />
+                    </div>
+                  )
+                }
+                {
+                  isOpen2 && (
+                    <div
+                      className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]"
+                      onClick={handleChange2}
+                    >
+                      <img
+                        src={require('../../../assets/img/Avatar/status.png')}
+                        alt=""
+                      />
+                      <h3
+                        className="px-2 flex-1 text-black"
+                        style={{ fontSize: '16px', fontWeight: 600 }}
+                      >
+                        {titleStatus}
+                      </h3>
+                      <img
+                        className="pe-4"
+                        src={require('../../../assets/img/Product/Arrow/Vector.png')}
+                        alt=""
+                      />
+                    </div>
+                  )
+                }
+                {isOpen2 && <TitleStatusDropdown handler={dropdownHandler} titleStatus={titleStatus} />}
               </div>
             </div>
           </div>
