@@ -78,6 +78,7 @@ export default function Community() {
     if (e.target.files && e.target.files.length > 0) {
       const newFiles = Array.from(e.target.files);
       setFile(newFiles);
+      console.log(file);
       setTimeout(() => {
         handleFormClick();
       },1000)
@@ -376,7 +377,12 @@ export default function Community() {
                                         }
                                       </span>
                                       <div className='grid relative' key={j}>
-                                        <div className='bg-[#FF7095] justify-self-end text-[#010101] w-fit p-[15px] float-right cursor-pointer' style={{borderRadius:'20px 20px 0px'}} onClick={() => downloadFile(uploaded_path.slice(8))}>{uploadedPath_edit(uploaded_path)}</div>
+                                        <div className='bg-[#FF7095] justify-self-end w-fit p-[15px] float-right flex' style={{borderRadius:'20px 20px 0px'}}>
+                                          <img src='/file_icon.png' width={16} className='h-[16px] mt-[5px] mx-[2px]' alt='fileicon_img'></img>
+                                          <span className=' cursor-pointer text-[#333399]'  onClick={() => downloadFile(uploaded_path.slice(8))}>
+                                            {uploadedPath_edit(uploaded_path)}
+                                          </span>
+                                        </div>
                                       </div>
                                     </>
                                   ))
@@ -426,6 +432,20 @@ export default function Community() {
                           <form ref={formRef} onSubmit={onFormSubmit}>
                             <input type = 'file' ref={inputRef} className='file-input' onChange={handleFileChange} hidden />
                           </form>
+                          {uploadedFiles && uploadedFiles.length > 0 && (
+                            <>
+                            {
+                              uploadedFiles.map((file, i)=>(
+                                <div className='flex border border-solid rounded-lg border-gray-400 px-[2px] mx-[2px]'>
+                                  <span className='px-[5px]' key={i}>{uploadedPath_edit(file)}</span>
+                                  <img src='/file_close.png' width={16} className='h-[16px] mt-[5px] cursor-pointer' alt='imoticon_img' onClick={()=>{setUploadedFiles(uploadedFiles.filter((item)=>item!==file))}}></img>
+                                </div>
+                              ))
+                            }
+                            </>
+                          )
+
+                          }
                           <input type='text' style={{flex:1}} className='rounded-3xl ml-[20px] px-10 h-[48px]' placeholder='Say something...' value={chat} onChange={e=> setChat(e.target.value)} onKeyDown={_onKeypress}></input>
                           <div className='bg-white rounded-3xl ml-10 h-[48px] w-[48px] cursor-pointer'><img src='/paper_plane.png' alt='paper_plane' onClick={() => {}}></img></div>
                     </div>

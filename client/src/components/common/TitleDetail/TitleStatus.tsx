@@ -12,7 +12,7 @@ import PersonDropdown from "../PersonDropdown";
 export default function TitleStatus({ data, id }: any) {
   const [shareQR, setShareQR] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [salesperson, setSalesPerson] = useState({name:'James Maverick',image:'Avatar4'});
+  const [salesperson, setSalesPerson] = useState({name:'Lia Smith',image:'Avatar12'});
   const handleClose = (index : number, param: any) => {
     if(index === 4){
       setSalesPerson(param);
@@ -45,14 +45,24 @@ export default function TitleStatus({ data, id }: any) {
         <div className='p-[50px] rounded-2xl items-center w-[473px] h-[373px]' style={{boxShadow: "rgba(0, 0, 0, 0.25) 1px 7px 6px 2px"}}>
           <span className='text-[#333399] text-3xl cursor-pointer' onClick={() => setShareQR(false)}> &larr;</span>
           <span className='ml-[15px] text-[#FF3366]' style={{fontSize:26}}>Select a Member</span>
-          <div className="flex items-center p-[15px] mt-[45px] cursor-pointer bg-[#FAFBFD]" onClick={() => setIsOpen(!isOpen)}>
-              <img src={require(`../../../assets/img/Avatar/${salesperson.image}.png`)} alt="" />
-              <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{salesperson.name}</h3>
-              <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
-              <img className="ps-3" src={require('../../../assets/img/Filter.png')} alt="" />
-          </div>
+          {!isOpen &&
+            <div className="flex items-center p-[15px] mt-[45px] cursor-pointer bg-[#FAFBFD]" onClick={() => setIsOpen(!isOpen)}>
+                <img src={require(`../../../assets/img/Avatar/${salesperson.image}.png`)} alt="" />
+                <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{salesperson.name}</h3>
+                <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
+                <img className="ps-3" src={require('../../../assets/img/Filter.png')} alt="" />
+            </div>
+          }
           {isOpen &&
-              <PersonDropdown handleClose={handleClose} />
+            <div className="flex items-center p-[15px] mt-[45px] cursor-pointer bg-[#FAFBFD]" onClick={() => setIsOpen(!isOpen)}>
+                <img src={require(`../../../assets/img/Avatar/${salesperson.image}.png`)} alt="" />
+                <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{salesperson.name}</h3>
+                <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
+                <img className="ps-3" src={require('../../../assets/img/Filter.png')} alt="" />
+            </div>
+          }
+          {isOpen &&
+              <PersonDropdown handleClose={handleClose} salesperson = {salesperson}/>
           }
           <div className='flex bg-[#FFEB33] mt-[50px] py-2 px-3 rounded-full text-center text-[#333399] w-[30%] mx-auto cursor-pointer' style={{fontSize: '16px', fontWeight: 600}}>
             <span className='pl-[10px]'>Send</span>

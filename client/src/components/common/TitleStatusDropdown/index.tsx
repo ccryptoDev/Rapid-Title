@@ -1,8 +1,12 @@
 import React from "react";
+import { useOutsideClick } from "../SelectList/useOutsideClick";
 
-function TitleStatusDropdown({handler} : any) {
+function TitleStatusDropdown({handler, titleStatus} : any) {
+    const ref = useOutsideClick(()=>{
+        handler(2, titleStatus);
+      })
     return (
-        <div className="bg-[#FAFBFD] p-[15px] absolute">
+        <div className="bg-[#FAFBFD] p-[15px] absolute" ref = {ref}>
             {
                 StateData.map((item, index) => (
                     <div key={index} className="flex items-center cursor-pointer my-4" onClick={() => handler(2,item.name)}>

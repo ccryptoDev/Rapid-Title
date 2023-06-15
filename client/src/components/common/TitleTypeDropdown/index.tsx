@@ -1,8 +1,12 @@
 import React from "react";
+import { useOutsideClick } from "../SelectList/useOutsideClick";
 
-function TitleTypeDropdown({handler} : any) {
+function TitleTypeDropdown({handler, titleType} : any) {
+    const ref = useOutsideClick(()=>{
+        handler(1, titleType);
+      })
     return (
-        <div className="bg-[#FAFBFD] p-[15px] absolute">
+        <div className="bg-[#FAFBFD] p-[15px] absolute" ref = {ref}>
             {
                 DmvData.map((item, index) => (
                     <div key={index} className="flex items-center cursor-pointer my-4" onClick={() => handler(1,item.name)}>

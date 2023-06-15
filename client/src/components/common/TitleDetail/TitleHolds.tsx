@@ -2,9 +2,12 @@ import React, { BaseSyntheticEvent, useEffect, useState } from 'react';
 import './index.view.css';
 import { useNavigate } from 'react-router-dom';
 import { loadHoldenTitles } from 'store/actions/title';
+import HoldingStatusDropdown from '../HoldingStatusDropdown';
 
 
 function TitleHolds() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [holdingstate, setHoldingState] = useState('');
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -57,12 +60,13 @@ function TitleHolds() {
                                       <p className='text-lg'> {record.hold}</p>
                                     </div>
                                 </th>
-                                <td className="px-6 py-4 text-lg">
+                                <td className="px-6 py-4 text-lg cursor-pointer">
                                   {
                                     record.status === 0 ? <div className='pending-badge  rounded-md bg-[#FF3366] text-center text-white'>Pending</div> : 
                                     <div className='pending-badge  rounded-md bg-[#333399] text-center text-white'>Completed</div>
                                   }
                                 </td>
+                                
                                 <td className="px-6 py-4 text-lg">
                                   {
                                     record.status === 0 ? <div className='pending-badge flex justify-center py-1 px-2 rounded-md bg-[#FF3366] text-center text-white w-fit'>
