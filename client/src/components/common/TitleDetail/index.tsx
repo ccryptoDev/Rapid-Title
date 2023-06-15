@@ -21,6 +21,7 @@ function TitleDetail() {
   const [tab, setActiveTab] = React.useState('status');
   const [vehicleData, setVehicleData] = React.useState({})
   const {id} = useParams();
+  console.log(id)
   const dispatch = useDispatch();
 
   const [modalOpend, setModalOpened] = React.useState(false);
@@ -31,7 +32,7 @@ function TitleDetail() {
   const style = {
     position: 'absolute' as 'absolute',
     top: '52%',
-    left: '88%',
+    left: '85%',
     transform: 'translate(-50%, -50%)',
     width: 390,
     height: 750,
@@ -42,7 +43,6 @@ function TitleDetail() {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
     textAlign: 'center'
   };
   
@@ -141,15 +141,48 @@ function TitleDetail() {
             >
               <Box sx={style}>
                 <div className='flex'>
-                  <span className='text-[#333399] text-4xl cursor-pointer absolute top-[15px] left-[20px]' onClick={handleClose}> &larr;</span>
-                  <span className='text-[#333399] text-4xl absolute top-[15px] left-[50px] font-bold'>TitleChat</span>
+                  <span className='text-[#333399] text-4xl cursor-pointer absolute top-[25px] left-[20px]' onClick={handleClose}> &larr;</span>
+                  <span className='text-[#333399] text-4xl absolute top-[25px] left-[50px] font-bold'>TitleChat</span>
                 </div>
+                <div className="grid grid-cols-10 pr-[26px] absolute top-[90px]">
+                  <div className="col-span-5 ml-[28px]">
+                    <p className='text-[12px] text-left'>Title information</p>
+                    <div className="bg-[#9898CB] rounded-md py-2 pr-[10px] mr-[2px] text-left px-2">
+                      <p className="text-white text-[18px]">Hyundai Tucson</p>
+                    </div>
+                  </div>
+                  <div className="col-span-3">
+                    <p className='text-[12px] text-left ml-[5px]'>ID Number</p>
+                    <div className="bg-[#9898CB] rounded-md py-2 pr-[10px] ml-[5px] mr-[2px] text-left px-2">
+                      <p className="text-white text-[18px]">K9015A</p>
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <p className='text-[12px] text-left ml-[5px]'>Holds</p>
+                    <div className="bg-[#FF3366] rounded-md py-2 ml-[5px] pr-[10px] mr-[2px] text-left px-2">
+                      <p className="text-white text-[18px]">6/10</p>
+                    </div>
+                  </div>
+                </div>
+                <div className='mt-[150px] bg-[#5C5CAD] rounded-md absolute left-[35px] mr-[30px]'>
+                  <p className='text-[18px] text-left ml-[5px] text-white px-[20px] pt-[20px] pr-[15px]'>THE LIEN HAS NOT BEEN PAID</p>
+                  <p className='text-[13px] text-left ml-[5px] text-white px-[20px] pt-[15px] pr-[15px]'>Good Morning Mr. DealerName, there has been
+                    an update on the Issue Date since the Lien hasnt
+                    been paid properly nor approved by the Bank.</p>
+                  <p className='text-[14px] text-left ml-[5px] text-white px-[20px] pt-[15px] pb-[35px] pr-[15px]'>Sincerely, Johanna from DMV Los Angeles.</p>
+                </div>
+                <img src='/user2.png' alt='sender_img' className='absolute top-[350px] right-[20px]'></img>
+                <div className='mt-[380px] bg-[#FF5C85] rounded-md absolute left-[35px] mr-[30px]'>
+                  <p className='text-[18px] text-left ml-[5px] text-white px-[20px] pt-[20px] pr-[15px]'>The Process is on the DMVs side</p>
+                  <p className='text-[13px] text-left ml-[5px] text-white px-[20px] pt-[15px] pr-[15px]'>Good Morning Ms. Johanna, We sent yesterday
+                    a new receipt from the Bank showing the new 
+                    state of the Title regarding the Lien.</p>
+                  <p className='text-[14px] text-left ml-[5px] text-white px-[20px] pt-[15px] pb-[35px] pr-[15px]'>Best Regards, Jean Paul from Dealership.</p>
+                </div>
+                <img src='/user3.png' alt='sender_img' className='absolute top-[580px] left-[27px]'></img>
                 <div className='bg-[#8F8F8F] flex absolute bottom-0 py-[16px] items-center px-[10px] h-[85px] rounded-b-2xl' style={{width: 'calc(100% - 0px)'}}>
                   <img src='/imoticon.png' width={24} className='h-[24px]' alt='imoticon_img'></img>
                   <img src='/file_chat.png' width={24} className='h-[24px] ml-[10px] cursor-pointer' alt='file_attach' onClick={()=>{}}></img>
-                  {/* <form ref={formRef} onSubmit={onFormSubmit}>
-                    <input type = 'file' ref={inputRef} className='file-input' onChange={handleFileChange} hidden />
-                  </form> */}
                   <input type='text' style={{flex:1}} className='rounded-3xl ml-[10px] px-[20px] h-[48px]' placeholder='Say something...'></input>
                   <div className='bg-white rounded-3xl h-[48px] ml-[10px] w-[48px] cursor-pointer'><img src='/paper_plane.png' alt='paper_plane' onClick={() => {}}></img></div>
                 </div>

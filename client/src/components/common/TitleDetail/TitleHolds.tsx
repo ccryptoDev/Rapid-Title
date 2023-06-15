@@ -1,24 +1,62 @@
 import React, { BaseSyntheticEvent, useEffect, useState } from 'react';
 import './index.view.css';
 import { useNavigate } from 'react-router-dom';
-import { loadHoldenTitles } from 'store/actions/title';
+import { loadHoldingTitles1 } from 'store/actions/title';
+import { loadHoldingTitles } from 'store/actions/title';
 import HoldingStatusDropdown from '../HoldingStatusDropdown';
+import { Console } from 'console';
+import api from 'utils/api';
 
 
 function TitleHolds() {
   const [isOpen, setIsOpen] = useState(false);
-  const [holdingstate, setHoldingState] = useState('');
+  const [openedRow, setOpenedRow] = useState(-1);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const handleOpen = (index: any) => {
+    setOpenedRow(index);
+  }
+  const handleClose = (datas: any) => {
+    //title type
+      // setTitleStatus(data);
+      let update_id='';
+      data.map((record:any, id: any)=>{
+        if(id == openedRow)
+          update_id = record._id;
+      })
+      const update_status = async () => {
+        try {
+          const res = await api.put(`/v2/holdingtitles/${update_id}`, {datas});
+          console.log(res.data);
+        } catch (err: any) {
+          console.log(err);
+        }
+      };
+      update_status();
+      console.log(update_id);
+      const cb = async () => {
+        const data = await loadHoldingTitles();
+        console.log(data);
+        //@ts-ignore
+        setData(data);
+      };
+      cb();
+      setTimeout(() => {
+        setOpenedRow(-1);
+      }, 100);
+  }
   useEffect(() => {
     const cb = async () => {
-      const data = await loadHoldenTitles();
+      let data = await loadHoldingTitles();
       console.log(data);
+      if(data.length == 0){
+        data = await loadHoldingTitles1();
+      }
       //@ts-ignore
       setData(data);
     };
     cb();
-  },[])
+  },[data])
 
   return (
     <div className="p-2 max-h-[680px] overflow-y-scroll w-full">
@@ -53,35 +91,37 @@ function TitleHolds() {
                       return <tr className={index%2 === 0 ? `bg-[#D6D6EB]`:''}>
                                 <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap flex items-center">
                                     <div>
-                                      <img src={record.status === 0?'/hold_pending.png':'/hold_complete.png'} style={{width:42,height:40}}/>
+                                      <img src={record.status === '0'?'/hold_pending.png':'/hold_complete.png'} style={{width:42,height:40}}/>
                                     </div>
                                     <div className='ml-5'>
-                                      <p className={record.status === 0 ? 'text-[#FF3366] text-sm' : 'text-[#333399] text-sm'}>{record.status === 0 ? 'Pending' : 'Completed'}</p>
+                                      <p className={record.status === '0' ? 'text-[#FF3366] text-sm' : 'text-[#333399] text-sm'}>{record.status === '0' ? 'Pending' : 'Completed'}</p>
                                       <p className='text-lg'> {record.hold}</p>
                                     </div>
                                 </th>
-                                <td className="px-6 py-4 text-lg cursor-pointer">
+                                <td className="px-4 py-4 text-lg relative">
+                                  {record.status === '0' ? <div className='pending-badge cursor-pointer  rounded-md bg-[#FF3366] text-center text-white' onClick={()=>handleOpen(index)}>Pending</div> : 
+                                    <div className='pending-badge  rounded-md cursor-pointer bg-[#333399] text-center text-white' onClick={()=>handleOpen(index)}>Completed</div>}
                                   {
-                                    record.status === 0 ? <div className='pending-badge  rounded-md bg-[#FF3366] text-center text-white'>Pending</div> : 
-                                    <div className='pending-badge  rounded-md bg-[#333399] text-center text-white'>Completed</div>
+                                  index == openedRow &&
+                                    <HoldingStatusDropdown handler = {handleClose} holdstatus = {record.status} />
                                   }
                                 </td>
                                 
                                 <td className="px-6 py-4 text-lg">
                                   {
-                                    record.status === 0 ? <div className='pending-badge flex justify-center py-1 px-2 rounded-md bg-[#FF3366] text-center text-white w-fit'>
-                                                            <img src={record.responsible.image} style={{width:24,height:24}}/>  
-                                                            <span className='ml-2'>{record.responsible.description}</span>
+                                    record.status === '0' ? <div className='pending-badge flex justify-center py-1 px-2 rounded-md bg-[#FF3366] text-center text-white w-fit'>
+                                                            <img src={record.responsible_image} style={{width:24,height:24}}/>  
+                                                            <span className='ml-2'>{record.responsible_description}</span>
                                                           </div> : 
                                                           <div className='flex'>
-                                                            <img src={record.responsible.image} style={{width:24,height:24}}/>  
-                                                            <span className='ml-2'>{record.responsible.description}</span>
+                                                            <img src={record.responsible_image} style={{width:24,height:24}}/>  
+                                                            <span className='ml-2'>{record.responsible_description}</span>
                                                           </div>
                                   }
                                 </td>
                                 <td className="px-6 py-4 text-lg">
                                   {
-                                    record.status === 0 ? 
+                                    record.status === '0' ? 
                                       <div className='pending-badge flex justify-center py-1 px-2 rounded-md bg-[#FF3366] text-center text-white w-fit'>
                                         {record.days} Days
                                       </div> : 

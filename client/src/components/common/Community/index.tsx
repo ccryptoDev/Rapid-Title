@@ -11,6 +11,11 @@ import ChatTitleList from '../ChatTitleList';
 import {io, Socket} from 'socket.io-client';
 import { useSelector } from 'react-redux';
 import api from 'utils/api';
+import CircularProgress, {
+  CircularProgressProps,
+} from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 export const socket = io('http://localhost:5000');
 
@@ -19,6 +24,33 @@ interface IMessage {
   message: string;
   username: string;
   __createdtime__: number;
+}
+function CircularProgressWithLabel(
+  props: CircularProgressProps & { value: number },
+) {
+  return (
+    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress variant="determinate" style={{ color: '#333399' }} {...props}/>
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography
+          variant="caption"
+          component="div"
+          color="#333399"
+        >{`${Math.round(props.value)}%`}</Typography>
+      </Box>
+    </Box>
+  );
 }
 function formatDateFromTimestamp(timestamp: number) {
   const date = new Date(timestamp);
@@ -46,6 +78,8 @@ function uploadedPath_edit(uploaded_path: string){
 
 
 export default function Community() {
+  const [progress, setProgress] = React.useState(10);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const handleClick = () => {
     if (inputRef.current) {
@@ -93,6 +127,9 @@ export default function Community() {
   }
 
   useEffect(() => {
+    const timer = setInterval(() => {
+        setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+      }, 800);
     const fetchTitles = async () => {
       const data = await loadTitles();
       setTitleData(data);
@@ -115,7 +152,10 @@ export default function Community() {
         scrollToBottom();
       },1000)
 
-      return () => {socket.off('receive_message')};
+      return () => {
+        clearInterval(timer);
+        socket.off('receive_message');
+      };
   }, [socket]);
 
   const [titleData, setTitleData] = React.useState([]);
@@ -456,6 +496,9 @@ export default function Community() {
                     <div className='bg-[#8F8F8F] flex absolute bottom-0 py-[16px] items-center px-[40px] h-[85px]' style={{width: 'calc(100% - 30px)'}}>
                           <img src='/imoticon.png' width={24} className='h-[24px]' alt='imoticon_img'></img>
                           <img src='/file_chat.png' width={24} className='h-[24px] ml-[20px] cursor-pointer' alt='file_attach' onClick={handleClick}></img>
+                          <div className="w-[30px] ml-[10px] mt-[7px]">
+                            <CircularProgressWithLabel value={progress} />
+                          </div>
                           {/* <form ref={formRef} onSubmit={onFormSubmit}>
                             <input type = 'file' ref={inputRef} className='file-input' onChange={handleFileChange} hidden />
                           </form> */}

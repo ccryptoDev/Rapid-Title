@@ -1,0 +1,130 @@
+const express = require('express');
+const router = express.Router();
+// const gravatar = require('gravatar');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('config');
+const { check, validationResult } = require('express-validator');
+const auth = require('../../middleware/auth')
+const User = require('../../models/User');
+const HoldingTitle = require('../../models/HoldingTitle')
+
+
+router.get('/',auth, async (req, res) => {
+  try {
+    const holdingtitles = await HoldingTitle.find({
+      // user: req.user.id
+    })
+    res.json(holdingtitles);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+  
+});
+router.put('/:id', auth, async(req, res) =>{
+  console.log(req.params.id)
+  console.log(req.body.datas)
+  try {
+    const myquery = { _id: req.params.id };
+    const newvalues = { $set: { status: req.body.datas } };
+    const updatedRowData = await HoldingTitle.findByIdAndUpdate(
+      myquery, newvalues
+    );
+
+    res.json(updatedRowData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error updating row');
+  }
+})
+router.post('/mint',auth, async (req, res) => {
+
+  try {
+    const holdingtitles = new HoldingTitle({
+      data: req.body,
+      created_at: new Date()
+    });
+    await holdingtitles.save();
+    return res.json('success');
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+  
+});
+router.get('/test', async (req, res) => {
+  const holdingtitleData = [
+    {
+      hold:'Car has a Lien to be Paid',
+      //holden status 0: pending, 1: completed
+      status: '0',
+      responsible_image: '/sacramento.png',
+      responsible_description: 'Sacramento',
+      days: '31',
+      notes: '',
+    },
+    {
+      hold:'Car had a Registered Owner',
+      status: '1',
+      responsible_image: '/user1.png',
+      responsible_description: 'Earl Garris',
+      days: '8',
+      notes: '',
+    },
+    {
+      hold:'Car has a Title at Purchase',
+      status: '1',
+      responsible_image: '/user2.png',
+      responsible_description: 'Melina B.',
+      days: '5',
+      notes: '',
+    },
+    {
+      hold:'Documents are Signed and In-State',
+      status: '1',
+      responsible_image: '/DMV.png',
+      responsible_description: 'DMV',
+      days: '22',
+      notes: '',
+    },
+    {
+      hold:'Correct Documents Signed by the Dealer.',
+      status: '1',
+      responsible_image: '/sacramento_blue.png',
+      responsible_description: 'Sacramento',
+      days: '12',
+      notes: '',
+    },
+    {
+      hold:'Bank sent the correct Title',
+      status: '1',
+      responsible_image: '/capitalone.png',
+      responsible_description: 'Capitalone',
+      days: '22',
+      notes: '',
+    },
+    {
+      hold:'Car has a Lien to be Paid',
+      status: '0',
+      responsible_image: '/sacramento.png',
+      responsible_description: 'Sacramento',
+      days: '31',
+      notes: '',
+    },
+  ];
+  holdingtitleData.map( async holdingtitleRecord => {
+    holdingtitles = new HoldingTitle({
+      hold: holdingtitleRecord.hold,
+      status: holdingtitleRecord.status,
+      responsible_image: holdingtitleRecord.responsible_image,
+      responsible_description: holdingtitleRecord.responsible_description,
+      days: holdingtitleRecord.days,
+      notes: holdingtitleRecord.notes,
+    });
+    await holdingtitles.save();
+  });
+  return res.json(holdingtitleData)
+});
+
+module.exports = router;

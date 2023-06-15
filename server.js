@@ -39,6 +39,7 @@ app.use('/api/v2/auth', require('./routes/api/auth'));
 app.use('/api/v2/profile', require('./routes/api/profile'));
 app.use('/api/v2/titles', require('./routes/api/titles'));
 app.use('/api/v2/messages', require('./routes/api/messages'));
+app.use('/api/v2/holdingtitles', require('./routes/api/holdingtitles'));
 app.use('/api/v2/fileupload', require('./routes/api/fileupload'));
 
 app.use("/uploads",express.static(path.join(__dirname, "./uploads/")));
