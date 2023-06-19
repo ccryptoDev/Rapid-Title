@@ -26,7 +26,7 @@ router.get('/',auth, async (req, res) => {
       member = {
         "filePath": row.filePath,
         "message": row.content,
-        "username": row.sender.username,
+        "fname": row.sender.fname,
         "__createdtime__": row.createdAt,
       }
       data.push(member);

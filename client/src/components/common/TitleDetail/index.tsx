@@ -1,6 +1,6 @@
-import React, { BaseSyntheticEvent, useEffect, useState } from 'react';
+import React, { BaseSyntheticEvent, useEffect, useState, useRef } from 'react';
 import './index.view.css';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import SideBar from '../SideBar';
 import HeaderBar from '../HeaderBar';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -10,28 +10,245 @@ import TitleHolds from './TitleHolds';
 import TitleHistory from './TitleHistory';
 import TitlePeople from './TitlePeople';
 import { getTitleDetail } from 'utils/useWeb3';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import api from 'utils/api';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import {io, Socket} from 'socket.io-client';
+import { loadMessages } from 'store/actions/message';
+import CircularProgress, {
+  CircularProgressProps,
+} from '@mui/material/CircularProgress';
+
+export const socket = io('http://localhost:5000');
+interface IMessage {
+  filePath: string[];
+  message: string;
+  fname: string;
+  __createdtime__: number;
+}
+function CircularProgressWithLabel(
+  props: CircularProgressProps & { value: number },
+) {
+  return (
+    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress variant="determinate" style={{ color: '#333399' }} {...props}/>
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography
+          variant="caption"
+          component="div"
+          color="#333399"
+        >{`${Math.round(props.value)}%`}</Typography>
+      </Box>
+    </Box>
+  );
+}
+function formatDateFromTimestamp(timestamp: number) {
+  const date = new Date(timestamp);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const formattedHours = hours % 12 || 12;
+  return (
+    <div>
+      <p>{formattedHours}:{minutes} {ampm}</p>
+    </div>
+  );
+}
+
+function uploadedPath_edit(uploaded_path: string){
+  const path_Array = uploaded_path.split('.');
+  const filename = path_Array[0].substring(8, path_Array[0].length - 16);
+  const filetype = path_Array[1];
+  return (
+    <div>
+      <p>{filename}.{filetype}</p>
+    </div>
+  )
+}
 
 function TitleDetail() {
+  const isImageFile = (fileName: string): boolean => {
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
+    const extension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
+    return imageExtensions.includes(extension);
+  }
+  const [progress, setProgress] = React.useState(0);
+  const [isuploading, setIsUploading] = React.useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+  const formRef = useRef<HTMLFormElement>(null);
+  const handleFormClick = () => {
+    if (formRef.current) {
+      // console.log(formRef)
+      formRef.current.dispatchEvent(
+        new Event("submit", { cancelable: true, bubbles: true })
+      );
+      // alert('okay');
+    }
+  };
+  const [file, setFile] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const onFormSubmit = async  (event:React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsUploading(true);
+    let formData = new FormData();
+    formData.append("myfile", file[0]);
+    console.log("type: ", file[0]);
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress: (progressEvent: ProgressEvent) => {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
+        setProgress(percentCompleted);
+      },
+    };
+    try {
+      const res = await api.post('/v2/fileupload', formData, config);
+      setIsUploading(false);
+      setProgress(0);
+      //@ts-ignore
+      setUploadedFiles([...uploadedFiles, res.data.path]);
+      setFile([]);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const handleFileChange  = (e:React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const newFiles = Array.from(e.target.files);
+      setFile(newFiles);
+      console.log(file);
+      setTimeout(() => {
+        handleFormClick();
+      },1000)
+    }
+  }
+  const [messagesReceived, setMessagesReceived] = useState<IMessage[]>([]);
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    //@ts-ignore
+    // messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    messagesEndRef.current?.scrollIntoView()
+  }
+  
+
   const [isOpen, setIsOpen] = React.useState(false);
+  const user = useSelector((state: any) => state.auth.user);
   const [tab, setActiveTab] = React.useState('status');
   const [vehicleData, setVehicleData] = React.useState({})
   const {id} = useParams();
+  const location = useLocation();
+  const room_name = location.state ? location.state.room_name: '';
+  console.log(room_name);
+  console.log(id)
   const dispatch = useDispatch();
+
+  
+  socket.emit('join_room', {user, room_name});
 
   const [modalOpend, setModalOpened] = React.useState(false);
   const handleMiniChat = () => setModalOpened(!modalOpend);
+  const [chat, setChat] = useState('');
+  const sendMessage =() => {
+    if(chat !== '' || uploadedFiles.length > 0){
+      const __createdtime__ = Date.now();
+      // Send message to server. We can't specify who we send the message to from the frontend. We can only send to server. Server can then send message to rest of users in room
+      const user_id = user._id;
+      const user_fname = user.fname;
+      const chat_room_id = id;
+      const chat_room_name = room_name;
+      socket.emit('send_message', { chat_room_id, chat_room_name, user_fname, user_id, chat, __createdtime__, uploadedFiles });
+      setChat('');
+      setFile([]);
+      setUploadedFiles([]);
+      setTimeout(() => {
+        scrollToBottom();
+      },100);
+    }
+  }
+  useEffect(() => {
+    const cb = async () => {
+      let vehicleURI = await getTitleDetail(Number(id));
+      let res = await axios.get(vehicleURI);
+      let vehicleJson = res.data;
+      setVehicleData(vehicleJson)
+    }
+    cb();
+    const fetchMessages = async (room_id :any) => {
+      console.log('room_id: ' + room_id);
+      const data = await loadMessages(room_id);
+      console.log(data);
+      setMessagesReceived(data);
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
+    };
+    fetchMessages(id);
+    socket.on('receive_message', (data) => {
+      console.log(data);
+      setMessagesReceived((state) => [
+          ...state, 
+          {
+            filePath: data.uploadedFiles,
+            message: data.chat,
+            fname: data.user_fname,
+            __createdtime__: data.__createdtime__,
+          }
+        ])
+      });
+      setTimeout(() => {
+        scrollToBottom();
+      },1000)
+
+      return () => {
+        // clearInterval(timer);
+        socket.off('receive_message');
+      };
+  }, [modalOpend]);
+  const _onKeypress = (e: any) => {
+    if(e.key === 'Enter'){
+      sendMessage();
+    }
+  }
+  const downloadFile = async (fileName: string) => {
+    const response = await fetch(`/uploads/${fileName}`);
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   const handleClose = () => {
     setModalOpened(false);
   };
   const style = {
     position: 'absolute' as 'absolute',
     top: '52%',
-    left: '88%',
+    left: '85%',
     transform: 'translate(-50%, -50%)',
     width: 390,
     height: 750,
@@ -42,7 +259,6 @@ function TitleDetail() {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
     textAlign: 'center'
   };
   
@@ -51,15 +267,6 @@ function TitleDetail() {
     setIsOpen((prevState) => !prevState);
   };
 
-  useEffect(() => {
-    const cb = async () => {
-      let vehicleURI = await getTitleDetail(Number(id));
-      let res = await axios.get(vehicleURI);
-      let vehicleJson = res.data;
-      setVehicleData(vehicleJson)
-    }
-    cb();
-  },[])
 
   return (
     <div className="px-[24px]">
@@ -141,17 +348,151 @@ function TitleDetail() {
             >
               <Box sx={style}>
                 <div className='flex'>
-                  <span className='text-[#333399] text-4xl cursor-pointer absolute top-[15px] left-[20px]' onClick={handleClose}> &larr;</span>
-                  <span className='text-[#333399] text-4xl absolute top-[15px] left-[50px] font-bold'>TitleChat</span>
+                  <span className='text-[#333399] text-4xl cursor-pointer absolute top-[25px] left-[20px]' onClick={handleClose}> &larr;</span>
+                  <span className='text-[#333399] text-4xl absolute top-[25px] left-[50px] font-bold'>TitleChat</span>
                 </div>
-                <div className='bg-[#8F8F8F] flex absolute bottom-0 py-[16px] items-center px-[10px] h-[85px] rounded-b-2xl' style={{width: 'calc(100% - 0px)'}}>
+                <div className="grid grid-cols-10 pr-[26px] absolute top-[90px]">
+                  <div className="col-span-5 ml-[10px]">
+                    <p className='text-[12px] text-left'>Title information</p>
+                    <div className="bg-[#9898CB] rounded-md py-2 pr-[10px] mr-[2px] text-left px-2">
+                      <p className="text-white text-[18px]">{room_name.split(" - ")[0]}</p>
+                    </div>
+                  </div>
+                  <div className="col-span-3">
+                    <p className='text-[12px] text-left ml-[5px]'>ID Number</p>
+                    <div className="bg-[#9898CB] rounded-md py-2 pr-[10px] ml-[5px] mr-[2px] text-left px-2">
+                      <p className="text-white text-[18px]">{room_name.split(" - ")[1]}</p>
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <p className='text-[12px] text-left ml-[5px]'>Holds</p>
+                    <div className="bg-[#FF3366] rounded-md py-2 ml-[5px] pr-[10px] mr-[2px] text-left px-2">
+                      <p className="text-white text-[18px]">6/10</p>
+                    </div>
+                  </div>
+                </div>
+                <div className= {`${uploadedFiles && uploadedFiles.length > 0 ? 'bottom-[115px] max-h-[470px]' : 'bottom-[85px] max-h-[500px]'} grid flex-col absolute py-[10px] px-[20px] overflow-y-auto`} style={{width: 'calc(100% - 30px)'}}>
+                  {messagesReceived.map((msg, i) => (
+                    <>
+                      {user.fname === msg.fname ? (
+                      <>
+                        {msg.message !=='' && (
+                          <>
+                            <span className='text-[12px] text-right'>
+                              {
+                                formatDateFromTimestamp(msg.__createdtime__)
+                              }
+                            </span>
+                            <div className='grid relative mb-[10px]' key={i}>
+                              <div className='bg-[#FF5C85] justify-self-end text-white w-fit p-[15px] float-right' style={{borderRadius:'20px 20px 0px'}}>{msg.message}</div>
+                            </div>
+                          </>)}
+                        {msg.filePath && msg.filePath.length > 0 && (
+                          <>
+                            {
+                              msg.filePath.map((uploaded_path, j) => (
+                                <>
+                                  <span className='text-[12px] text-right'>
+                                    {
+                                      formatDateFromTimestamp(msg.__createdtime__)
+                                    }
+                                  </span>
+                                  <div className='grid relative mb-[10px]' key={j}>
+                                    <div className='bg-[#FF5C85] justify-self-end w-fit p-[15px] float-right' style={{borderRadius:'20px 20px 0px'}}>
+                                      {/* <img src='/file_icon.png' width={16} className='h-[16px] mt-[5px] mx-[2px]' alt='fileicon_img'></img> */}
+                                      {isImageFile(uploaded_path) &&
+                                        <img src={`../${uploaded_path}`} width={200} className='h-[200] mt-[5px] mx-[2px]' alt='fileicon_img' />
+                                      }
+                                      <div className='flex justify-center'>
+                                        <img src='/file_icon.png' width={16} className='h-[16px] mt-[5px] mx-[2px]' alt='fileicon_img'></img>
+                                        <span className=' cursor-pointer text-white text-center'  onClick={() => downloadFile(uploaded_path.slice(8))}>
+                                          {uploadedPath_edit(uploaded_path)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </>
+                              ))
+                            }
+                          </>)}
+                      </>) : (
+                      <>
+                        {msg.message !=='' && (
+                          <>
+                            <div className='flex'>
+                              <span className='text-[12px] mt-[0px] right-[20px] mb-[5px] text-left mr-[5px]'>{msg.fname},</span>
+                              <span className='text-[12px] text-left'>
+                                {
+                                  formatDateFromTimestamp(msg.__createdtime__)
+                                }
+                              </span>
+                            </div>
+                            <div className='grid relative mb-[10px]' key={i}>
+                              <div className='bg-[#5C5CAD] text-white w-fit p-[15px] float-left' style={{borderRadius:'0px 20px 20px'}}>{msg.message}</div>
+                            </div>
+                          </>)}
+                        {msg.filePath && msg.filePath.length > 0 && (
+                          <>
+                            {
+                              msg.filePath.map((uploaded_path, j) => (
+                                <>
+                                  <div className='flex'>
+                                    <span className='text-[12px] mt-[0px] right-[20px] mb-[5px] text-left mr-[5px]'>{msg.fname},</span>
+                                    <span className='text-[12px] text-left'>
+                                      {
+                                        formatDateFromTimestamp(msg.__createdtime__)
+                                      }
+                                    </span>
+                                  </div>
+                                  <div className='grid relative mb-[10px]' key={j}>
+                                    <div className='bg-[#5C5CAD] w-fit p-[15px] float-left' style={{borderRadius:'20px 20px 0px'}}>
+                                      {/* <img src='/file_icon.png' width={16} className='h-[16px] mt-[5px] mx-[2px]' alt='fileicon_img'></img> */}
+                                      {isImageFile(uploaded_path) &&
+                                        <img src={`../${uploaded_path}`} width={200} className='h-[200] mt-[5px] mx-[2px]' alt='fileicon_img' />
+                                      }
+                                      <div className='flex justify-center'>
+                                        <img src='/file_icon.png' width={16} className='h-[16px] mt-[5px] mx-[2px]' alt='fileicon_img'></img>
+                                        <span className=' cursor-pointer text-white text-center'  onClick={() => downloadFile(uploaded_path.slice(8))}>
+                                          {uploadedPath_edit(uploaded_path)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </>
+                              ))
+                            }
+                          </>)}
+                      </>
+                      )}
+                    </>
+                  ))}
+                  <div ref={messagesEndRef} />
+                </div>
+                {uploadedFiles && uploadedFiles.length > 0 && (
+                    <div className='bg-[#8F8F8F] flex absolute top-[635px] pt-[5px] items-center px-[10px] h-[30px]' style={{width: 'calc(100% - 0px)'}}>
+                    {
+                      uploadedFiles.map((file, i)=>(
+                        <div className='flex border border-solid rounded-lg border-gray-400 px-[2px] mx-[2px]'>
+                          <span className='px-[5px]' key={i}>{uploadedPath_edit(file)}</span>
+                          <img src='/file_close.png' width={16} className='h-[16px] mt-[5px] cursor-pointer' alt='imoticon_img' onClick={()=>{setUploadedFiles(uploadedFiles.filter((item)=>item!==file))}}></img>
+                        </div>
+                      ))
+                    }
+                    </div>
+                  )}
+                <div className='bg-[#8F8F8F] flex absolute bottom-0 py-[10px] items-center px-[10px] h-[85px] rounded-b-2xl' style={{width: 'calc(100% - 0px)'}}>
                   <img src='/imoticon.png' width={24} className='h-[24px]' alt='imoticon_img'></img>
-                  <img src='/file_chat.png' width={24} className='h-[24px] ml-[10px] cursor-pointer' alt='file_attach' onClick={()=>{}}></img>
-                  {/* <form ref={formRef} onSubmit={onFormSubmit}>
+                  <img src='/file_chat.png' width={24} className='h-[24px] ml-[10px] cursor-pointer' alt='file_attach' onClick={handleClick}></img>
+                  {isuploading && 
+                    <div className="w-[30px] ml-[10px] mt-[7px] mr-[10px]">
+                      <CircularProgressWithLabel value={progress} />
+                    </div>
+                  }
+                  <form ref={formRef} onSubmit={onFormSubmit}>
                     <input type = 'file' ref={inputRef} className='file-input' onChange={handleFileChange} hidden />
-                  </form> */}
-                  <input type='text' style={{flex:1}} className='rounded-3xl ml-[10px] px-[20px] h-[48px]' placeholder='Say something...'></input>
-                  <div className='bg-white rounded-3xl h-[48px] ml-[10px] w-[48px] cursor-pointer'><img src='/paper_plane.png' alt='paper_plane' onClick={() => {}}></img></div>
+                  </form>
+                  <input type='text' style={{flex:1}} className='rounded-3xl ml-[10px] px-[20px] h-[48px]' placeholder='Say something...' value={chat} onChange={e=> setChat(e.target.value)} onKeyDown={_onKeypress}></input>
+                  <div className='bg-white rounded-3xl ml-[10px] right-[10px] h-[48px] w-[48px] cursor-pointer'><img src='/paper_plane.png' alt='paper_plane' onClick={sendMessage}></img></div>
                 </div>
               </Box>
             </Modal>
