@@ -6,10 +6,16 @@ import flagIcon from 'assets/img/red_flag.svg';
 import CO from 'assets/img/capital_one.png';
 import LA from 'assets/img/LA.png';
 import Key from 'assets/img/key_icon.png'
+import {io, Socket} from 'socket.io-client';
+import { useSelector } from 'react-redux';
+
+
+export const socket = io('http://localhost:5000');
 
 function TitleList({ viewMode, data, changeView }: any) {
+  const user = useSelector((state: any) => state.auth.user);
   const navigate = useNavigate();
-
+  const [chat_room_name, setChatRoomName] = useState('');
   useEffect(() => {
     // const cb = async () => {
     //   const result: any = await getAllTitles();
@@ -23,6 +29,17 @@ function TitleList({ viewMode, data, changeView }: any) {
     // };
     // cb();
   }, []);
+  const handleTitleDetailClick = (room_id: any, room_name: any) => {
+    if(chat_room_name !== ''){
+      socket.emit('leave_room', { user, chat_room_name });  
+    }
+    setChatRoomName(room_name);
+    navigate(`/titleDetail/${room_id}`, {
+      state: {
+        room_name
+      }
+    });
+  };
 
   return (
     <div className="p-2 max-h-[680px] overflow-y-scroll" style={{ flex:4 }}>
@@ -101,7 +118,7 @@ function TitleList({ viewMode, data, changeView }: any) {
                   src={title.data.images[0]}
                   width={'100%'}
                   className="cursor-pointer"
-                  onClick={() => navigate(`/titleDetail/${17}`)}
+                  onClick={()=>handleTitleDetailClick(title._id, title.data.make+' - '+ title.data.plate_number)}
                 />
                 <img
                   src={multiIcon}

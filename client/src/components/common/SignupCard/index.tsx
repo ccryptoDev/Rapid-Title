@@ -12,7 +12,8 @@ import UserTypeDropdown from '../UserTypeDropdown';
 
 function SignupCard() {
   const navigate = useNavigate();
-  const [username,setUserName] = useState('');
+  const [fname,setFname] = useState('');
+  const [lname,setLname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState(-1);
@@ -41,7 +42,7 @@ function SignupCard() {
   }
   const onSubmit = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    let formData = {username,email,password,userType};
+    let formData = {fname,lname,email,password,userType};
     let result = await register(formData)
     if(result === true){
       navigate('/auth/login');
@@ -73,7 +74,17 @@ function SignupCard() {
               <input type="hidden" name="remember" value="true" />
               <div className="-space-y-px rounded-md shadow-sm">
                 <div className='relative 2xl:!mb-[20px] md:!mb-[10px]'>
-                  <input id="name" name="name" type="string" value={username} onChange={e =>setUserName(e.target.value)} autoComplete="name" required className="relative block w-full rounded-t-md border-0 py-1.5 px-1.5 text-gray-500 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset md:text-sm 2xl:text-2xl pl-5 sm:leading-6 2xl:h-[40px]" placeholder="First Name and Last Name" />
+                  <input id="name" name="name" type="string" value={fname} onChange={e =>setFname(e.target.value)} autoComplete="name" required className="relative block w-full rounded-t-md border-0 py-1.5 px-1.5 text-gray-500 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset md:text-sm 2xl:text-2xl pl-5 sm:leading-6 2xl:h-[40px]" placeholder="First Name" />
+                  <div className="absolute inset-y-0 right-2 flex items-center">
+                  <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3.66699 4.83333C3.66699 6.67428 5.15938 8.16667 7.00033 8.16667C8.84127 8.16667 10.3337 6.67428 10.3337 4.83333C10.3337 2.99238 8.84127 1.5 7.00033 1.5C5.15938 1.5 3.66699 2.99238 3.66699 4.83333Z" fill="white"/>
+                    <path d="M12.8337 16.5C12.8337 13.2783 10.222 10.6667 7.00033 10.6667C3.77866 10.6667 1.16699 13.2783 1.16699 16.5M7.00033 8.16667C5.15938 8.16667 3.66699 6.67428 3.66699 4.83333C3.66699 2.99238 5.15938 1.5 7.00033 1.5C8.84127 1.5 10.3337 2.99238 10.3337 4.83333C10.3337 6.67428 8.84127 8.16667 7.00033 8.16667Z" stroke="#7171B8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+
+                  </div>
+                </div>
+                <div className='relative 2xl:!mb-[20px] md:!mb-[10px]'>
+                  <input id="name" name="name" type="string" value={lname} onChange={e =>setLname(e.target.value)} autoComplete="name" required className="relative block w-full rounded-t-md border-0 py-1.5 px-1.5 text-gray-500 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset md:text-sm 2xl:text-2xl pl-5 sm:leading-6 2xl:h-[40px]" placeholder="Last Name" />
                   <div className="absolute inset-y-0 right-2 flex items-center">
                   <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3.66699 4.83333C3.66699 6.67428 5.15938 8.16667 7.00033 8.16667C8.84127 8.16667 10.3337 6.67428 10.3337 4.83333C10.3337 2.99238 8.84127 1.5 7.00033 1.5C5.15938 1.5 3.66699 2.99238 3.66699 4.83333Z" fill="white"/>

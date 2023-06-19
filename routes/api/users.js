@@ -25,7 +25,8 @@ function getRandomInt(min, max) {
 // @access   Public
 router.post(
   '/',
-  check('username', 'Username is required').notEmpty(),
+  check('fname', 'First name is required').notEmpty(),
+  check('lname', 'Last name is required').notEmpty(),
   check('userType', 'Please select user type').notEmpty(),
   check('email', 'Please include a valid email').isEmail(),
   check(
@@ -37,7 +38,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { username , email, password, userType } = req.body;
+    const { fname, lname , email, password, userType } = req.body;
     try {
       let user_email = await User.findOne({ email });
       if (user_email) {
@@ -46,27 +47,12 @@ router.post(
           .json({ errors: [{ msg: 'User already exists' }] });
       }
 
-      let user_username = await User.findOne({ username });
-      if (user_username) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: 'Username already exists' }] });
-      }
-
-      // Username blacklist check
-      for(let item of backlist){
-        if(username == item){
-          return res
-            .status(400)
-              .json({ errors: [{ msg: 'This username is not allowed to use' }] });
-        }
-      }
       let user = await User.findOne({email});
 
-      const username_created = username + getRandomInt(MIN , MAX);
         user = new User({
-          username : username_created,
           email,
+          fname,
+          lname,
           password,
           userType,
         });
@@ -88,7 +74,7 @@ router.post(
           { expiresIn: '5 days' },
           (err, token) => {
             if (err) throw err;
-            res.json({ token, succss : true, username : user.username});
+            res.json({ token, succss : true, user});
           }
         );
       

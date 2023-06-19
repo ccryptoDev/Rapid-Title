@@ -47,16 +47,16 @@ function TitleHolds() {
   }
   useEffect(() => {
     const cb = async () => {
-      let data = await loadHoldingTitles();
-      console.log(data);
-      if(data.length == 0){
-        data = await loadHoldingTitles1();
+      let data1 = await loadHoldingTitles();
+      if(data1 && data1.length == 0){
+        data1 = await loadHoldingTitles1();
       }
       //@ts-ignore
-      setData(data);
+      setData(data1);
     };
     cb();
-  },[data])
+  },[])
+  console.log(data);
 
   return (
     <div className="p-2 max-h-[680px] overflow-y-scroll w-full">

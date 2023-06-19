@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
     // socket.emit('chatroom_users', chatRoomUsers);
   });
   socket.on('send_message', (data) => {
-    const { chat_room_id, chat_room_name, user_name, user_id, chat, __createdtime__, uploadedFiles } = data;
+    const { chat_room_id, chat_room_name, user_fname, user_id, chat, __createdtime__, uploadedFiles } = data;
     console.log(data);
     let message = new MessageModel();
     message.sender = user_id;
@@ -107,6 +107,7 @@ io.on('connection', (socket) => {
     message.roomName = chat_room_name;
     message.content = chat;
     message.filePath = uploadedFiles;
+    message.createdAt = __createdtime__;
     message.save();
     // socket.to(chat_room_name).emit('receive_message', data);
     io.in(chat_room_name).emit('receive_message', data); 

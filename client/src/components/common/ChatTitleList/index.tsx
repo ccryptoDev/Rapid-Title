@@ -7,7 +7,7 @@ import CO from 'assets/img/capital_one.png';
 import LA from 'assets/img/LA.png';
 import Key from 'assets/img/key_icon.png'
 
-function ChatTitleList({ data, changeRoom, socket }: any) {
+function ChatTitleList({ data, changeRoom, socket, room_id }: any) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ function ChatTitleList({ data, changeRoom, socket }: any) {
       {
         data.map((title: any, index: any) => {
           return(
-            <div className='flex py-[8px] pl-[5px] justify-between items-center cursor-pointer' onClick={() => changeRoom(title._id, title.data.images[0], title.data.make+' - '+ title.data.plate_number)}>
+            <div className={`${room_id === title._id ? 'bg-[#FF85A3]' : 'bg-white'} flex py-[8px] pl-[5px] justify-between items-center cursor-pointer rounded-lg`} onClick={() => changeRoom(title._id, title.data.images[0], title.data.make+' - '+ title.data.plate_number)}>
               <img
                   src={title.data.images[0]}
                   width={'18%'}

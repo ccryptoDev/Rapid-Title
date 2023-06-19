@@ -1,4 +1,4 @@
 {
-  "mongoURI": "mongodb://127.0.0.1:27017/rapidtitle",
+  "mongoURI": "mongodb://ec2-54-177-112-127.us-west-1.compute.amazonaws.com:27017/rapidtitle",
   "jwtSecret": "secret"
 }
