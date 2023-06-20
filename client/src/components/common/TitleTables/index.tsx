@@ -96,7 +96,7 @@ function TitleTables({viewMode,data, changeView}: any) {
                                     </div>
                                 </th>
                                 <td className="px-6 py-4 text-lg">
-                                    $ {title.data.cost}
+                                    $ {Number(title.data.cost).toLocaleString()}
                                 </td>
                                 <td className="px-6 py-4 text-lg">
                                     $ {title.data.floor_plan}

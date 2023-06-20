@@ -121,6 +121,7 @@ export default function Community() {
       },
     };
     try {
+      //@ts-ignore
       const res = await api.post('/v2/fileupload', formData, config);
       setIsUploading(false);
       setProgress(0);
