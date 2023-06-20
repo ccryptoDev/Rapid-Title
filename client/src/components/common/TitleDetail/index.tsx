@@ -124,6 +124,7 @@ function TitleDetail() {
       },
     };
     try {
+      //@ts-ignore
       const res = await api.post('/v2/fileupload', formData, config);
       setIsUploading(false);
       setProgress(0);
@@ -155,7 +156,7 @@ function TitleDetail() {
 
   const [isOpen, setIsOpen] = React.useState(false);
   const user = useSelector((state: any) => state.auth.user);
-  const [tab, setActiveTab] = React.useState('status');
+  const [tab, setActiveTab] = React.useState('holds');
   const [vehicleData, setVehicleData] = React.useState({})
   const {id} = useParams();
   const location = useLocation();
@@ -571,21 +572,21 @@ function TitleDetail() {
                       <div className='flex'>
                         <div className='h-full'>
                           <div className='text-xl'>Vehicle Worth</div>
-                          <div className='text-2xl'> $ 30.400USD </div>
+                          <div className='text-2xl'> $ 30,400USD </div>
                         </div>
                         <div className='ml-4'>
                           <div className='text-xl'>Floor Plan</div>
-                          <div className='text-2xl'> $ 111.400USD </div>
+                          <div className='text-2xl'> $ 11,400USD </div>
                         </div>
                       </div>
                       <div className='flex'>
                         <div className='h-full'>
                           <div className='text-xl'>Vehicle Worth</div>
-                          <div className='text-2xl'> $ 30.400USD </div>
+                          <div className='text-2xl'> $ 30,400USD </div>
                         </div>
                         <div className='ml-4'>
                           <div className='text-xl'>Floor Plan</div>
-                          <div className='text-2xl'> $ 111.400USD </div>
+                          <div className='text-2xl'> $ 111,400USD </div>
                         </div>
                       </div>
                   </Carousel>

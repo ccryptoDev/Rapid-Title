@@ -148,7 +148,7 @@ function TitleList({ viewMode, data, changeView }: any) {
                 <div className="flex-1">
                   <p className="text-[#FF4876] text-xl mt-1">
                     {' '}
-                    $ {title.data.cost}
+                    $ {Number(title.data.cost).toLocaleString()}
                   </p>
                   <p className="text-black text-base mt-1">
                     {' '}
