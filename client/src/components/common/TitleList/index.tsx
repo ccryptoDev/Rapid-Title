@@ -8,6 +8,7 @@ import LA from 'assets/img/LA.png';
 import Key from 'assets/img/key_icon.png'
 import {io, Socket} from 'socket.io-client';
 import { useSelector } from 'react-redux';
+// import HoldingStatusDropdown from '../HoldingStatusDropdown';
 
 
 export const socket = io('http://localhost:5000');
@@ -16,6 +17,12 @@ function TitleList({ viewMode, data, changeView }: any) {
   const user = useSelector((state: any) => state.auth.user);
   const navigate = useNavigate();
   const [chat_room_name, setChatRoomName] = useState('');
+  const [isPending, setIsPending] = React.useState(true);
+  // const [isOpenedDropdown, setIsOpenedDropdown] = React.useState(false);
+  // const handleClose = (data: any) =>{
+  //   setIsPending(data);
+  //   setIsOpenedDropdown(false);
+  // }
   useEffect(() => {
     // const cb = async () => {
     //   const result: any = await getAllTitles();
@@ -82,12 +89,23 @@ function TitleList({ viewMode, data, changeView }: any) {
               <img src={multiIcon} className="cursor-pointer" />
             </button>
           )}
-          <button
-            className="bg-[#FF3366] text-white font-bold py-2 px-4 ml-2 rounded inline-flex items-center"
-            style={{ borderRadius: 4 }}
-          >
-            <span className="mr-2">Pending</span>
-          </button>
+          {
+            isPending ? (
+              <button
+                className="bg-[#333399] text-white font-bold py-2 ml-2 rounded inline-flex items-center w-[120px] justify-center"
+                style={{ borderRadius: 4 }} onClick={()=>{setIsPending(!isPending)}}
+              >
+                <span>Completed</span>
+              </button>
+            ):(
+              <button
+                className="bg-[#FF3366] text-white font-bold py-2 ml-2 rounded inline-flex items-center w-[120px] justify-center"
+                style={{ borderRadius: 4 }} onClick={()=>{setIsPending(!isPending)}}
+              >
+                <span>Pending</span>
+              </button>
+            )
+          }
           <button className=" text-black font-bold py-2 px-4 ml-2 rounded inline-flex items-center">
             <span className="mr-2">Actions</span>
             <svg
@@ -112,70 +130,136 @@ function TitleList({ viewMode, data, changeView }: any) {
       <div className="title-body grid grid-cols-4 p-2">
         {data.map((title: any, index: any) => {
           return (
-            <div className="card min-h-[297px] col-span-1 m-2" key={index}>
-              <div className="w-full relative">
-                <img
-                  src={title.data.images[0]}
-                  width={'100%'}
-                  className="cursor-pointer"
-                  onClick={()=>handleTitleDetailClick(title._id, title.data.make+' - '+ title.data.plate_number)}
-                />
-                <img
-                  src={multiIcon}
-                  className="absolute top-4 left-5 cursor-pointer"
-                />
-                <img
-                  src={flagIcon}
-                  className="absolute bottom-3 left-3 cursor-pointer"
-                />
-                <div className="absolute top-4 right-3">
-                  <img src={CO} className="cursor-pointer w-[55px] h-[22px]" />
-                  <img
-                    src={LA}
-                    className="cursor-pointer w-[55px] h-[22px] mt-2"
-                  />
-                </div>
-                <img
-                  src={'user1.png'}
-                  width={44}
-                  height={43}
-                  className="absolute right-2 bottom-[-20px]"
-                />
-              </div>
-              <p className="text-gray-600 text-base mt-1">{title.data.number}</p>
-              <p className="text-[#4848A4] text-xl">{title.data.make}</p>
-              <div className="flex p-2 items-center">
-                <div className="flex-1">
-                  <p className="text-[#FF4876] text-xl mt-1">
-                    {' '}
-                    $ {Number(title.data.cost).toLocaleString()}
-                  </p>
-                  <p className="text-black text-base mt-1">
-                    {' '}
-                    {30} Days
-                  </p>
-                  <p className="text-black text-base mt-1"> {title.data.plate_number}</p>
-                </div>
-                <div>
-                  <div>
-                    <button
-                      className="bg-[#FF3366] w-full text-white font-bold py-1 px-2 rounded inline-flex items-center"
-                      style={{ borderRadius: 4 }}
-                    >
-                      <span className="mr-2 text-xl"> {20} Holds</span>
-                    </button>
+            <>
+              {
+                (isPending && title.data.state === 'Pending') && (
+                  <div className="card min-h-[297px] col-span-1 m-2" key={index}>
+                    <div className="w-full relative">
+                      <img
+                        src={title.data.images[0]}
+                        width={'100%'}
+                        className="cursor-pointer"
+                        onClick={()=>handleTitleDetailClick(title._id, title.data.make+' - '+ title.data.plate_number)}
+                      />
+                      <img
+                        src={multiIcon}
+                        className="absolute top-4 left-5 cursor-pointer"
+                      />
+                      <img
+                        src={flagIcon}
+                        className="absolute bottom-3 left-3 cursor-pointer"
+                      />
+                      <div className="absolute top-4 right-3">
+                        <img src={CO} className="cursor-pointer w-[55px] h-[22px]" />
+                        <img
+                          src={LA}
+                          className="cursor-pointer w-[55px] h-[22px] mt-2"
+                        />
+                      </div>
+                      <img
+                        src={'user1.png'}
+                        width={44}
+                        height={43}
+                        className="absolute right-2 bottom-[-20px]"
+                      />
+                    </div>
+                    <p className="text-gray-600 text-base mt-1">{title.data.number}</p>
+                    <p className="text-[#4848A4] text-xl cursor-pointer hover:text-[#FF4876]" onClick={()=>handleTitleDetailClick(title._id, title.data.make+' - '+ title.data.plate_number)}>{title.data.make}</p>
+                    <div className="flex p-2 items-center">
+                      <div className="flex-1">
+                        <p className="text-[#FF4876] text-xl mt-1">
+                          {' '}
+                          $ {Number(title.data.cost).toLocaleString()}
+                        </p>
+                        <p className="text-black text-base mt-1">
+                          {' '}
+                          {30} Days
+                        </p>
+                        <p className="text-black text-base mt-1"> {title.data.plate_number}</p>
+                      </div>
+                      <div>
+                        <div>
+                          <button
+                            className="bg-[#FF3366] w-full text-white font-bold py-1 px-2 rounded inline-flex items-center"
+                            style={{ borderRadius: 4 }}
+                          >
+                            <span className="mr-2 text-xl"> {20} Holds</span>
+                          </button>
+                        </div>
+                        <div className="mt-2">
+                          <button
+                            className="bg-[#FF5C85] justify-center w-full text-white font-bold py-2 px-3 rounded inline-flex items-center"
+                            style={{ borderRadius: 4 }}
+                          >
+                            <span className="mr-2 text-xl"> {'pending'}</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="mt-2">
-                    <button
-                      className="bg-[#FF5C85] justify-center w-full text-white font-bold py-2 px-3 rounded inline-flex items-center"
-                      style={{ borderRadius: 4 }}
-                    >
-                      <span className="mr-2 text-xl"> {'pending'}</span>
-                    </button>
+                )
+              }
+              {
+                (!isPending && title.data.state === 'Completed') && (
+                  <div className="card min-h-[297px] col-span-1 m-2" key={index}>
+                    <div className="w-full relative">
+                      <img
+                        src={title.data.images[0]}
+                        width={'100%'}
+                        className="cursor-pointer"
+                        onClick={()=>handleTitleDetailClick(title._id, title.data.make+' - '+ title.data.plate_number)}
+                      />
+                      <img
+                        src={multiIcon}
+                        className="absolute top-4 left-5 cursor-pointer"
+                      />
+                      <img
+                        src={flagIcon}
+                        className="absolute bottom-3 left-3 cursor-pointer"
+                      />
+                      <div className="absolute top-4 right-3">
+                        <img src={CO} className="cursor-pointer w-[55px] h-[22px]" />
+                        <img
+                          src={LA}
+                          className="cursor-pointer w-[55px] h-[22px] mt-2"
+                        />
+                      </div>
+                      <img
+                        src={'user1.png'}
+                        width={44}
+                        height={43}
+                        className="absolute right-2 bottom-[-20px]"
+                      />
+                    </div>
+                    <p className="text-gray-600 text-base mt-1">{title.data.number}</p>
+                    <p className="text-[#4848A4] text-xl cursor-pointer hover:text-[#FF4876]" onClick={()=>handleTitleDetailClick(title._id, title.data.make+' - '+ title.data.plate_number)}>{title.data.make}</p>
+                    <div className="flex p-2 items-center">
+                      <div className="flex-1">
+                        <p className="text-[#FF4876] text-xl mt-1">
+                          {' '}
+                          $ {Number(title.data.cost).toLocaleString()}
+                        </p>
+                        <p className="text-black text-base mt-1">
+                          {' '}
+                          {30} Days
+                        </p>
+                        <p className="text-black text-base mt-1"> {title.data.plate_number}</p>
+                      </div>
+                      <div>
+                        <div className="mt-2">
+                          <button
+                            className="bg-[#333399] justify-center w-full text-white font-bold py-2 px-3 rounded inline-flex items-center"
+                            style={{ borderRadius: 4 }}
+                          >
+                            <span className="mr-2 text-xl"> {'Completed'}</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>
+                )
+              }
+            </>
           );
         })}
       </div>

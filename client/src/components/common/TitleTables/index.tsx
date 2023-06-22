@@ -11,6 +11,7 @@ import Key from 'assets/img/key_icon.png'
 
 function TitleTables({viewMode,data, changeView}: any) {
   const navigate = useNavigate();
+  const [isPending, setIsPending] = React.useState(true);
 
   return (
     <div className="p-2 max-h-[680px] overflow-y-scroll w-full">
@@ -34,9 +35,23 @@ function TitleTables({viewMode,data, changeView}: any) {
                   <img src={multiIcon} className='cursor-pointer'/>
                 </button>)
             }
-            <button className="bg-[#FF3366] text-white font-bold py-2 px-4 ml-2 rounded inline-flex items-center" style={{borderRadius:4}}>
-              <span className='mr-2'>Pending</span>
-            </button>  
+            {
+              isPending ? (
+                <button
+                  className="bg-[#333399] text-white font-bold py-2 ml-2 rounded inline-flex items-center w-[120px] justify-center"
+                  style={{ borderRadius: 4 }} onClick={()=>{setIsPending(!isPending)}}
+                >
+                  <span>Completed</span>
+                </button>
+              ):(
+                <button
+                  className="bg-[#FF3366] text-white font-bold py-2 ml-2 rounded inline-flex items-center w-[120px] justify-center"
+                  style={{ borderRadius: 4 }} onClick={()=>{setIsPending(!isPending)}}
+                >
+                  <span>Pending</span>
+                </button>
+              )
+            } 
             <button className=" text-black font-bold py-2 px-4 ml-2 rounded inline-flex items-center" >
               <span className='mr-2'>Actions</span>
               <svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg" style={{transform:'rotate(180deg)'}}>
@@ -85,7 +100,11 @@ function TitleTables({viewMode,data, changeView}: any) {
                 <tbody className='text-[#212133]'>
                   {
                     data.map((title:any,index:any) => {
-                      return <tr className={index%2 === 0 ? `bg-[#D6D6EB]`:''}>
+                      return(
+                        <>
+                        {
+                          (isPending && title.data.state === 'Pending') && (
+                            <tr className={index%2 === 0 ? `bg-[#D6D6EB]`:''}>
                                 <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap flex items-center">
                                     <div>
                                       <img src={title.data.images[0]} style={{borderRadius:50,width:42,height:40}}/>
@@ -99,7 +118,7 @@ function TitleTables({viewMode,data, changeView}: any) {
                                     $ {Number(title.data.cost).toLocaleString()}
                                 </td>
                                 <td className="px-6 py-4 text-lg">
-                                    $ {title.data.floor_plan}
+                                    $ {Number(title.data.floor_plan).toLocaleString()}
                                 </td>
                                 <td className="px-6 py-4 text-lg">
                                     {title.data.plate_number}
@@ -141,6 +160,70 @@ function TitleTables({viewMode,data, changeView}: any) {
                                 </td>
                                 
                             </tr>
+                          )
+                        }
+                        {
+                          (!isPending && title.data.state === 'Completed') && (
+                            <tr className={index%2 === 0 ? `bg-[#D6D6EB]`:''}>
+                                <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap flex items-center">
+                                    <div>
+                                      <img src={title.data.images[0]} style={{borderRadius:50,width:42,height:40}}/>
+                                    </div>
+                                    <div className='ml-5'>
+                                      <p className='text-[#333399] text-sm'>{title.data.type}</p>
+                                      <p className='text-lg'> {title.data.make}</p>
+                                    </div>
+                                </th>
+                                <td className="px-6 py-4 text-lg">
+                                    $ {Number(title.data.cost).toLocaleString()}
+                                </td>
+                                <td className="px-6 py-4 text-lg">
+                                    $ {Number(title.data.floor_plan).toLocaleString()}
+                                </td>
+                                <td className="px-6 py-4 text-lg">
+                                    {title.data.plate_number}
+                                </td>
+                                <td className="pl-1 py-1 px-0 text-lg">
+                                    <div className='bg-[#FF3366]  h-full px-3 py-4 status-bg'>
+                                      <div className='bg-[#333399] text-white rounded-md text-center'> Completed</div>
+                                    </div>
+                                </td>
+                                <td className="py-4 px-0 text-lg">
+                                  <div className='bg-[#FF3366]  h-full px-3 py-4'>
+                                      <div className='bg-[#333399] text-white rounded-md text-center'> {30}</div>
+                                    </div>
+                                </td>
+                                <td className="py-4 px-0 text-lg">
+                                    <div className='bg-[#FF3366] flex h-full px-3 py-2 items-center'>
+                                      <img src={'user1.png'} className='observer-avatar' alt="observer_avatar"/>
+                                      <span className='text-white ml-2'>{'Jane'}</span>
+                                    </div>
+                                </td>
+                                <td className="py-4 px-0 text-lg">
+                                    <div className='bg-[#FF3366] px-3 py-[19px] pt-[18px]'>
+                                      <img src={CO} className='cursor-pointer'/>
+                                    </div>
+                                </td>
+                                <td className="py-4 px-0 text-lg">
+                                    <div className='bg-[#FF3366] px-3 py-[19px]'>
+                                      <img src={LA} className='cursor-pointer'/>
+                                    </div>
+                                </td>
+                                <td className="py-4 px-0 pr-3 text-lg">
+                                    <div className='bg-[#FF3366] h-full px-3 py-[16px] border-bg'>
+                                      <div className="flex items-center justify-center">
+                                        <div className='bg-[white] px-3'>
+                                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                </td>
+                                
+                            </tr>
+                          )
+                        }
+                        </>
+                      ) 
                     })
                   }
                 </tbody>
