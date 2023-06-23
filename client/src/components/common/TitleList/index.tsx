@@ -132,7 +132,7 @@ function TitleList({ viewMode, data, changeView }: any) {
           return (
             <>
               {
-                (isPending && title.data.state === 'Pending') && (
+                (isPending && title.data.state !== 'Completed') && (
                   <div className="card min-h-[297px] col-span-1 m-2" key={index}>
                     <div className="w-full relative">
                       <img
@@ -183,7 +183,7 @@ function TitleList({ viewMode, data, changeView }: any) {
                             className="bg-[#FF3366] w-full text-white font-bold py-1 px-2 rounded inline-flex items-center"
                             style={{ borderRadius: 4 }}
                           >
-                            <span className="mr-2 text-xl"> {20} Holds</span>
+                            <span className="mr-2 text-xl"> {title.data.state} Holds</span>
                           </button>
                         </div>
                         <div className="mt-2">

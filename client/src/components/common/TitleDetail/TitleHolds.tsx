@@ -8,7 +8,8 @@ import { Console } from 'console';
 import api from 'utils/api';
 
 
-function TitleHolds() {
+function TitleHolds(title_id:any) {
+  // console.log(title_id.title_id, 'title_id')
   const [isOpen, setIsOpen] = useState(false);
   const [openedRow, setOpenedRow] = useState(-1);
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ function TitleHolds() {
       })
       const update_status = async () => {
         try {
-          const res = await api.put(`/v2/holdingtitles/${update_id}`, {datas});
+          const res = await api.put(`/v2/holdingtitles/${update_id}`, {datas, title_id});
           console.log(res.data);
         } catch (err: any) {
           console.log(err);
@@ -34,27 +35,27 @@ function TitleHolds() {
       };
       update_status();
       console.log(update_id);
-      const cb = async () => {
-        const data = await loadHoldingTitles();
+      const cb = async (title_id: any) => {
+        const data = await loadHoldingTitles(title_id);
         console.log(data);
         //@ts-ignore
         setData(data);
       };
-      cb();
+      cb(title_id.title_id);
       setTimeout(() => {
         setOpenedRow(-1);
       }, 100);
   }
   useEffect(() => {
-    const cb = async () => {
-      let data1 = await loadHoldingTitles();
-      if(data1 && data1.length == 0){
-        data1 = await loadHoldingTitles1();
-      }
+    const cb = async (title_id: any) => {
+      let data1 = await loadHoldingTitles(title_id);
+      // if(data1 && data1.length == 0){
+      //   data1 = await loadHoldingTitles1(title_id);
+      // }
       //@ts-ignore
       setData(data1);
     };
-    cb();
+    cb(title_id.title_id);
   },[])
   console.log(data);
 

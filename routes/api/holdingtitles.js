@@ -8,11 +8,16 @@ const { check, validationResult } = require('express-validator');
 const auth = require('../../middleware/auth')
 const User = require('../../models/User');
 const HoldingTitle = require('../../models/HoldingTitle')
+const Titles = require('../../models/Titles')
 
 
 router.get('/',auth, async (req, res) => {
   try {
+    if(!req.query.title_id){
+      req.json('title id does not exists')
+    }
     const holdingtitles = await HoldingTitle.find({
+      title_id: req.query.title_id.toString()
       // user: req.user.id
     })
     res.json(holdingtitles);
@@ -31,6 +36,24 @@ router.put('/:id', auth, async(req, res) =>{
     const updatedRowData = await HoldingTitle.findByIdAndUpdate(
       myquery, newvalues
     );
+    const completed_details = await HoldingTitle.countDocuments({status: '1', title_id: req.body.title_id.title_id});
+    const total_details = await HoldingTitle.countDocuments({title_id: req.body.title_id.title_id});
+    console.log(completed_details);
+    console.log(total_details);
+    if(completed_details === total_details){
+      const query = { _id: req.body.title_id.title_id };
+      const value = { $set: { 'data.state': 'Completed' } };
+      const updateTitles = await Titles.findByIdAndUpdate(
+        query, value
+      );
+    }
+    else{
+      const query = { _id: req.body.title_id.title_id };
+      const value = { $set: { 'data.state': completed_details+'/'+total_details } };
+      const updateTitles = await Titles.findByIdAndUpdate(
+        query, value
+      );
+    }
 
     res.json(updatedRowData);
   } catch (error) {
@@ -63,6 +86,7 @@ router.get('/test', async (req, res) => {
       responsible_description: 'Sacramento',
       days: '31',
       notes: '',
+      title_id: req.query.title_id,
     },
     {
       hold:'Car had a Registered Owner',
@@ -71,6 +95,7 @@ router.get('/test', async (req, res) => {
       responsible_description: 'Earl Garris',
       days: '8',
       notes: '',
+      title_id: req.query.title_id,
     },
     {
       hold:'Car has a Title at Purchase',
@@ -79,6 +104,7 @@ router.get('/test', async (req, res) => {
       responsible_description: 'Melina B.',
       days: '5',
       notes: '',
+      title_id: req.query.title_id,
     },
     {
       hold:'Documents are Signed and In-State',
@@ -87,6 +113,7 @@ router.get('/test', async (req, res) => {
       responsible_description: 'DMV',
       days: '22',
       notes: '',
+      title_id: req.query.title_id,
     },
     {
       hold:'Correct Documents Signed by the Dealer.',
@@ -95,6 +122,7 @@ router.get('/test', async (req, res) => {
       responsible_description: 'Sacramento',
       days: '12',
       notes: '',
+      title_id: req.query.title_id,
     },
     {
       hold:'Bank sent the correct Title',
@@ -103,6 +131,7 @@ router.get('/test', async (req, res) => {
       responsible_description: 'Capitalone',
       days: '22',
       notes: '',
+      title_id: req.query.title_id,
     },
     {
       hold:'Car has a Lien to be Paid',
@@ -111,6 +140,7 @@ router.get('/test', async (req, res) => {
       responsible_description: 'Sacramento',
       days: '31',
       notes: '',
+      title_id: req.query.title_id,
     },
   ];
   holdingtitleData.map( async holdingtitleRecord => {
@@ -121,6 +151,7 @@ router.get('/test', async (req, res) => {
       responsible_description: holdingtitleRecord.responsible_description,
       days: holdingtitleRecord.days,
       notes: holdingtitleRecord.notes,
+      title_id: holdingtitleRecord.title_id,
     });
     await holdingtitles.save();
   });

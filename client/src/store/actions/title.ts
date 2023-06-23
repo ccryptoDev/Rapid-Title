@@ -17,9 +17,10 @@ export const loadTitles = async () => {
     setAlert(err);
   }
 };
-export const loadHoldingTitles = async () => {
+export const loadHoldingTitles = async (title_id: any) => {
   try {
-    const res = await api.get('/v2/holdingtitles');
+    console.log(title_id)
+    const res = await api.get(`/v2/holdingtitles?title_id=${title_id}`);
     store.dispatch({
       type: SET_HOLDINGTITLES,
       payload: res.data
@@ -29,9 +30,9 @@ export const loadHoldingTitles = async () => {
     setAlert(err);
   }
 };
-export const loadHoldingTitles1 = async () => {
+export const loadHoldingTitles1 = async (title_id:any) => {
   try {
-    const res = await api.get('/v2/holdingtitles/test');
+    const res = await api.get(`/v2/holdingtitles/test?title_id=${title_id}`);
     store.dispatch({
       type: SET_HOLDINGTITLES,
       payload: res.data

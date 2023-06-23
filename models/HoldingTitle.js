@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const HoldingTitleSchema = new Schema({
+  title_id : {
+    type: String,
+    required: false,
+  },
   hold: {
     type: String,
     required: true,
