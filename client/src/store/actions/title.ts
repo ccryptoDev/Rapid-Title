@@ -17,6 +17,18 @@ export const loadTitles = async () => {
     setAlert(err);
   }
 };
+export const loadTitles_search = async (search_title: any) => {
+  try {
+    const res = await api.get(`/v2/titles/search?search_title=${search_title}`);
+    store.dispatch({
+      type: SET_TITLES,
+      payload: res.data
+    });
+    return res.data;
+  } catch (err: any) {
+    setAlert(err);
+  }
+};
 export const loadHoldingTitles = async (title_id: any) => {
   try {
     console.log(title_id)

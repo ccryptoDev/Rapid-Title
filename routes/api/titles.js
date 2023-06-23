@@ -23,6 +23,21 @@ router.get('/',auth, async (req, res) => {
   
 });
 
+router.get('/search',auth, async (req, res) => {
+  console.log(req.query.search_title);
+  try {
+    const titles = await Titles.find({
+      "data.make":{$regex: new RegExp(req.query.search_title.toString(), 'i')}
+    })
+    console.log(titles);
+    res.json(titles);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+  
+});
+
 router.post('/mint',auth, async (req, res) => {
 
   try {

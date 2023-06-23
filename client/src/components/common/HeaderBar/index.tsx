@@ -14,13 +14,26 @@ import {
 } from 'utils/useWeb3';
 import { walletList } from 'utils/constants';
 
-function HeaderBar() {
+function HeaderBar({search_title}: any) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(false);
   const [walletType, setWalletType] = React.useState('');
   const [tempWalletType, setTempWalletType] = React.useState('');
-  
+  const [searchTitle, setSearchTitle] = React.useState('');
+
+  const _onKeypress = (e: any) => {
+    if(e.key === 'Enter'){
+      // if(!isSelected){
+      //   setChat('');
+      //   return;
+      // }
+      // let temp = chatContent;
+      //@ts-ignore
+      search_title(searchTitle);
+      // setChat('');
+    }
+  }
 
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
@@ -77,6 +90,7 @@ function HeaderBar() {
             placeholder="Search for titles"
             className="bg-[#5C5CAD] w-full indent-5 h-14 hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center text-white"
             style={{ borderRadius: 12 }}
+            value={searchTitle} onChange={e=> setSearchTitle(e.target.value)} onKeyDown={_onKeypress}
           />
           <svg
             width="21"

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 //import styles 👇
 import 'react-modern-drawer/dist/index.css'
-import { loadTitles } from 'store/actions/title';
+import { loadTitles, loadTitles_search } from 'store/actions/title';
 
 import SideBar from 'components/common/SideBar';
 import HeaderBar from 'components/common/HeaderBar';
@@ -32,13 +32,21 @@ function Home() {
       setViewMode('card');
     }
   }
+
+  const search_title = (searchTitle: any) => {
+    const fetchTitles = async () => {
+      const data = await loadTitles_search(searchTitle);
+      setTitleData(data);
+    };
+    fetchTitles();
+  }
   return (
     <>
       <div className="px-[24px]">
         <div className='flex'>
           <SideBar/>
           <div className='w-full py-5'>
-            <HeaderBar/>
+            <HeaderBar search_title = {search_title} />
             <div className='flex w-full'>
               {
                 isCard === 'card' ? (
