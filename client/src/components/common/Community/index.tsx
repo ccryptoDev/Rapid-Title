@@ -5,7 +5,7 @@ import HeaderBar from '../HeaderBar';
 import Switcher from '../Switcher';
 import DmvDropdown from '../DmvDropdown';
 import InputTextField from '../SelectTables/InputTextField';
-import { loadTitles } from 'store/actions/title';
+import { loadTitles, loadTitles_search } from 'store/actions/title';
 import { loadMessages } from 'store/actions/message';
 import ChatTitleList from '../ChatTitleList';
 import {io, Socket} from 'socket.io-client';
@@ -78,6 +78,13 @@ function uploadedPath_edit(uploaded_path: string){
 
 
 export default function Community() {
+  const search_title = (searchTitle: any) => {
+    const fetchTitles = async () => {
+      const data = await loadTitles_search(searchTitle);
+      setTitleData(data);
+    };
+    fetchTitles();
+  }
   const isImageFile = (fileName: string): boolean => {
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
     const extension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
@@ -275,7 +282,7 @@ export default function Community() {
       <div className="flex">
         <SideBar />
         <div className="w-full p-5">
-          <HeaderBar />
+          <HeaderBar  search_title = {search_title} titledata = {titleData}/>
           <div className='grid grid-cols-4 gap-1 p-[20px] overflow-x-auto overflow-y-hidden rounded-lg h-[760px] !mb-0 !py-0 m-[40px]' style={{maxWidth: 'calc(100vw - 133px)',boxShadow:"rgba(0, 0, 0, 0.25) 1px 7px 8px 12px"}}>
             <div className='col-span-1 flex flex-col justify-center'>
               <div className='flex'>

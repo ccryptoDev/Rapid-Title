@@ -46,7 +46,7 @@ function Home() {
         <div className='flex'>
           <SideBar/>
           <div className='w-full py-5'>
-            <HeaderBar search_title = {search_title} />
+            <HeaderBar search_title = {search_title} titledata = {titleData}/>
             <div className='flex w-full'>
               {
                 isCard === 'card' ? (

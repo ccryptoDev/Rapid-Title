@@ -650,7 +650,7 @@ function TitleDetail() {
                     tab === 'status' && <TitleStatus />
                   }
                   {
-                    tab === 'holds' && <TitleHolds title_id = {id}/>
+                    tab === 'holds' && <TitleHolds title_id = {id} key={id}/>
                   }
                   {
                     tab === 'people' && <TitlePeople />

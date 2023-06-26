@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useState } from 'react';
+import React, { BaseSyntheticEvent, useState, useRef, useEffect } from 'react';
 import './index.view.css';
 import { Link } from 'react-router-dom';
 import { logout, setWallet } from 'store/actions/auth';
@@ -14,13 +14,53 @@ import {
 } from 'utils/useWeb3';
 import { walletList } from 'utils/constants';
 
-function HeaderBar({search_title}: any) {
+function HeaderBar({search_title, titledata}: any) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(false);
   const [walletType, setWalletType] = React.useState('');
   const [tempWalletType, setTempWalletType] = React.useState('');
   const [searchTitle, setSearchTitle] = React.useState('');
+  const [showList, setShowList] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const filteredTitles = titledata.filter((data: any) =>
+    data.data.make.toLowerCase().includes(searchTitle.toLocaleLowerCase())
+    );
+  
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchTitle(event.target.value);
+      setShowList(true);
+    };
+  
+    const handleItemClick = (item: string) => {
+      setSearchTitle(item);
+      setShowList(false);
+    };
+  
+    const handleClickOutside = (event: MouseEvent) => {
+      console.log('out clicked');
+      setShowList(false);
+      // Check if the click target is outside of the input element and the list
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node) &&
+        event.target !== inputRef.current &&
+        showList
+      ) {
+        setShowList(false);
+      }
+    };
+  
+  useEffect(() => {
+    // Add event listener for click events on the document
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      // Remove event listener on unmount
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const _onKeypress = (e: any) => {
     if(e.key === 'Enter'){
@@ -90,8 +130,20 @@ function HeaderBar({search_title}: any) {
             placeholder="Search for titles"
             className="bg-[#5C5CAD] w-full indent-5 h-14 hover:bg-grey text-grey-darkest font-bold py-2 px-4 rounded inline-flex items-center text-white"
             style={{ borderRadius: 12 }}
-            value={searchTitle} onChange={e=> setSearchTitle(e.target.value)} onKeyDown={_onKeypress}
+            value={searchTitle} onChange={handleInputChange} onKeyDown={_onKeypress}
+            ref = {inputRef}
           />
+          { showList && (<ul className="absolute z-10 top-full left-0 right-0 bg-gray-100 border border-gray-300 rounded-b-lg shadow-lg overflow-y-auto max-h-60">
+            {filteredTitles.map((data: any, index: any) => (
+              <li
+                key={index}
+                className="py-1 px-3 cursor-pointer hover:bg-gray-200"
+                onClick={()=>handleItemClick(data.data.make)}
+              >
+                {data.data.make}
+              </li>
+            ))}
+          </ul>)}
           <svg
             width="21"
             height="21"
