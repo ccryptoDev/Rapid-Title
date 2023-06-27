@@ -20,8 +20,6 @@ function Home() {
     };
     fetchTitles();
   },[]);
-  
-
 
   const [isCard,setViewMode] = useState('card');
   const changeViewMode = () => {

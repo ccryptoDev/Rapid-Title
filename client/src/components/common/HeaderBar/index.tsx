@@ -24,18 +24,25 @@ function HeaderBar({search_title, titledata}: any) {
   const [showList, setShowList] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const filteredTitles = titledata.filter((data: any) =>
+    const filteredTitles = titledata && titledata.filter((data: any) =>
     data.data.make.toLowerCase().includes(searchTitle.toLocaleLowerCase())
     );
   
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchTitle(event.target.value);
-      setShowList(true);
+      if(event.target.value !== ''){
+        setSearchTitle(event.target.value);
+        setShowList(true);
+      }
+      else{
+        setSearchTitle(event.target.value);
+        setShowList(false);
+      }
     };
   
     const handleItemClick = (item: string) => {
       setSearchTitle(item);
       setShowList(false);
+      search_title(searchTitle);
     };
   
     const handleClickOutside = (event: MouseEvent) => {

@@ -6,10 +6,12 @@ import { loadHoldingTitles } from 'store/actions/title';
 import HoldingStatusDropdown from '../HoldingStatusDropdown';
 import { Console } from 'console';
 import api from 'utils/api';
+import { useSelector } from 'react-redux';
 
 
 function TitleHolds(title_id:any) {
   // console.log(title_id.title_id, 'title_id')
+  const user = useSelector((state: any) => state.auth.user);
   const [isOpen, setIsOpen] = useState(false);
   const [openedRow, setOpenedRow] = useState(-1);
   const navigate = useNavigate();
@@ -103,7 +105,7 @@ function TitleHolds(title_id:any) {
                                   {record.status === '0' ? <div className='pending-badge cursor-pointer  rounded-md bg-[#FF3366] text-center text-white' onClick={()=>handleOpen(index)}>Pending</div> : 
                                     <div className='pending-badge  rounded-md cursor-pointer bg-[#333399] text-center text-white' onClick={()=>handleOpen(index)}>Completed</div>}
                                   {
-                                  index == openedRow &&
+                                  index == openedRow && user.userType == 2 &&
                                     <HoldingStatusDropdown handler = {handleClose} holdstatus = {record.status} />
                                   }
                                 </td>

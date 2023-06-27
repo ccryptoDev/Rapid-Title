@@ -111,26 +111,38 @@ function SignupCard() {
                     </svg>
                   </div>
                 </div>
-                <div className='relative'>
-                    <div className="flex items-center p-[15px] cursor-pointer bg-[#FAFBFD]" onClick={() => handleChange1()}>
-                        <h3 className="px-2 flex-1 text-black" style={{ fontSize: '16px', fontWeight: 600 }}>{getUserType()}</h3>
-                        <img className="pe-4" src={require('../../../assets/img/Product/Arrow/Vector.png')} alt="" />
-                    </div>
-                    {isOpen1 && (
-                        <UserTypeDropdown type={userType} setType={setUserType} close={handleChange1}/>
-                    )}
+                <div className='relative flex'>
+                  {
+                    !isOpen1 && (
+                      <div className="flex items-center p-[10px] cursor-pointer bg-[#FF3366] w-[537px] rounded-lg" onClick={() => handleChange1()}>
+                          <h3 className="px-2 flex-1 text-white" style={{ fontSize: '20px', fontWeight: 600 }}>{getUserType()}</h3>
+                          <img className="pe-4" src="../arrow-right.png" alt="" />
+                      </div>
+                    )
+                  }
+                  {
+                    isOpen1 && (
+                      <div className="flex items-center p-[10px] cursor-pointer bg-[#FF3366] w-[537px] rounded-lg" onClick={() => handleChange1()}>
+                          <h3 className="px-2 flex-1 text-white" style={{ fontSize: '20px', fontWeight: 600 }}>{getUserType()}</h3>
+                          <img className="pe-4" src="../arrow-right.png" alt="" />
+                      </div>
+                    )
+                  }
+                  {isOpen1 && (
+                      <UserTypeDropdown type={userType} setType={setUserType} close={handleChange1}/>
+                  )}
                 </div>
               </div>
 
               <div className='flex justify-center'>
-                <button type="submit" className="group relative flex 2xl:w-[108px] 2xl:h-[54px] justify-center items-center rounded-md bg-indigo-600 py-2 px-3 2xl:text-2xl md:sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                <button type="submit" className="group relative flex 2xl:w-[108px] 2xl:h-[45px] justify-center items-center rounded-md bg-indigo-600 py-2 px-3 2xl:text-2xl md:sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                   Signup
                 </button>
               </div>
               <div className='flex justify-center'>
-                <div className="2xl:text-2xl sm:text-sm">
+                <div className="2xl:text-2xl sm:text-sm flex">
                   <p className='2xl:text-2xl text-gray-500 2xl:mt-0'> Already have an account? </p> 
-                  <Link to="/auth/login" className="font-medium text-[#FF3366] hover:text-red-500">Login</Link>
+                  <Link to="/auth/login" className="font-medium text-[#FF3366] hover:text-red-500 ml-[20px]">Login</Link>
                 </div>
               </div>
             </form>
