@@ -16,8 +16,9 @@ import CircularProgress, {
 } from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { API_URL } from 'utils/constants';
 
-export const socket = io('http://localhost:5000');
+export const socket = io(API_URL);
 
 interface IMessage {
   filePath: string[];

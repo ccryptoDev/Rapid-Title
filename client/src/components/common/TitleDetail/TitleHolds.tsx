@@ -7,6 +7,7 @@ import HoldingStatusDropdown from '../HoldingStatusDropdown';
 import { Console } from 'console';
 import api from 'utils/api';
 import { useSelector } from 'react-redux';
+import { setAlert } from 'store/actions/alert';
 
 
 function TitleHolds(title_id:any) {
@@ -17,7 +18,10 @@ function TitleHolds(title_id:any) {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const handleOpen = (index: any) => {
-    setOpenedRow(index);
+    if(user.userType != 2)
+      setAlert("Invalid user");
+    else
+      setOpenedRow(index);
   }
   const handleClose = (datas: any) => {
     //title type
@@ -105,7 +109,7 @@ function TitleHolds(title_id:any) {
                                   {record.status === '0' ? <div className='pending-badge cursor-pointer  rounded-md bg-[#FF3366] text-center text-white' onClick={()=>handleOpen(index)}>Pending</div> : 
                                     <div className='pending-badge  rounded-md cursor-pointer bg-[#333399] text-center text-white' onClick={()=>handleOpen(index)}>Completed</div>}
                                   {
-                                  index == openedRow && user.userType == 2 &&
+                                  index == openedRow &&
                                     <HoldingStatusDropdown handler = {handleClose} holdstatus = {record.status} />
                                   }
                                 </td>

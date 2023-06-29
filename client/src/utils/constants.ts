@@ -9,6 +9,8 @@ export const WalletTypes = {
   glow: 6,
 }
 
+export const API_URL = "http://54.177.112.127:3000";
+
 export const INFURA_KEY="e632a702eec64a4d867d65d8923d4309"
 
 export const TITLE_CONTRACT="0x7A26e95C1cF39f3Bc899D57475234165E9E507A2"

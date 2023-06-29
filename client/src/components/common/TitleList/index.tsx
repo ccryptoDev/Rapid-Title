@@ -9,9 +9,10 @@ import Key from 'assets/img/key_icon.png'
 import {io, Socket} from 'socket.io-client';
 import { useSelector } from 'react-redux';
 // import HoldingStatusDropdown from '../HoldingStatusDropdown';
+import { API_URL } from "utils/constants";
 
 
-export const socket = io('http://localhost:5000');
+export const socket = io(API_URL);
 
 function TitleList({ viewMode, data, changeView }: any) {
   const user = useSelector((state: any) => state.auth.user);
