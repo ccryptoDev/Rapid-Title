@@ -2,10 +2,11 @@
 import axios from 'axios';
 import store from '../store/store';
 import { LOGOUT } from '../store/types';
+import { API_URL } from './constants';
 
 // Create an instance of axios
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_URL + '/api',
   headers : {
     "Content-Type" : "application/json"
   }
