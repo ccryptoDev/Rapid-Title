@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 //import styles 👇
 import 'react-modern-drawer/dist/index.css'
 import { loadTitles, loadTitles_search } from 'store/actions/title';
+import { getAllTitles } from 'utils/useWeb3';
 
 import SideBar from 'components/common/SideBar';
 import HeaderBar from 'components/common/HeaderBar';
@@ -13,12 +14,17 @@ import Footer from 'components/common/Footer';
 function Home() {
   const [titleData, setTitleData] = React.useState([]);
   const [isDetail, setIsDetail] = React.useState(false);
+
   useEffect(() => {
     const fetchTitles = async () => {
+      // fetch titles from db
       const data = await loadTitles();
+      // fetch titles from smart contract
+      // const data : any = await getAllTitles();
+      console.log(data);
       setTitleData(data);
     };
-    fetchTitles();
+    fetchTitles();   
   },[]);
 
   const [isCard,setViewMode] = useState('card');
@@ -34,10 +40,15 @@ function Home() {
   const search_title = (searchTitle: any) => {
     const fetchTitles = async () => {
       const data = await loadTitles_search(searchTitle);
+      if(!data){
+        setTitleData([]);
+        return;
+      }
       setTitleData(data);
     };
     fetchTitles();
   }
+
   return (
     <>
       <div className="px-[24px]">
@@ -49,7 +60,7 @@ function Home() {
               {
                 isCard === 'card' ? (
                   <>
-                    <TitleList data={titleData} viewMode={isCard} changeView={changeViewMode} setDetail={setIsDetail}/>
+                    <TitleList titleVault={titleData} viewMode={isCard} changeView={changeViewMode} setDetail={setIsDetail}/>
                     <FilterCards />
                   </>
                 ) : 

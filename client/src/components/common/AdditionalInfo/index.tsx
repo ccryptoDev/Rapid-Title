@@ -12,7 +12,7 @@ import { PINATA_JWT } from 'utils/constants';
 import axios from 'axios';
 import api from 'utils/api';
 import { useSelector, useDispatch } from 'react-redux';
-import { mintTitle } from 'utils/useWeb3';
+import { mintTitle, getNextTokenID } from 'utils/useWeb3';
 
 
 function AdditionalInfo() {
@@ -21,7 +21,7 @@ function AdditionalInfo() {
   const [isOpen2, setIsOpen2] = React.useState(false);
   const [titleType, setTitleType] = React.useState('Clear');
   const [titleStatus, setTitleStatus] = React.useState('Completed');
-  const [modalOpend, setModalOpened] = React.useState(false);
+  const [modalOpened, setModalOpened] = React.useState(false);
   const [image1, setImage1] = React.useState();
   const [image2, setImage2] = React.useState();
   const [image3, setImage3] = React.useState();
@@ -29,6 +29,7 @@ function AdditionalInfo() {
   const carData = useSelector((state: any) => state.carData);
 
   const JWT = `Bearer ${PINATA_JWT}`;
+
   const handleOpen = () => setModalOpened(true);
   const handleClose = (e: object, reason: string) => {
     if (reason === 'backdropClick') {
@@ -39,6 +40,7 @@ function AdditionalInfo() {
 
   const navigate = useNavigate();
   const location = useLocation();
+
   const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -56,19 +58,20 @@ function AdditionalInfo() {
     justifyContent: 'center',
     textAlign: 'center'
   };
+
   const detailHandler = () => {
     navigate(`/titleDetail/${mintedTitleId}`);
     // navigate('/home')
   };
 
-  const uploadIPFS = async (imageFile: any) => {
+  const uploadIPFS = async (imageFile: any, index: Number, titleID: Number) => {
     const formData = new FormData();
     //@ts-ignore
     formData.append('file', imageFile);
 
     const metadata = JSON.stringify({
       //@ts-ignore
-      name: imageFile.name
+      name: "Title" + titleID + "_vehicleImg" + index
     });
     formData.append('pinataMetadata', metadata);
 
@@ -97,11 +100,15 @@ function AdditionalInfo() {
       console.log(error);
     }
   };
-  const completeHandler = async () => {
-    dispatch({ type: 'SET_LOADING', payload:true });
-    const vehicleCID1 = await uploadIPFS(image1);
-    const vehicleCID2 = await uploadIPFS(image2);
-    const vehicleCID3 = await uploadIPFS(image3);
+  
+  const creatingTitle = async () => {
+    // get next titleID
+    const nextTokenID = await getNextTokenID();
+
+    dispatch({ type: 'SET_LOADING', payload: true });
+    const vehicleCID1 = await uploadIPFS(image1, 1, nextTokenID);
+    const vehicleCID2 = await uploadIPFS(image2, 2, nextTokenID);
+    const vehicleCID3 = await uploadIPFS(image3, 3, nextTokenID);
 
     let requestBody = carData;
     requestBody.images = [
@@ -114,7 +121,7 @@ function AdditionalInfo() {
         cidVersion: 1
       },
       pinataMetadata: {
-        name: 'carData',
+        name: 'Title' + nextTokenID + "_metadata",
         keyvalues: {}
       },
       pinataContent: requestBody
@@ -129,17 +136,37 @@ function AdditionalInfo() {
       },
       data
     };
+
     //@ts-ignore
     const res = await axios(config);
     const vehicleCID = res.data.IpfsHash;
-    const tx = await mintTitle(vehicleCID, 2, 3, 4);
-    dispatch({ type: 'SET_LOADING', payload:false });
+
+    // Mint new title (metadataURI, dealer, lender, seller, DMV, holdsNumber)
+    const tx = await mintTitle(vehicleCID, 2, 3, 4, 8, 8);
+
     console.log('tx----------', tx);
+    
+    // get tokenID from Tx event
     let _tokenId = tx.events.TitleCreated.returnValues._tokenId;
     console.log('token_id ---', _tokenId);
     setTitleId(_tokenId);
-    if (tx !== false && tx !== undefined) {
+
+    // store title metadata into db
+    let title_metadata = {
+      metadata: requestBody,
+      titleId: nextTokenID,
+      metadataURI: vehicleCID
+    };
+    const resDB = await api.post('/v2/titles/mint', title_metadata);
+
+    // spinner off
+    dispatch({ type: 'SET_LOADING', payload: false });
+
+    if ( tx !== false && tx !== undefined && resDB.data == "success" ) {
       handleOpen();
+    } else {
+      // in case of error
+      alert("An error is caused while creating a Title!");
     }
   };
 
@@ -158,12 +185,15 @@ function AdditionalInfo() {
   const runAfterImageDelete = (file: any) => {
     console.log({ file });
   };
+
   const handleChange1 = () => {
     setIsOpen1((current) => !current);
   };
+
   const handleChange2 = () => {
     setIsOpen2((current) => !current);
   };
+
   const dropdownHandler = (index: any, data: any) => {
     //title type
     if(index === 1){
@@ -177,10 +207,11 @@ function AdditionalInfo() {
       setIsOpen2(false);
     }
   }
+
   return (
     <div className=" store-card col-span-2 p-2 w-full">
       <Modal
-        open={modalOpend}
+        open={modalOpened}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -421,7 +452,7 @@ function AdditionalInfo() {
               <button
                 className="bg-[#FF3366] text-white px-4 py-2 w-[148px] mt-1 font-bold rounded  items-center"
                 style={{ borderRadius: 4 }}
-                onClick={completeHandler}
+                onClick={creatingTitle}
               >
                 Create Title
               </button>

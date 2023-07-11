@@ -9,21 +9,22 @@ import Key from 'assets/img/key_icon.png'
 import {io, Socket} from 'socket.io-client';
 import { useSelector } from 'react-redux';
 // import HoldingStatusDropdown from '../HoldingStatusDropdown';
-import { API_URL } from "utils/constants";
-
+import { API_URL } from 'utils/constants';
 
 export const socket = io(API_URL);
 
-function TitleList({ viewMode, data, changeView }: any) {
+function TitleList({ viewMode, titleVault, changeView }: any) {
   const user = useSelector((state: any) => state.auth.user);
   const navigate = useNavigate();
   const [chat_room_name, setChatRoomName] = useState('');
   const [isPending, setIsPending] = React.useState(true);
   // const [isOpenedDropdown, setIsOpenedDropdown] = React.useState(false);
+
   // const handleClose = (data: any) =>{
   //   setIsPending(data);
   //   setIsOpenedDropdown(false);
   // }
+
   useEffect(() => {
     // const cb = async () => {
     //   const result: any = await getAllTitles();
@@ -37,6 +38,7 @@ function TitleList({ viewMode, data, changeView }: any) {
     // };
     // cb();
   }, []);
+
   const handleTitleDetailClick = (room_id: any, room_name: any) => {
     if(chat_room_name !== ''){
       socket.emit('leave_room', { user, chat_room_name });  
@@ -129,18 +131,18 @@ function TitleList({ viewMode, data, changeView }: any) {
         </div>
       </div>
       <div className="title-body grid grid-cols-4 p-2">
-        {data.map((title: any, index: any) => {
+        {titleVault.map((title: any) => {
           return (
             <>
               {
                 (isPending && title.data.state !== 'Completed') && (
-                  <div className="card min-h-[297px] col-span-1 m-2" key={index}>
-                    <div className="w-full relative">
+                  <div className="card min-h-[297px] col-span-1 m-2" key={title._id}>
+                    <div className="w-full relative" key={title.data.make}>
                       <img
                         src={title.data.images[0]}
                         width={'100%'}
                         className="cursor-pointer"
-                        onClick={()=>handleTitleDetailClick(title._id, title.data.make+' - '+ title.data.plate_number)}
+                        onClick={()=>handleTitleDetailClick(title.titleId, title.data.make+' - '+ title.data.plate_number)}
                       />
                       <img
                         src={multiIcon}
@@ -165,8 +167,8 @@ function TitleList({ viewMode, data, changeView }: any) {
                       />
                     </div>
                     <p className="text-gray-600 text-base mt-1">{title.data.number}</p>
-                    <p className="text-[#4848A4] text-xl cursor-pointer hover:text-[#FF4876]" onClick={()=>handleTitleDetailClick(title._id, title.data.make+' - '+ title.data.plate_number)}>{title.data.make}</p>
-                    <div className="flex p-2 items-center">
+                    <p className="text-[#4848A4] text-xl cursor-pointer hover:text-[#FF4876]" onClick={()=>handleTitleDetailClick(title.titleId, title.data.make+ ' - ' + title.data.plate_number)}>{title.data.make}</p>
+                    <div className="flex p-2 items-center" key={title.data.plate_number}>
                       <div className="flex-1">
                         <p className="text-[#FF4876] text-xl mt-1">
                           {' '}
@@ -179,7 +181,7 @@ function TitleList({ viewMode, data, changeView }: any) {
                         <p className="text-black text-base mt-1"> {title.data.plate_number}</p>
                       </div>
                       <div>
-                        <div>
+                        <div key={title.data.state}>
                           <button
                             className="bg-[#FF3366] w-full text-white font-bold py-1 px-2 rounded inline-flex items-center"
                             style={{ borderRadius: 4 }}
@@ -202,13 +204,13 @@ function TitleList({ viewMode, data, changeView }: any) {
               }
               {
                 (!isPending && title.data.state === 'Completed') && (
-                  <div className="card min-h-[297px] col-span-1 m-2" key={index}>
+                  <div className="card min-h-[297px] col-span-1 m-2" key={title._id}>
                     <div className="w-full relative">
                       <img
                         src={title.data.images[0]}
                         width={'100%'}
                         className="cursor-pointer"
-                        onClick={()=>handleTitleDetailClick(title._id, title.data.make+' - '+ title.data.plate_number)}
+                        onClick={()=>handleTitleDetailClick(title.titleId, title.data.make+' - '+ title.data.plate_number)}
                       />
                       <img
                         src={multiIcon}
@@ -233,7 +235,7 @@ function TitleList({ viewMode, data, changeView }: any) {
                       />
                     </div>
                     <p className="text-gray-600 text-base mt-1">{title.data.number}</p>
-                    <p className="text-[#4848A4] text-xl cursor-pointer hover:text-[#FF4876]" onClick={()=>handleTitleDetailClick(title._id, title.data.make+' - '+ title.data.plate_number)}>{title.data.make}</p>
+                    <p className="text-[#4848A4] text-xl cursor-pointer hover:text-[#FF4876]" onClick={()=>handleTitleDetailClick(title.titleId, title.data.make+' - '+ title.data.plate_number)}>{title.data.make}</p>
                     <div className="flex p-2 items-center">
                       <div className="flex-1">
                         <p className="text-[#FF4876] text-xl mt-1">

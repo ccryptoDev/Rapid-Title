@@ -17,6 +17,7 @@ export const loadTitles = async () => {
     setAlert(err);
   }
 };
+
 export const loadTitles_search = async (search_title: any) => {
   try {
     const res = await api.get(`/v2/titles/search?search_title=${search_title}`);
@@ -29,6 +30,7 @@ export const loadTitles_search = async (search_title: any) => {
     setAlert(err);
   }
 };
+
 export const loadHoldingTitles = async (title_id: any) => {
   try {
     console.log(title_id)
@@ -42,6 +44,7 @@ export const loadHoldingTitles = async (title_id: any) => {
     setAlert(err);
   }
 };
+
 export const loadHoldingTitles1 = async (title_id:any) => {
   try {
     const res = await api.get(`/v2/holdingtitles/test?title_id=${title_id}`);
@@ -54,6 +57,7 @@ export const loadHoldingTitles1 = async (title_id:any) => {
     setAlert(err);
   }
 };
+
 // Load Holen Titles
 export const loadHoldenTitles = async () => {
   return [
@@ -130,6 +134,7 @@ export const loadHoldenTitles = async () => {
     },
   ];
 };
+
 export const loadHoldenHistory = async () => {
   return [
     {
@@ -194,6 +199,7 @@ export const loadHoldenHistory = async () => {
     },
   ];
 };
+
 export const loadHoldenPeople = async () => {
   return [
     {

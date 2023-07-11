@@ -9,7 +9,7 @@ import TitleStatus from './TitleStatus';
 import TitleHolds from './TitleHolds';
 import TitleHistory from './TitleHistory';
 import TitlePeople from './TitlePeople';
-import { getTitleDetail } from 'utils/useWeb3';
+import { getVehicleDetail } from 'utils/useWeb3';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import api from 'utils/api';
@@ -21,7 +21,7 @@ import { loadMessages } from 'store/actions/message';
 import CircularProgress, {
   CircularProgressProps,
 } from '@mui/material/CircularProgress';
-import { API_URL } from "utils/constants";
+import { API_URL } from 'utils/constants';
 
 export const socket = io(API_URL);
 interface IMessage {
@@ -30,6 +30,7 @@ interface IMessage {
   fname: string;
   __createdtime__: number;
 }
+
 function CircularProgressWithLabel(
   props: CircularProgressProps & { value: number },
 ) {
@@ -57,6 +58,7 @@ function CircularProgressWithLabel(
     </Box>
   );
 }
+
 function formatDateFromTimestamp(timestamp: number) {
   const date = new Date(timestamp);
   const hours = date.getHours();
@@ -81,21 +83,35 @@ function uploadedPath_edit(uploaded_path: string){
   )
 }
 
-function TitleDetail() {
-  const isImageFile = (fileName: string): boolean => {
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
-    const extension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
-    return imageExtensions.includes(extension);
-  }
+const TitleDetail = () => {
+
   const [progress, setProgress] = React.useState(0);
   const [isuploading, setIsUploading] = React.useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const handleClick = () => {
-    if (inputRef.current) {
-      inputRef.current.click();
-    }
-  };
+
+  const [file, setFile] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const [messagesReceived, setMessagesReceived] = useState<IMessage[]>([]);
+  const messagesEndRef = useRef(null);
+
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const user = useSelector((state: any) => state.auth.user);
+
+  const [tab, setActiveTab] = React.useState('holds');
+  const [vehicleData, setVehicleData] = React.useState({})
+
+  const {id} = useParams();
+  const location = useLocation();
+  const room_name = location.state ? location.state.room_name: '';
+
+  console.log(room_name);
+  console.log(id)
+
+  const dispatch = useDispatch();
+
   const handleFormClick = () => {
     if (formRef.current) {
       // console.log(formRef)
@@ -105,14 +121,26 @@ function TitleDetail() {
       // alert('okay');
     }
   };
-  const [file, setFile] = useState<File[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const onFormSubmit = async  (event:React.FormEvent<HTMLFormElement>) => {
+
+  const isImageFile = (fileName: string): boolean => {
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
+    const extension = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
+    return imageExtensions.includes(extension);
+  }
+
+  const handleClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+
+  const onFormSubmit = async  (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsUploading(true);
     let formData = new FormData();
     formData.append("myfile", file[0]);
     console.log("type: ", file[0]);
+
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -124,6 +152,7 @@ function TitleDetail() {
         setProgress(percentCompleted);
       },
     };
+
     try {
       //@ts-ignore
       const res = await api.post('/v2/fileupload', formData, config);
@@ -136,6 +165,7 @@ function TitleDetail() {
       console.log(error);
     }
   }
+
   const handleFileChange  = (e:React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const newFiles = Array.from(e.target.files);
@@ -146,39 +176,28 @@ function TitleDetail() {
       },1000)
     }
   }
-  const [messagesReceived, setMessagesReceived] = useState<IMessage[]>([]);
-  const messagesEndRef = useRef(null);
+
   const scrollToBottom = () => {
     //@ts-ignore
     // messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     messagesEndRef.current?.scrollIntoView()
   }
-  
 
-  const [isOpen, setIsOpen] = React.useState(false);
-  const user = useSelector((state: any) => state.auth.user);
-  const [tab, setActiveTab] = React.useState('holds');
-  const [vehicleData, setVehicleData] = React.useState({})
-  const {id} = useParams();
-  const location = useLocation();
-  const room_name = location.state ? location.state.room_name: '';
-  console.log(room_name);
-  console.log(id)
-  const dispatch = useDispatch();
-
-  
   socket.emit('join_room', {user, room_name});
 
   const [modalOpend, setModalOpened] = React.useState(false);
   const handleMiniChat = () => setModalOpened(!modalOpend);
   const [chat, setChat] = useState('');
+
   const sendMessage =() => {
     if(chat !== '' || uploadedFiles.length > 0){
       const __createdtime__ = Date.now();
       // Send message to server. We can't specify who we send the message to from the frontend. We can only send to server. Server can then send message to rest of users in room
       const user_id = user._id;
       const user_fname = user.fname;
+
       const chat_room_id = id;
+      
       const chat_room_name = room_name;
       socket.emit('send_message', { chat_room_id, chat_room_name, user_fname, user_id, chat, __createdtime__, uploadedFiles });
       setChat('');
@@ -189,14 +208,17 @@ function TitleDetail() {
       },100);
     }
   }
+
   useEffect(() => {
     const cb = async () => {
-      let vehicleURI = await getTitleDetail(Number(id));
+      let vehicleURI = await getVehicleDetail(Number(id));
       let res = await axios.get(vehicleURI);
       let vehicleJson = res.data;
       setVehicleData(vehicleJson)
     }
+
     cb();
+
     const fetchMessages = async (room_id :any) => {
       console.log('room_id: ' + room_id);
       const data = await loadMessages(room_id);
@@ -206,7 +228,9 @@ function TitleDetail() {
         scrollToBottom();
       }, 100);
     };
+
     fetchMessages(id);
+
     socket.on('receive_message', (data) => {
       console.log(data);
       setMessagesReceived((state) => [
@@ -219,6 +243,7 @@ function TitleDetail() {
           }
         ])
       });
+
       setTimeout(() => {
         scrollToBottom();
       },1000)
@@ -228,11 +253,13 @@ function TitleDetail() {
         socket.off('receive_message');
       };
   }, [modalOpend]);
+
   const _onKeypress = (e: any) => {
     if(e.key === 'Enter'){
       sendMessage();
     }
   }
+
   const downloadFile = async (fileName: string) => {
     const response = await fetch(`/uploads/${fileName}`);
     const blob = await response.blob();
@@ -244,9 +271,11 @@ function TitleDetail() {
     link.click();
     document.body.removeChild(link);
   };
+  
   const handleClose = () => {
     setModalOpened(false);
   };
+
   const style = {
     position: 'absolute' as 'absolute',
     top: '52%',
@@ -265,6 +294,7 @@ function TitleDetail() {
   };
   
   const navigate = useNavigate();
+
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
   };
@@ -281,7 +311,7 @@ function TitleDetail() {
               <span className='text-[#333399] text-3xl cursor-pointer' onClick={() => navigate(-1)}> &larr;</span>
               {/* 
               //@ts-ignore */}
-              <span className='text-[#FF3366] text-3xl'> {vehicleData.model} {vehicleData.plate_model}</span>
+              <span className='text-[#FF3366] text-3xl'> {vehicleData.make} {vehicleData.plate_model}</span>
             </div>
             <div className='cursor-pointer' onClick={handleMiniChat}>
               <svg
@@ -296,9 +326,9 @@ function TitleDetail() {
                   <path
                     d="M43.4697 73.1247C46.7139 74.9957 50.478 76.0662 54.4921 76.0662C66.6946 76.0662 76.5875 66.1743 76.5875 53.9718C76.5875 41.7693 66.6954 31.8773 54.493 31.8773C42.2905 31.8773 32.3984 41.7693 32.3984 53.9718C32.3984 57.9859 33.4689 61.75 35.3399 64.9942L35.3472 65.0068C35.5272 65.3189 35.618 65.4763 35.6591 65.6251C35.6979 65.7654 35.7087 65.8915 35.6988 66.0367C35.6881 66.1928 35.6355 66.3546 35.5277 66.6781L33.6403 72.3403L33.6379 72.3478C33.2397 73.5424 33.0406 74.1398 33.1825 74.5378C33.3063 74.8848 33.5809 75.1587 33.928 75.2825C34.3251 75.4241 34.9198 75.2259 36.1092 74.8294L36.124 74.8239L41.7863 72.9365C42.1087 72.829 42.2726 72.7745 42.4283 72.7639C42.5736 72.7539 42.6988 72.7671 42.8392 72.8058C42.9883 72.8471 43.1458 72.9379 43.4595 73.1188L43.4697 73.1247Z"
                     stroke="white"
-                    stroke-width="5.32422"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="5.32422"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <circle cx="73.8504" cy="34.6128" r="10.1004" fill="#FF3366" />
                 </g>
@@ -310,9 +340,9 @@ function TitleDetail() {
                     width="107.148"
                     height="107.15"
                     filterUnits="userSpaceOnUse"
-                    color-interpolation-filters="sRGB"
+                    colorInterpolationFilters="sRGB"
                   >
-                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
                     <feColorMatrix
                       in="SourceAlpha"
                       type="matrix"
@@ -553,13 +583,13 @@ function TitleDetail() {
                           <p>ZACCJBDT9FPB41159</p>
                           <svg width="30" height="30" viewBox="0 0 73 73" className='absolute top-2 right-2' fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="36.1846" cy="36.3408" r="35.9385" fill="#212133"/>
-                            <path d="M49.2592 55.0405H51.3776M42.9043 55.0405H38.6676V48.6855M45.0226 48.6855H51.3776V42.3306H49.2592M38.6676 42.3306H42.9043M17.4844 48.685C17.4844 46.711 17.4844 45.7239 17.8069 44.9454C18.2369 43.9073 19.0611 43.083 20.0992 42.6531C20.8778 42.3306 21.8648 42.3306 23.8388 42.3306C25.8128 42.3306 26.8009 42.3306 27.5795 42.6531C28.6176 43.083 29.4416 43.9073 29.8716 44.9454C30.1941 45.7239 30.1941 46.7115 30.1941 48.6855C30.1941 50.6596 30.1941 51.6466 29.8716 52.4251C29.4416 53.4632 28.6176 54.2878 27.5795 54.7178C26.8009 55.0403 25.8128 55.0403 23.8388 55.0403C21.8648 55.0403 20.8778 55.0403 20.0992 54.7178C19.0611 54.2878 18.2369 53.4638 17.8069 52.4257C17.4844 51.6471 17.4844 50.659 17.4844 48.685ZM38.6676 27.5017C38.6676 25.5277 38.6676 24.5407 38.9901 23.7621C39.4201 22.724 40.2443 21.8998 41.2824 21.4698C42.061 21.1473 43.048 21.1473 45.022 21.1473C46.9961 21.1473 47.9842 21.1473 48.7628 21.4698C49.8009 21.8998 50.6249 22.724 51.0549 23.7621C51.3774 24.5407 51.3774 25.5283 51.3774 27.5023C51.3774 29.4763 51.3774 30.4633 51.0549 31.2419C50.6249 32.28 49.8009 33.1045 48.7628 33.5345C47.9842 33.857 46.9961 33.857 45.022 33.857C43.048 33.857 42.061 33.857 41.2824 33.5345C40.2443 33.1045 39.4201 32.2805 38.9901 31.2424C38.6676 30.4639 38.6676 29.4758 38.6676 27.5017ZM17.4844 27.5017C17.4844 25.5277 17.4844 24.5407 17.8069 23.7621C18.2369 22.724 19.0611 21.8998 20.0992 21.4698C20.8778 21.1473 21.8648 21.1473 23.8388 21.1473C25.8128 21.1473 26.8009 21.1473 27.5795 21.4698C28.6176 21.8998 29.4416 22.724 29.8716 23.7621C30.1941 24.5407 30.1941 25.5283 30.1941 27.5023C30.1941 29.4763 30.1941 30.4633 29.8716 31.2419C29.4416 32.28 28.6176 33.1045 27.5795 33.5345C26.8009 33.857 25.8128 33.857 23.8388 33.857C21.8648 33.857 20.8778 33.857 20.0992 33.5345C19.0611 33.1045 18.2369 32.2805 17.8069 31.2424C17.4844 30.4639 17.4844 29.4758 17.4844 27.5017Z" stroke="white" stroke-width="5.32422" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M49.2592 55.0405H51.3776M42.9043 55.0405H38.6676V48.6855M45.0226 48.6855H51.3776V42.3306H49.2592M38.6676 42.3306H42.9043M17.4844 48.685C17.4844 46.711 17.4844 45.7239 17.8069 44.9454C18.2369 43.9073 19.0611 43.083 20.0992 42.6531C20.8778 42.3306 21.8648 42.3306 23.8388 42.3306C25.8128 42.3306 26.8009 42.3306 27.5795 42.6531C28.6176 43.083 29.4416 43.9073 29.8716 44.9454C30.1941 45.7239 30.1941 46.7115 30.1941 48.6855C30.1941 50.6596 30.1941 51.6466 29.8716 52.4251C29.4416 53.4632 28.6176 54.2878 27.5795 54.7178C26.8009 55.0403 25.8128 55.0403 23.8388 55.0403C21.8648 55.0403 20.8778 55.0403 20.0992 54.7178C19.0611 54.2878 18.2369 53.4638 17.8069 52.4257C17.4844 51.6471 17.4844 50.659 17.4844 48.685ZM38.6676 27.5017C38.6676 25.5277 38.6676 24.5407 38.9901 23.7621C39.4201 22.724 40.2443 21.8998 41.2824 21.4698C42.061 21.1473 43.048 21.1473 45.022 21.1473C46.9961 21.1473 47.9842 21.1473 48.7628 21.4698C49.8009 21.8998 50.6249 22.724 51.0549 23.7621C51.3774 24.5407 51.3774 25.5283 51.3774 27.5023C51.3774 29.4763 51.3774 30.4633 51.0549 31.2419C50.6249 32.28 49.8009 33.1045 48.7628 33.5345C47.9842 33.857 46.9961 33.857 45.022 33.857C43.048 33.857 42.061 33.857 41.2824 33.5345C40.2443 33.1045 39.4201 32.2805 38.9901 31.2424C38.6676 30.4639 38.6676 29.4758 38.6676 27.5017ZM17.4844 27.5017C17.4844 25.5277 17.4844 24.5407 17.8069 23.7621C18.2369 22.724 19.0611 21.8998 20.0992 21.4698C20.8778 21.1473 21.8648 21.1473 23.8388 21.1473C25.8128 21.1473 26.8009 21.1473 27.5795 21.4698C28.6176 21.8998 29.4416 22.724 29.8716 23.7621C30.1941 24.5407 30.1941 25.5283 30.1941 27.5023C30.1941 29.4763 30.1941 30.4633 29.8716 31.2419C29.4416 32.28 28.6176 33.1045 27.5795 33.5345C26.8009 33.857 25.8128 33.857 23.8388 33.857C21.8648 33.857 20.8778 33.857 20.0992 33.5345C19.0611 33.1045 18.2369 32.2805 17.8069 31.2424C17.4844 30.4639 17.4844 29.4758 17.4844 27.5017Z" stroke="white" strokeWidth="5.32422" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                       </div>
                       <div className='h-[80px] flex justify-center flex-col rounded-2xl bg-[#9898CB] p-3 text-white relative'>
                         <svg width="50" height="50" viewBox="0 0 111 110" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <circle cx="55.46" cy="54.6104" r="54.5732" fill="#212133"/>
-                          <path d="M28.7852 55.5506L50.9621 33.3736C57.5572 26.7785 68.2501 26.7785 74.8452 33.3736C81.4403 39.9687 81.4395 50.662 74.8444 57.2571L49.2556 82.8459C44.8589 87.2426 37.7316 87.242 33.3349 82.8453C28.9382 78.4485 28.9371 71.3208 33.3338 66.9241L58.9226 41.3353C61.121 39.1369 64.6871 39.1369 66.8855 41.3353C69.0838 43.5336 69.0823 47.097 66.8839 49.2954L44.707 71.4724" stroke="white" stroke-width="5.32422" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M28.7852 55.5506L50.9621 33.3736C57.5572 26.7785 68.2501 26.7785 74.8452 33.3736C81.4403 39.9687 81.4395 50.662 74.8444 57.2571L49.2556 82.8459C44.8589 87.2426 37.7316 87.242 33.3349 82.8453C28.9382 78.4485 28.9371 71.3208 33.3338 66.9241L58.9226 41.3353C61.121 39.1369 64.6871 39.1369 66.8855 41.3353C69.0838 43.5336 69.0823 47.097 66.8839 49.2954L44.707 71.4724" stroke="white" strokeWidth="5.32422" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                       </div>
                       <div className='h-[80px] flex justify-center flex-col rounded-2xl bg-[#9898CB] p-3 text-white relative'>
@@ -651,7 +681,7 @@ function TitleDetail() {
                     tab === 'status' && <TitleStatus />
                   }
                   {
-                    tab === 'holds' && <TitleHolds title_id = {id} key={id}/>
+                    tab === 'holds' && <TitleHolds title_id={id} />
                   }
                   {
                     tab === 'people' && <TitlePeople />

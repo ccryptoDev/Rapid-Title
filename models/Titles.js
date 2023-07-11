@@ -3,6 +3,14 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const TitlesSchema = new Schema({
+  titleId: {
+    type: Number,
+    required: true
+  },
+  metadataURI: {
+    type: String,
+    required: true
+  },
   data : {
     type : Object,
     required : true

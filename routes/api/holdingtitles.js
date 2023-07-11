@@ -11,7 +11,7 @@ const HoldingTitle = require('../../models/HoldingTitle')
 const Titles = require('../../models/Titles')
 
 
-router.get('/',auth, async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     if(!req.query.title_id){
       req.json('title id does not exists')
@@ -25,19 +25,22 @@ router.get('/',auth, async (req, res) => {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
-  
 });
+
+
 router.put('/:id', auth, async(req, res) =>{
   console.log(req.params.id)
-  console.log(req.body.datas)
+  console.log(req.body.newStatus)
   try {
     const myquery = { _id: req.params.id };
-    const newvalues = { $set: { status: req.body.datas } };
+    const newvalues = { $set: { status: req.body.newStatus } };
     const updatedRowData = await HoldingTitle.findByIdAndUpdate(
       myquery, newvalues
     );
+
     const completed_details = await HoldingTitle.countDocuments({status: '1', title_id: req.body.title_id.title_id});
     const total_details = await HoldingTitle.countDocuments({title_id: req.body.title_id.title_id});
+
     console.log(completed_details);
     console.log(total_details);
     if(completed_details === total_details){
@@ -60,9 +63,10 @@ router.put('/:id', auth, async(req, res) =>{
     console.error(error);
     res.status(500).send('Error updating row');
   }
-})
-router.post('/mint',auth, async (req, res) => {
+});
 
+
+router.post('/mint',auth, async (req, res) => {
   try {
     const holdingtitles = new HoldingTitle({
       data: req.body,
@@ -74,8 +78,9 @@ router.post('/mint',auth, async (req, res) => {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
-  
 });
+
+
 router.get('/test', async (req, res) => {
   const holdingtitleData = [
     {

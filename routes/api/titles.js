@@ -38,11 +38,13 @@ router.get('/search',auth, async (req, res) => {
   
 });
 
-router.post('/mint',auth, async (req, res) => {
+router.post('/mint', auth, async (req, res) => {
 
   try {
     const titles = new Titles({
-      data: req.body,
+      titleId: req.body.titleId,
+      metadataURI: req.body.metadataURI,
+      data: req.body.metadata,
       created_at: new Date()
     });
     await titles.save();
@@ -53,6 +55,7 @@ router.post('/mint',auth, async (req, res) => {
   }
   
 });
+
 router.get('/test', async (req, res) => {
   const titleData = [
     {

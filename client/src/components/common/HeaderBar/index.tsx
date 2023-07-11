@@ -24,40 +24,40 @@ function HeaderBar({search_title, titledata}: any) {
   const [showList, setShowList] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-    const filteredTitles = titledata && titledata.filter((data: any) =>
+  const filteredTitles = titledata && titledata.filter((data: any) =>
     data.data.make.toLowerCase().includes(searchTitle.toLocaleLowerCase())
-    );
-  
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      if(event.target.value !== ''){
-        setSearchTitle(event.target.value);
-        setShowList(true);
-      }
-      else{
-        setSearchTitle(event.target.value);
-        setShowList(false);
-      }
-    };
-  
-    const handleItemClick = (item: string) => {
-      setSearchTitle(item);
+  );
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if(event.target.value !== ''){
+      setSearchTitle(event.target.value);
+      setShowList(true);
+    }
+    else{
+      setSearchTitle(event.target.value);
       setShowList(false);
-      search_title(searchTitle);
-    };
-  
-    const handleClickOutside = (event: MouseEvent) => {
-      console.log('out clicked');
+    }
+  };
+
+  const handleItemClick = (item: string) => {
+    setSearchTitle(item);
+    setShowList(false);
+    search_title(searchTitle);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    console.log('out clicked');
+    setShowList(false);
+    // Check if the click target is outside of the input element and the list
+    if (
+      inputRef.current &&
+      !inputRef.current.contains(event.target as Node) &&
+      event.target !== inputRef.current &&
+      showList
+    ) {
       setShowList(false);
-      // Check if the click target is outside of the input element and the list
-      if (
-        inputRef.current &&
-        !inputRef.current.contains(event.target as Node) &&
-        event.target !== inputRef.current &&
-        showList
-      ) {
-        setShowList(false);
-      }
-    };
+    }
+  };
   
   useEffect(() => {
     // Add event listener for click events on the document

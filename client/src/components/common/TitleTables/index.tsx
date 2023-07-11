@@ -9,7 +9,7 @@ import LA from 'assets/img/LA.png';
 import Key from 'assets/img/key_icon.png'
 
 
-function TitleTables({viewMode,data, changeView}: any) {
+function TitleTables({viewMode, data, changeView}: any) {
   const navigate = useNavigate();
   const [isPending, setIsPending] = React.useState(true);
 
@@ -99,7 +99,7 @@ function TitleTables({viewMode,data, changeView}: any) {
                 </thead>
                 <tbody className='text-[#212133]'>
                   {
-                    data.map((title:any,index:any) => {
+                    data.map((title: any, index: any) => {
                       return(
                         <>
                         {
