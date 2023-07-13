@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-export const setAlert = (msg: string,type='info') => {
+export const setAlert = (msg: string, type='info') => {
   if(type === 'warning'){
     toast.error(msg);
     return;

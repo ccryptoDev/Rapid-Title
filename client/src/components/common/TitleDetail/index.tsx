@@ -21,9 +21,8 @@ import { loadMessages } from 'store/actions/message';
 import CircularProgress, {
   CircularProgressProps,
 } from '@mui/material/CircularProgress';
-import { API_URL } from 'utils/constants';
 
-export const socket = io(API_URL);
+export const socket = io(`${process.env.REACT_APP_API_URL}`);
 interface IMessage {
   filePath: string[];
   message: string;

@@ -5,9 +5,16 @@ import { SET_HOLDINGTITLES } from 'store/types';
 import store from '../store';
 
 // Load Titles
-export const loadTitles = async () => {
+export const loadTitles = async (filterMode: string) => {
   try {
-    const res = await api.get('/v2/titles');
+    let res;
+    if (filterMode === 'all') {
+      res = await api.get('/v2/titles');
+    } else {
+      const status = filterMode === 'pending' ? 0 : 1;
+      res = await api.get(`/v2/titles/filter?status=${status}`);
+    }
+
     store.dispatch({
       type: SET_TITLES,
       payload: res.data

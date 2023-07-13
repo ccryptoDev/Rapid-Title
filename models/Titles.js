@@ -15,6 +15,18 @@ const TitlesSchema = new Schema({
     type : Object,
     required : true
   },
+  numHolds: {
+    type: Number,
+    requried: true
+  },
+  completedHolds: {
+    type: Number,
+    required: true
+  },
+  status: {
+    type: Number,
+    required: true
+  },
   created_at: {
     type : Date,
     required: true

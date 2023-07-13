@@ -13,28 +13,28 @@ import Footer from 'components/common/Footer';
 
 function Home() {
   const [titleData, setTitleData] = React.useState([]);
-  const [isDetail, setIsDetail] = React.useState(false);
+  const [viewMode, setViewMode] = useState('list');
+  const [filterMode, setFilterMode] = useState('pending');
 
   useEffect(() => {
     const fetchTitles = async () => {
       // fetch titles from db
-      const data = await loadTitles();
+      const data = await loadTitles(filterMode);
+
       // fetch titles from smart contract
       // const data : any = await getAllTitles();
       console.log(data);
       setTitleData(data);
     };
     fetchTitles();   
-  },[]);
+  }, [viewMode, filterMode]);
 
-  const [isCard,setViewMode] = useState('card');
   const changeViewMode = () => {
-    if(isCard ==='card'){
-      setViewMode('table');
-    }
-    else {
-      setViewMode('card');
-    }
+    viewMode === 'table' ? setViewMode('list') : setViewMode('table');
+  }
+
+  const changeFilterMode = () => {
+    filterMode === 'pending' ? setFilterMode('complete') : setFilterMode('pending');
   }
 
   const search_title = (searchTitle: any) => {
@@ -58,14 +58,14 @@ function Home() {
             <HeaderBar search_title = {search_title} titledata = {titleData}/>
             <div className='flex w-full'>
               {
-                isCard === 'card' ? (
+                viewMode === 'list' ? (
                   <>
-                    <TitleList titleVault={titleData} viewMode={isCard} changeView={changeViewMode} setDetail={setIsDetail}/>
+                    <TitleList titleVault={titleData} viewMode={viewMode} filterMode={filterMode} changeView={changeViewMode} changeFilterMode={changeFilterMode} />
                     <FilterCards />
                   </>
                 ) : 
                 (
-                  <TitleTables data={titleData} viewMode={isCard} changeView={changeViewMode} setDetail={setIsDetail}/>
+                  <TitleTables titleVault={titleData} viewMode={viewMode} filterMode={filterMode} changeView={changeViewMode} changeFilterMode={changeFilterMode} />
                 )
               }
             </div>

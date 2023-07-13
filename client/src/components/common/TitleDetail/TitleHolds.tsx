@@ -1,7 +1,6 @@
-import React, { BaseSyntheticEvent, useEffect, useState } from 'react';
+import React, { BaseSyntheticEvent, useEffect, useCallback, useState } from 'react';
 import './index.view.css';
 import { useNavigate } from 'react-router-dom';
-import { loadHoldingTitles1 } from 'store/actions/title';
 import { loadHoldingTitles } from 'store/actions/title';
 import HoldingStatusDropdown from '../HoldingStatusDropdown';
 import { Console } from 'console';
@@ -22,7 +21,7 @@ interface holds_type {
   updateAt: string
 }
 
-function TitleHolds(props: any) {
+function TitleHolds(props: any) { 
   const dispatch = useDispatch();
   const {title_id} = props;
   const [titleDetail, setTitleDetail] = useState([]);
@@ -50,11 +49,9 @@ function TitleHolds(props: any) {
         dispatch({ type: 'SET_LOADING', payload: true });
 
         const tx = await updateHoldsStatus(title_id, update_id, newStatus);
-        console.log('update Tx: ', tx)
-
-        // if update transaction returns, rendering title holds with the new updates
         if( tx.events.StatusUpdated.returnValues ) {
           setHoldUpdated(true);
+          setAlert('The holds status is updated successfully!')
         }
 
         // spinner turn off
@@ -64,8 +61,6 @@ function TitleHolds(props: any) {
          * updating holds status from db
          */
         /* const res = await api.put(`/v2/holdingtitles/${update_id}`, {newStatus, title_id});
-        console.log(res.data);
-
         const holdsStatusAfterUpdate = await loadHoldingTitles(title_id.title_id);
         console.log('status after update', holdsStatusAfterUpdate);
         setHolds(holdsStatusAfterUpdate); */
@@ -93,7 +88,6 @@ function TitleHolds(props: any) {
       setTitleDetail(titleInfo);
 
       const hold_createTime = new Date(titleInfo[7] * 1000);
-      console.log(titleInfo[7]);
       const formattedCreateTime = hold_createTime.toLocaleString('en-US', {
                                     month: '2-digit',
                                     day: '2-digit',
@@ -113,15 +107,20 @@ function TitleHolds(props: any) {
 
   }, []);
 
+  const getHolds = useCallback(async () => {
+    // load holds status from smart contract
+    return await getHoldsStatus(title_id - 1, 8);
+  }, [holdUpdated, createdTime]);
+
   useEffect(() => {
-    const cb = async(title_id: number) => {
+    const cb = async () => {
       // spinner turn on
       dispatch({ type: 'SET_LOADING', payload: true });
 
       // load holds status from smart contract
-      const holds = await getHoldsStatus(title_id, 8);
+      const holds = await getHolds();
       
-      const convertedHolds: holds_type[] = holds.map((hold: holds_type) => {
+      const updatedHolds: holds_type[] = holds.map((hold: holds_type) => {
         const timestamp = parseInt(hold.updateAt);
         const updatedDate = new Date(timestamp * 1000);
         const diffInMs = updatedDate > createdTime ? updatedDate.getTime() - createdTime.getTime() : 0;
@@ -129,17 +128,27 @@ function TitleHolds(props: any) {
         return { ...hold, updateAt: diffInDays };
       });
 
-      console.log('test', convertedHolds);
+      console.log('updated holds', updatedHolds);
 
-      setHolds(convertedHolds);
+      setHolds(updatedHolds);
+      const count_completedHolds = updatedHolds.map(hold => hold.status).filter(status => status === true).length;
       
+      const updatedTitle = {
+        numHolds: updatedHolds.length,
+        completedHolds: count_completedHolds,
+        status: updatedHolds.length === count_completedHolds ? 1 : 0
+      }
+      
+      const res = await api.put(`/v2/titles/${title_id}`, {updatedTitle: updatedTitle});
+      console.log(res.data);
+
       // spinner turn off
       dispatch({ type: 'SET_LOADING', payload: false });
       setHoldUpdated(false);
     }
 
-    cb( Number(title_id) - 1 ); 
-  }, [holdUpdated, createdTime]);
+    cb(); 
+  }, [holdUpdated, createdTime, getHolds]);
 
   return (
     <div className="p-2 max-h-[680px] overflow-y-scroll w-full">

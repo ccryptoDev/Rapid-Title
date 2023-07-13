@@ -16,9 +16,8 @@ import CircularProgress, {
 } from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { API_URL } from 'utils/constants';
 
-export const socket = io(API_URL);
+export const socket = io(`${process.env.REACT_APP_API_URL}`);
 
 interface IMessage {
   filePath: string[];
@@ -163,7 +162,7 @@ export default function Community() {
     //     setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
     //   }, 800);
     const fetchTitles = async () => {
-      const data = await loadTitles();
+      const data = await loadTitles('all');
       setTitleData(data);
     };
     fetchTitles();

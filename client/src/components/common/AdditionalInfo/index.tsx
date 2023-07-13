@@ -8,7 +8,6 @@ import TitleStatusDropdown from '../TitleStatusDropdown';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { PINATA_JWT } from 'utils/constants';
 import axios from 'axios';
 import api from 'utils/api';
 import { useSelector, useDispatch } from 'react-redux';
@@ -28,7 +27,7 @@ function AdditionalInfo() {
   const [mintedTitleId, setTitleId] = React.useState(0);
   const carData = useSelector((state: any) => state.carData);
 
-  const JWT = `Bearer ${PINATA_JWT}`;
+  const JWT = `Bearer ${process.env.REACT_APP_PINATA_JWT}`;
 
   const handleOpen = () => setModalOpened(true);
   const handleClose = (e: object, reason: string) => {
@@ -132,7 +131,7 @@ function AdditionalInfo() {
       url: 'https://api.pinata.cloud/pinning/pinJSONToIPFS',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${PINATA_JWT}`
+        Authorization: `Bearer ${process.env.REACT_APP_PINATA_JWT}`
       },
       data
     };
@@ -155,7 +154,10 @@ function AdditionalInfo() {
     let title_metadata = {
       metadata: requestBody,
       titleId: nextTokenID,
-      metadataURI: vehicleCID
+      metadataURI: vehicleCID,
+      numHolds: 8,
+      completedHolds: 0,
+      status: 0
     };
     const resDB = await api.post('/v2/titles/mint', title_metadata);
 

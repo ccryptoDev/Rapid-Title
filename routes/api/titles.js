@@ -7,10 +7,11 @@ const config = require('config');
 const { check, validationResult } = require('express-validator');
 const auth = require('../../middleware/auth')
 const User = require('../../models/User');
-const Titles = require('../../models/Titles')
+const Titles = require('../../models/Titles');
+const { findByIdAndDelete, findByIdAndUpdate } = require('../../models/User');
 
 
-router.get('/',auth, async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const titles = await Titles.find({
       // user: req.user.id
@@ -23,7 +24,20 @@ router.get('/',auth, async (req, res) => {
   
 });
 
-router.get('/search',auth, async (req, res) => {
+router.get('/filter', auth, async (req, res) => {
+  try {
+    const titles = await Titles.find({
+      status: Number(req.query.status)
+    });
+
+    res.status(200).json(titles);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send(JSON.stringify(err));
+  }
+});
+
+router.get('/search', auth, async (req, res) => {
   console.log(req.query.search_title);
   try {
     const titles = await Titles.find({
@@ -45,8 +59,12 @@ router.post('/mint', auth, async (req, res) => {
       titleId: req.body.titleId,
       metadataURI: req.body.metadataURI,
       data: req.body.metadata,
+      numHolds: req.body.numHolds,
+      completedHolds: req.body.completedHolds,
+      status: req.body.status,
       created_at: new Date()
     });
+
     await titles.save();
     return res.json('success');
   } catch (err) {
@@ -54,6 +72,25 @@ router.post('/mint', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
   
+});
+
+router.put('/:title_id', auth, async(req, res) => {
+  try {
+    const query = {titleId: req.params.title_id};
+    const updateValues = { $set: {
+      numHolds: req.body.updatedTitle.numHolds,
+      completedHolds: req.body.updatedTitle.completedHolds,
+      status: req.body.updatedTitle.status
+    }};
+
+    const updatedTitle = await Titles.findOneAndUpdate(
+      query, updateValues, {new: true}
+    );
+    res.status(200).send(JSON.stringify(updatedTitle));
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error.message);
+  }
 });
 
 router.get('/test', async (req, res) => {

@@ -1,19 +1,17 @@
 // import { ethers, BigNumber } from 'ethers';
 import Web3Modal from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-import { INFURA_KEY,TITLE_CONTRACT } from './constants'
 import titleContractABI from './titleContractABI.json';
 import Web3 from 'web3';
 import axios from 'axios';
 
-let title_contract: any;
-let nft_contract: any;
+const TITLE_CONTRACT = `${process.env.REACT_APP_TITLE_CONTRACT}`
 
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
     options: {
-      infuraId: INFURA_KEY
+      infuraId: `${process.env.REACT_APP_INFURA_KEY}`
     }
   }
 };
